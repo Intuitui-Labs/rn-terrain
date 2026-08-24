@@ -1,0 +1,14 @@
+{
+  "name": "rn-terrain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The live intelligence layer for the React Native ecosystem.",
+  "packageManager": "pnpm@11.21.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check-types": "pnpm -r run check-types",
+    "clean": "pnpm -r run clean"
+  }
+}

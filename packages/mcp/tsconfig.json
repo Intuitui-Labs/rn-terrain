@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@rn-terrain/mcp/*": [
+        "./src/*"
+      ],
+      "@rn-terrain/core/*": [
+        "../core/src/*"
+      ]
+    },
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
