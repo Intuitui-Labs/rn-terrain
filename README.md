@@ -38,6 +38,21 @@ pnpm install
 pnpm --filter @rn-terrain/cli radar
 ```
 
+### GitHub Atlas locally
+
+From the repository root:
+
+```bash
+pnpm install
+pnpm atlas:dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000). The production build can be checked with:
+
+```bash
+pnpm atlas:build
+```
+
 ## Documentation
 
 Start at [docs/INDEX.md](./docs/INDEX.md):

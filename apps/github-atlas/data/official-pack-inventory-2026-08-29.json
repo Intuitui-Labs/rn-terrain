@@ -1,0 +1,9 @@
+{
+  "sourceId": "github-pack",
+  "sourceUrl": "https://education.github.com/pack",
+  "capturedAt": "2026-08-29T11:46:23.065Z",
+  "scope": "Offer names published in the official GitHub Student Developer Pack catalogue. This is an inventory, not independent verification of every provider term.",
+  "offers": [
+    "Namecheap", ".TECH", "Microsoft Azure", "Name.com", "Microsoft 365", "Notion", "GitHub", "GitHub Copilot", "Heroku", "DataCamp", "Boot.dev", "Codédex", "JetBrains", "MongoDB", "Educative", "Testmail", "GitHub Codespaces", "Camber", "Clerk", "Datadog", "FrontendMasters", "Termius", "Microsoft Azure (for ages 13-17)", "Visual Studio Code", "GitHub Pages", "Appwrite", "Stripe", "Github Campus Experts", "Microsoft Visual Studio Dev Essentials", "1Password", "PomoDone", "Notion Template Collection", "Sentry", "Bootstrap Studio", "LocalStack", "Zyte", "Scrimba", "Icons8", "Deepnote", "New Relic", "BrowserStack", "HazeOver", "CodeScene", "Arduino", "Polypane", "IconScout", "InterviewCake", "Pageclip", "Visme", "LambdaTest", "AlgoExpert", "Blackfire", "GitLens", "Doppler", "Octicons", "Travis CI", "GitHub Desktop", "Adafruit", "ToDiagram", "Tower", "Xojo", "GitKraken", "GoRails", "PopSQL", "Imgbot", "CARTO", "WorkingCopy", "Requestly", "SQLGate", "SimpleAnalytics", "Codecov", "ConfigCat", "Blockchair", "DevCycle", "DeepScan", "AstraSecurity", "Vaadin", "Appfigures", "POEditor", "Honeybadger", "Dashlane", "Themeisle", "SymfonyCasts"
+  ]
+}

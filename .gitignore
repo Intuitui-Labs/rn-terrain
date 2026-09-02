@@ -1,9 +1,20 @@
-node_modules
-dist
-.turbo
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build & Cache Outputs
+dist/
+**/dist/
+.next/
+**/.next/
+build/
 *.tsbuildinfo
+.atlas-cache/
+.turbo/
+
+# Environment & Logs
 *.log
 .env
-.env.*
-!.env.example
+.env.local
 .DS_Store
+

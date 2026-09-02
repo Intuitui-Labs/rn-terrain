@@ -18,6 +18,19 @@ tags: [rn-terrain, architecture, specification]
 # PART ONE â€” FOUNDATION
 ## Why This Exists (L0)
 
+### OpenEval+ as the reusable frame
+
+RN Terrain is a contextualized OpenEval+ system. OpenEval+ defines the domain-independent pattern—map a changing option space, expose evidence and uncertainty, explain trade-offs, and preserve human choice. RN Terrain specializes that pattern for React Native packages, tools, vendors, maintainers, and ecosystem events.
+
+```text
+OpenEval+ transparent guidance  → VitalityCard and breakdown
+OpenEval+ living terrain        → package and ecosystem events
+OpenEval+ context and fit       → Expo / New Architecture signals
+OpenEval+ human curation        → corrections and maintainer context
+OpenEval+ uncertainty           → confidence and freshness per signal
+OpenEval+ open method           → weights, schemas, and integrity spec
+```
+
 Every RN package is a temporary pocket of organized capability fighting entropy.
 The developer who installs it inherits not just code â€” but the full systemic
 pressure of that package's entire lifecycle: its human maintenance grid, its

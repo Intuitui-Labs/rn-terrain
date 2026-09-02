@@ -38,6 +38,21 @@ Every feature decision filters through this:
 If yes â†’ build it.
 If no â†’ cut it.
 
+## OpenEval+ Alignment
+
+RN Terrain is the first domain-specific implementation of the reusable OpenEval+ framework. OpenEval+ provides the permanent reasoning frame; RN Terrain provides the React Native terrain, signals, workflow surfaces, and real-world validation.
+
+The shared invariants are:
+
+- orientation over catalogues;
+- guidance over governance;
+- transparent breakdowns over unexplained rankings;
+- context and trajectory over universal bestness;
+- visible confidence and freshness over false precision;
+- human agency and curation alongside automated collection.
+
+The framework should remain portable, but RN Terrain remains the proving ground. Do not generalize prematurely.
+
 ---
 
 ## The Three Promises to the Developer

@@ -9,6 +9,9 @@
   },
   "scripts": {
     "check-types": "pnpm -r run check-types",
-    "clean": "pnpm -r run clean"
+    "clean": "pnpm -r run clean",
+    "atlas:dev": "pnpm --filter github-atlas dev",
+    "atlas:build": "pnpm --filter github-atlas build",
+    "atlas:collect": "pnpm --filter github-atlas collect"
   }
 }

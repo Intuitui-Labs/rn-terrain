@@ -21,6 +21,10 @@ Welcome to the documentation vault for `RN Terrain`. This file serves as the ent
 
 ## 📁 Document Categories
 
+### 🧭 Conceptual Frameworks
+* [OpenEval+ Framework](./concepts/openeval-plus-framework.md) - Reusable framework for transparent, contextual, living evaluation.
+* [Original OpenEval+ Note](./archive/openeval-plus-original-pasted.md) - Verbatim archival source note.
+
 ### 🚀 Playbooks & Guides
 *   [Founder Operationalization Doc](./Core/rn-terrain-founder-doc.md) - Conceptual topology, promises, product stages.
 *   [Agent Operationalization Guide](./Core/rn-terrain-agent-guide.md) - Technical bootstrap instructions and initial code snippets.
@@ -30,10 +34,11 @@ Welcome to the documentation vault for `RN Terrain`. This file serves as the ent
 *   [Data Integrity Specification](./architecture/rn-terrain-integrity-spec.md) - Timestamp structures, confidence levels, validation.
 
 ### 🗺️ Landscape & Stack
-*   [Landscape & Giants](./current_progress/old_docs/2026-06-02-rn-terrain-chronicle.md) - See also: ecosystem tools RN Terrain stands on and learns from (landscape notes live in the Polymath Platform monorepo during extraction).
+*   [Landscape & Giants](./architecture/rn-terrain-landscape-giants.md) - Ecosystem tools RN Terrain stands on and learns from.
 
 ### 🛡️ Decisions & Strategy
 *   [Open Source Strategy](./decisions/2026-06-02-rn-terrain-open-source-strategy.md) - MIT/CC licensing strategy, community flywheel.
+*   [GitHub Atlas Competitive Position](./decisions/github-atlas-competitive-position.md) - Existing tools, differentiation, and validation question.
 
 ### 📅 Current Progress & History
 *   [Phase 1 & 2 Walkthrough](./current_progress/2026-06-09-rn-terrain-phase-1-walkthrough.md) - Walkthrough of completed tasks.
