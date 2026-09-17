@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { RadarRecord, RadarVerdict } from '@rn-terrain/core';
+import type { RadarRecord, RadarVerdict } from '@intuitui-labs/rn-terrain-core';
 
 const root = path.resolve(import.meta.dirname, '../../..');
 const recordsDir = path.resolve(root, 'docs/RN Terrain/radar/records');
@@ -86,3 +86,4 @@ export function createRadarRecord(subject: string, options: Record<string, unkno
     updated_at: now,
   };
 }
+

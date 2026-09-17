@@ -1,5 +1,5 @@
-import { supabase } from '@rn-terrain/core/db.js';
-import { calculateVitalityScore } from '@rn-terrain/core/scoring/index.js';
+import { supabase } from '@intuitui-labs/rn-terrain-core/db.js';
+import { calculateVitalityScore } from '@intuitui-labs/rn-terrain-core/scoring/index.js';
 
 // Parse GitHub URL into owner and repo name
 function parseGithubUrl(url?: string): { owner: string; repo: string } | null {
@@ -241,3 +241,4 @@ if (import.meta.url === `file:///${process.argv[1]?.replace(/\\/g, '/')}`) {
       process.exit(1);
     });
 }
+

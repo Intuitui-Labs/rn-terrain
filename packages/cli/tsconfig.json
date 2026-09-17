@@ -1,14 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "paths": {
-      "@rn-terrain/cli/*": [
-        "./src/*"
-      ],
-      "@rn-terrain/core/*": [
-        "../core/src/*"
-      ]
-    },
     "outDir": "./dist",
     "rootDir": "./src"
   },

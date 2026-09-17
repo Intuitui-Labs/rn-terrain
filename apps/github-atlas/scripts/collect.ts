@@ -1,4 +1,4 @@
-import { collectSource, ConservativeOfferExtractor, HttpSourceFetcher, FileSnapshotStore, FileChangeLog, FileFactLog } from '@openeval/core';
+import { collectSource, ConservativeOfferExtractor, HttpSourceFetcher, FileSnapshotStore, FileChangeLog, FileFactLog } from '@intuitui-labs/openeval';
 import { sources } from '../data/sources';
 
 const fetcher = new HttpSourceFetcher();
@@ -12,3 +12,5 @@ async function main() {
   console.log(JSON.stringify({ generatedAt: new Date().toISOString(), mode: 'review-only', changes }, null, 2));
 }
 main().catch((error) => { console.error(error); process.exitCode = 1; });
+
+

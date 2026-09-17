@@ -1,4 +1,4 @@
-import type { AtlasOffer, Evidence, OfferState } from '@openeval/core';
+import type { AtlasOffer, Evidence, OfferState } from '@intuitui-labs/openeval';
 
 const official: Evidence = { source: 'GitHub Student Developer Pack', url: 'https://education.github.com/pack', verifiedAt: '2026-08-29', confidence: 'high', kind: 'official' };
 const active = (overrides: Partial<OfferState> = {}): OfferState => ({ availability: 'active', requirements: ['student_verification'], limits: [], exclusions: [], practicalNotes: [], lastChecked: '2026-08-29', confidence: 'high', evidence: [official], ...overrides });
@@ -13,3 +13,5 @@ export const offers: AtlasOffer[] = [
   offer({ id: 'educative', name: 'Educative', provider: 'Educative', category: 'learning', description: 'Interactive courses for programming and system design.', keywords: ['course', 'learning', 'programming', 'system design'], capabilities: ['interactive learning', 'system design'], goals: ['learning', 'web_app'], setupEffort: 1, values: { learning: 5, web_app: 2 } }),
   offer({ id: 'iconscout', name: 'IconScout', provider: 'IconScout', category: 'design', description: 'Icons and visual assets for making product interfaces distinctive.', keywords: ['icons', 'design', 'illustration', 'assets', 'ui'], capabilities: ['icons', 'illustrations', 'design assets'], goals: ['web_app', 'mobile_app'], setupEffort: 1, values: { web_app: 3, mobile_app: 3 } }),
 ];
+
+

@@ -1,15 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
-import { supabase } from '@rn-terrain/core/db';
-import { calculateVitalityScore } from '@rn-terrain/core/scoring';
+import { supabase } from '@intuitui-labs/rn-terrain-core/db';
+import { calculateVitalityScore } from '@intuitui-labs/rn-terrain-core/scoring';
 import type {
   DeveloperContext,
   EcosystemTopology,
   ProjectAudit,
   VitalityCardFull,
   Warning,
-} from '@rn-terrain/core/types';
+} from '@intuitui-labs/rn-terrain-core/types';
 
 // Helper to map DB row to canonical VitalityCard structure
 function mapRowToCard(row: any): VitalityCardFull {
@@ -378,3 +378,4 @@ export async function getEcosystemTopology(category?: string): Promise<Ecosystem
     last_updated: new Date().toISOString(),
   };
 }
+

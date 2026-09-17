@@ -1,4 +1,4 @@
-import { getVitalityCard } from '@rn-terrain/core';
+import { getVitalityCard } from '@intuitui-labs/rn-terrain-core';
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -93,3 +93,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {}
+

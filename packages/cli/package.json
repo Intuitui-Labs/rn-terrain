@@ -1,30 +1,68 @@
 {
-  "name": "@rn-terrain/cli",
-  "version": "0.0.1",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
-  "private": true,
+  "name": "@intuitui-labs/rn-terrain-cli",
+  "version": "0.1.0",
+  "description": "Terminal Radar CLI tool for real-time React Native vitality intelligence and ecosystem audits.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
+  "sideEffects": false,
   "bin": {
-    "rn-eval": "./src/index.ts"
+    "rn-terrain": "./bin/rn-terrain.js",
+    "rn-eval": "./bin/rn-terrain.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "radar": "tsx src/index.ts radar:list",
     "radar:add": "tsx src/index.ts radar:add",
     "radar:show": "tsx src/index.ts radar:show",
     "radar:decide": "tsx src/index.ts radar:decide",
-    "check-types": "pnpm exec tsc --build --noEmit",
-    "clean": "node -e \"fs.rmSync('.turbo',{recursive:true,force:true}); fs.rmSync('node_modules',{recursive:true,force:true}); fs.rmSync('dist',{recursive:true,force:true})\""
+    "check-types": "tsc --build --noEmit",
+    "clean": "node -e \"fs.rmSync('.turbo',{recursive:true,force:true}); fs.rmSync('node_modules',{recursive:true,force:true}); fs.rmSync('dist',{recursive:true,force:true})\"",
+    "prepublishOnly": "pnpm run check-types && pnpm run build"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/intuitui-labs/rn-terrain.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "react-native",
+    "cli",
+    "rn-terrain",
+    "audit",
+    "vitality",
+    "radar",
+    "expo"
+  ],
+  "author": "Intuitui Labs",
+  "license": "MIT",
   "dependencies": {
-    "@rn-terrain/core": "workspace:*",
+    "@intuitui-labs/rn-terrain-core": "workspace:*",
     "cac": "^7.0.0",
-    "chalk": "^5.6.2",
+    "chalk": "^6.0.0",
     "consola": "^3.4.2"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "tsx": "^4.22.4",
-    "typescript": "7.0.2"
+    "@types/node": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
   }
 }
+

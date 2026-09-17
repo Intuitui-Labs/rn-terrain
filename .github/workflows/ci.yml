@@ -1,0 +1,35 @@
+name: CI Quality Gate
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  verify:
+    name: Verify Monorepo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.4.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Strict TypeScript Verification
+        run: pnpm run check-types
+
+      - name: Vitest 5 Test Suite with v8 Coverage
+        run: pnpm run test:coverage
+
+      - name: Production Bundle & Build Check
+        run: pnpm run build

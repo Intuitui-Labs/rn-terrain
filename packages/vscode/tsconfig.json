@@ -1,22 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@rn-terrain/vscode/*": [
-        "./src/*"
-      ],
-      "@rn-terrain/core/*": [
-        "../core/src/*"
-      ]
-    },
-    "sourceMap": true,
-    "rootDir": "./src",
     "outDir": "./dist"
   },
   "include": [
     "src/**/*"
   ]
 }
+

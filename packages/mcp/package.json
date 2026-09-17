@@ -1,20 +1,60 @@
 {
-  "name": "@rn-terrain/mcp",
-  "version": "0.0.1",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
-  "private": true,
+  "name": "@intuitui-labs/rn-terrain-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol (MCP) server delivering React Native vitality intelligence, compatibility verdicts, and ecosystem health to AI coding agents.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
-  "scripts": {
-    "check-types": "pnpm exec tsc --build --noEmit",
-    "clean": "node -e \"fs.rmSync('.turbo',{recursive:true,force:true}); fs.rmSync('node_modules',{recursive:true,force:true}); fs.rmSync('dist',{recursive:true,force:true})\""
+  "sideEffects": false,
+  "bin": {
+    "rn-terrain-mcp": "./bin/rn-terrain-mcp.js"
   },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --build --noEmit",
+    "clean": "node -e \"fs.rmSync('.turbo',{recursive:true,force:true}); fs.rmSync('node_modules',{recursive:true,force:true}); fs.rmSync('dist',{recursive:true,force:true})\"",
+    "prepublishOnly": "pnpm run check-types && pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/intuitui-labs/rn-terrain.git",
+    "directory": "packages/mcp"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "react-native",
+    "rn-terrain",
+    "vitality",
+    "audit"
+  ],
+  "author": "Intuitui Labs",
+  "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@rn-terrain/core": "workspace:*"
+    "@intuitui-labs/rn-terrain-core": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "typescript": "7.0.2"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }
+

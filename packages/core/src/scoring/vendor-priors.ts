@@ -1,4 +1,4 @@
-import type { RadarStatus, TopologyLayer } from '@rn-terrain/core/types';
+import type { RadarStatus, TopologyLayer } from '@intuitui-labs/rn-terrain-core/types';
 
 export interface VendorPrior {
   vendor: string;
@@ -73,3 +73,4 @@ export function applyVendorPrior(
         : '',
   };
 }
+

@@ -2,6 +2,15 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "paths": {
+      "@intuitui-labs/rn-terrain-core": [
+        "./src/index.ts"
+      ],
+      "@intuitui-labs/rn-terrain-core/*": [
+        "./src/*"
+      ],
+      "@rn-terrain/core": [
+        "./src/index.ts"
+      ],
       "@rn-terrain/core/*": [
         "./src/*"
       ]

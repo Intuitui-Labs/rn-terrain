@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { getVitalityCard, scanProject } from '@rn-terrain/core';
+import { getVitalityCard, scanProject } from '@intuitui-labs/rn-terrain-core';
 import { cac } from 'cac';
 import chalk from 'chalk';
 import { consola } from 'consola';
@@ -270,3 +270,4 @@ cli
 cli.help();
 
 cli.parse();
+

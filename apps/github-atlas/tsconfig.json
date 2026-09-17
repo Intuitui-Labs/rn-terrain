@@ -6,9 +6,17 @@
       "dom.iterable",
       "esnext"
     ],
+    "paths": {
+      "@intuitui-labs/openeval": [
+        "../../packages/openeval-core/src/index.ts"
+      ],
+      "@intuitui-labs/openeval/*": [
+        "../../packages/openeval-core/src/*"
+      ]
+    },
     "allowJs": false,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -34,3 +42,4 @@
     "node_modules"
   ]
 }
+

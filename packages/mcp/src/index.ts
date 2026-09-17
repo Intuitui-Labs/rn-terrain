@@ -8,7 +8,7 @@ import {
   getEcosystemTopology,
   getVitalityCard,
   scanProject,
-} from '@rn-terrain/core';
+} from '@intuitui-labs/rn-terrain-core';
 
 const server = new Server(
   {
@@ -183,3 +183,4 @@ run().catch((error) => {
   console.error('Fatal error running server:', error);
   process.exit(1);
 });
+
