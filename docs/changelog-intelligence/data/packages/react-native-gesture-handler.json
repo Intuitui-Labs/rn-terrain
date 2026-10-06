@@ -1,0 +1,376 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "react-native-gesture-handler",
+  "vendor": "software-mansion",
+  "category": "GESTURE",
+  "canonical_docs": "https://docs.swmansion.com/react-native-gesture-handler/",
+  "features": {
+    "legacy_component_handlers": {
+      "display": "Legacy Component Handlers (<PanGestureHandler>, <TapGestureHandler>)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "1.0.0",
+        "deprecated": "2.0.0",
+        "removed": "3.0.0"
+      },
+      "rules": {
+        "banned_import": "PanGestureHandler, TapGestureHandler, LongPressGestureHandler, PinchGestureHandler",
+        "replacement": "GestureDetector with Gesture.Pan() or v3 hooks"
+      },
+      "code_smell": "<(Pan|Tap|LongPress|Pinch|Rotation)GestureHandler",
+      "impact_severity": "CRITICAL"
+    },
+    "modal_nested_root_view_disconnection": {
+      "display": "React Native Modal touch context disconnection on Android",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replaces_custom_code": "Manual touch listeners or touch passthrough hacks in Android modals",
+        "benefit": "Wrapping modal content in GestureHandlerRootView restores native gesture context"
+      },
+      "code_smell": "<Modal[\\s\\S]*?>\\s*<(?!GestureHandlerRootView)",
+      "impact_severity": "HIGH"
+    },
+    "gesture_native_scrollview_composition": {
+      "display": "Gesture.Native() composition with ScrollView / FlashList",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.5.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Enables simultaneousWithExternalGesture coordination without outer scroll view stealing touches"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "v3_gesture_hooks": {
+      "display": "Ergonomic Gesture Hooks (usePanGesture, useTapGesture)",
+      "transition_milestones": {
+        "experimental": "2.16.0",
+        "added": "3.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "required_import": "usePanGesture, useTapGesture",
+        "replaces_custom_code": "Verbose nested <GestureDetector gesture={...}> JSX wrapping",
+        "benefit": "Direct hook-based gesture binding with minimal boilerplate"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "native_button_stabilization": {
+      "display": "Stabler button touch cancellation on fast scroll",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "3.3.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Prevents stuck active states during fast pan-to-scroll on Android 15/16 and iOS 18/26"
+      },
+      "impact_severity": "HIGH"
+    },
+    "hover_gesture_pointer_events": {
+      "display": "Gesture.Hover() & Modern Pointer Events",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.13.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Enables pointer proximity callbacks for trackpads and desktop hover"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "reanimated_swipeable_component": {
+      "display": "ReanimatedSwipeable Dedicated UI Component",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.18.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Runs swipe physics directly on the UI thread via Reanimated worklets"
+      },
+      "impact_severity": "HIGH"
+    },
+    "pressable_touchable_stabilization": {
+      "display": "Pressable Touch Responder Stabilization",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.27.0",
+        "broken": "2.25.0",
+        "fixed": "2.27.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Restores touch bubbling and unlocks isTouchPropagationAllowed"
+      },
+      "impact_severity": "HIGH"
+    },
+    "agp9_android16_pointers": {
+      "display": "AGP v9 & Android Multi-Pointer Move Tracking",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.31.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Inspects all pointer IDs on move; supports AGP 9 build toolchain"
+      },
+      "impact_severity": "MEDIUM"
+    },
+    "chronos_s1": {
+      "display": "RNGH `Pressable` stops working (`isTouchPropagationAllowed` stuck false)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "2.25.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S1",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/3476",
+        "status": "`fixed` (closed completed; exact patch leaf unclear)",
+        "heat": "high — 21 reactions, 76 comments"
+      }
+    },
+    "chronos_s2": {
+      "display": "v3 SIGABRT: Yoga assert on `RNGestureHandlerDetectorShadowNode`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "3.0.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **RNGH 3.x + ReanimatedSwipeable + gorhom/bottom-sheet + Fabric** — stay on 2.31.x or avoid that composition until fixed. What broke: Yoga layout assertion / SIGABRT during Fabric layout of gesture detector shadow node"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S2",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/4241",
+        "status": "`open`",
+        "heat": "high — crash; 6+ reactions; clear v3 regression"
+      }
+    },
+    "chronos_s3": {
+      "display": "Unsupported top level event type for gesture handler events",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: Native link / New Arch TurboModule registration / hot-reload after CodePush. What broke: JS dispatches gesture events native module does not register"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S3",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/4013 (also #320)",
+        "status": "`open` (modern instance #4013); ancestor fixed/docs",
+        "heat": "medium–high — historic heat #320 (38 rx / 205 c); #4013 low rx but fatal RCT"
+      }
+    },
+    "chronos_s4": {
+      "display": "[Android] NullPointerException in `GestureHandler.isWithinBounds`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S4",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/4539",
+        "status": "`open`",
+        "heat": "medium (fresh; incomplete info)"
+      }
+    },
+    "chronos_s5": {
+      "display": "Hard to compose RNGH gestures with ScrollView / Reanimated ScrollView",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **RNGH ↔ Reanimated** enhanced ScrollView composition"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S5",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/2616",
+        "status": "`open`",
+        "heat": "high community heat (#2616: 38 reactions) — more DX than crash"
+      }
+    },
+    "chronos_s6": {
+      "display": "`compileDebugKotlin` FAILED with RN New Arch (0.69 era)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.69.3",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **RNGH ↔ RN New Arch** version alignment. What broke: Android Kotlin compile under New Architecture"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S6",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/2168",
+        "status": "`fixed`",
+        "heat": "was high (28 rx / 58 c)"
+      }
+    },
+    "chronos_s7": {
+      "display": "Old gesture-component API warning after 2.2.0",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "2.2.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S7",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/1831",
+        "status": "`fixed` / migration complete for current majors",
+        "heat": "was high (40 rx / 64 c)"
+      }
+    },
+    "chronos_s8": {
+      "display": "`TurboModuleRegistry.getEnforcing('RNGestureHandlerModule')` not found",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: Rebuild pods/gradle; ensure `GestureHandlerRootView`; Expo prebuild. What broke: Native module not registered"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S8",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/2847",
+        "status": "`fixed` (as library bugs); still a setup landmine",
+        "heat": "medium–high comments"
+      }
+    },
+    "chronos_s9": {
+      "display": "Swipeable action buttons not receiving presses",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S9",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/3223",
+        "status": "`fixed`",
+        "heat": "medium–high (24 rx / 34 c)"
+      }
+    },
+    "chronos_s10": {
+      "display": "RN Pressable inside RNGH FlatList/ScrollView never fires with Reanimated `:active`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **RNGH list + RN Pressable + Reanimated** styling on older iOS"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S10",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/4496",
+        "status": "`open`",
+        "heat": "medium (fresh)"
+      }
+    },
+    "chronos_s11": {
+      "display": "iOS build: `ParagraphShadowNode.h` file not found",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **RNGH ↔ RN Fabric headers** alignment"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S11",
+        "source_url": "https://github.com/software-mansion/react-native-gesture-handler/issues/3385",
+        "status": "`fixed`",
+        "heat": "medium (8 rx / 35 c)"
+      }
+    }
+  }
+}

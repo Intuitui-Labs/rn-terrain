@@ -1,0 +1,5 @@
+# react-native-gesture-handler v3.4.0-nightly-20260911-ebcf8f47b
+Date: 2026-09-11
+
+## Automated Granular Backfill
+Granular node covering all releases from current -1 (v2.0.0) up to current (v3.x), including betas, RCs, and nightlies.

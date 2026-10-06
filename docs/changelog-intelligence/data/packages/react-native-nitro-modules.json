@@ -1,0 +1,273 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "react-native-nitro-modules",
+  "vendor": "mrousavy",
+  "category": "NATIVE_BRIDGE",
+  "canonical_docs": "https://nitro.margelo.com/",
+  "features": {
+    "chronos_s1": {
+      "display": "0.37.x iOS: glog module import inside `namespace google` → cannot build NitroModules",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.37.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **nitro-modules ≥0.37 + RN ≤0.83 + CocoaPods static (no use_frameworks!)** — stay on 0.36.x or upgrade RN ≥0.84 or apply pending fix. What broke: SwiftEmitModule NitroModules / clang module + glog"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S1",
+        "source_url": "https://github.com/margelo/nitro/issues/1573",
+        "status": "`open`",
+        "heat": "high — blocks iOS builds on common RN versions"
+      }
+    },
+    "chronos_s2": {
+      "display": "Launch abort: Symbol not found `std::exception_ptr::__from_native_exception_pointer`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.36.5",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **nitro-modules + Xcode 27 + deployment target &lt; iOS 18**. What broke: dyld symbol missing on older iOS"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S2",
+        "source_url": "https://github.com/margelo/nitro/issues/1652",
+        "status": "`open`",
+        "heat": "high (5+ reactions; launch blocker)"
+      }
+    },
+    "chronos_s3": {
+      "display": "SIGSEGV in SyncJSCallback after upgrade to 0.36.4",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.36.4",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **nitro-modules 0.36.4 + RN New Arch Android** (+ consumer nitro-* libs)"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S3",
+        "source_url": "https://github.com/margelo/nitro/issues/1471",
+        "status": "`wontfix` / closed not_planned (treat as unresolved risk on 0.36.4)",
+        "heat": "medium (prod SEGV; low reaction count)"
+      }
+    },
+    "chronos_s4": {
+      "display": "`dispose()` on HybridObject view prop crashes Fabric scheduler in DEV",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **nitro HybridView + Fabric DEV**"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S4",
+        "source_url": "https://github.com/margelo/nitro/issues/1296",
+        "status": "`open`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s5": {
+      "display": "SIGSEGV from JSI in Frame Processor/Worklet during unmount or reload",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **nitro ↔ worklets / frame processors** lifecycle"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S5",
+        "source_url": "https://github.com/margelo/nitro/issues/1645",
+        "status": "`open`",
+        "heat": "medium–high (crash)"
+      }
+    },
+    "chronos_s6": {
+      "display": "Failed to get NitroModules: native Turbo/Native module missing",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: Clean rebuild; New Arch autolinking. What broke: JS cannot resolve NitroModules native"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S6",
+        "source_url": "https://github.com/margelo/nitro/issues/812",
+        "status": "`fixed` / setup class",
+        "heat": "medium (18 comments)"
+      }
+    },
+    "chronos_s7": {
+      "display": "Android: must clear cache after rebuild or Nitro breaks",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S7",
+        "source_url": "https://github.com/margelo/nitro/issues/674",
+        "status": "`fixed`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s8": {
+      "display": "`@FastNative` on async Func_* can SuspendAll / ANR",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S8",
+        "source_url": "https://github.com/margelo/nitro/issues/1456",
+        "status": "`fixed`",
+        "heat": "medium (correctness/ANR)"
+      }
+    },
+    "chronos_s9": {
+      "display": "Data race in C++ Promise&lt;T&gt; state",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S9",
+        "source_url": "https://github.com/margelo/nitro/issues/1396",
+        "status": "`fixed`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s10": {
+      "display": "SIGSEGV in HybridFunction::toJSFunction on Android cold start",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S10",
+        "source_url": "https://github.com/margelo/nitro/issues/1150",
+        "status": "`fixed`",
+        "heat": "medium–high (22 comments)"
+      }
+    },
+    "chronos_s11": {
+      "display": "Error assigning `undefined` to optional Nitro view property",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S11",
+        "source_url": "https://github.com/margelo/nitro/issues/1184",
+        "status": "`open`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s12": {
+      "display": "libNitroModules.so fails to load (ABI / `__cxa_init_primary_exception`)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **nitro-modules ↔ NDK / RN C++ ABI**"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S12",
+        "source_url": "https://github.com/margelo/nitro/issues/1094",
+        "status": "`fixed`",
+        "heat": "medium"
+      }
+    }
+  }
+}

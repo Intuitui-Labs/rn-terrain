@@ -1,0 +1,553 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "react-native-reanimated",
+  "vendor": "software-mansion",
+  "category": "ANIMATION",
+  "canonical_docs": "https://docs.swmansion.com/react-native-reanimated/",
+  "features": {
+    "standalone_worklets_runtime": {
+      "display": "Standalone react-native-worklets runtime & Babel plugin",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "banned_import": "react-native-reanimated/plugin",
+        "required_import": "react-native-worklets/plugin",
+        "required_peer": "react-native-worklets"
+      },
+      "code_smell": "plugins:.*react-native-reanimated/plugin",
+      "impact_severity": "CRITICAL"
+    },
+    "plain_style_export": {
+      "display": "Internal PlainStyle export",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "1.0.0",
+        "deprecated": "4.4.0",
+        "removed": "4.5.0"
+      },
+      "rules": {
+        "banned_import": "PlainStyle",
+        "replacement": "StyleProp<ViewStyle> or AnimatedStyle<ViewStyle>"
+      },
+      "impact_severity": "HIGH"
+    },
+    "shared_transition_boundary": {
+      "display": "SharedTransitionBoundary Subtree Scoping",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.5.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replaces_custom_code": "Manual screen-level transition unmount locks and navigation tag namespacing",
+        "benefit": "Prevents tag collisions between concurrently mounted tab stacks"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "css_animation_callbacks": {
+      "display": "Native CSS Animation & Transition Lifecycle Callbacks",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.6.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replaces_custom_code": "JavaScript setTimeout timers coordinating auto-hide / dismissal lifecycles",
+        "benefit": "Flicker-free, native UI thread dismissal without JS timer drift"
+      },
+      "code_smell": "setTimeout\\(.*performHide",
+      "impact_severity": "OPPORTUNITY"
+    },
+    "contrast_color_worklet": {
+      "display": "Native contrastColor() WCAG calculation worklet",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.6.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replaces_custom_code": "Custom sRGB luminance math and color helper packages (chroma-js, color)",
+        "benefit": "Zero-dependency, UI-thread accessible contrast evaluation"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "strict_css_transforms": {
+      "display": "W3C-strict transform tuple typing",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.5.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "banned_call": "as any",
+        "replacement": "Strictly typed transform tuple items: [{ translateY: number }, { scale: number }]"
+      },
+      "code_smell": "transform:\\s*\\[[\\s\\S]*?\\]\\s*as\\s+any",
+      "impact_severity": "MEDIUM"
+    },
+    "flashlist_shared_value_recycling": {
+      "display": "FlashList cell recycling state leakage with useSharedValue",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "3.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replacement": "Reset useSharedValue inside useEffect keyed on item id"
+      },
+      "impact_severity": "HIGH"
+    },
+    "exiting_animation_unmount_race": {
+      "display": "Exiting animation unmount race causing native SIGSEGV",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "3.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replaces_custom_code": "Setting display: 'none' before component unmount",
+        "benefit": "Ensure parent navigator or modal remains mounted until exit animation completes"
+      },
+      "impact_severity": "HIGH"
+    },
+    "legacy_architecture_bridge": {
+      "display": "Legacy Paper Architecture / Bridge Support",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "1.0.0",
+        "deprecated": "3.5.0",
+        "removed": "4.0.0"
+      },
+      "rules": {
+        "replacement": "React Native New Architecture (Fabric + TurboModules)"
+      },
+      "impact_severity": "CRITICAL"
+    },
+    "stale_event_target_crash": {
+      "display": "Null InstanceHandle SIGSEGV in handleRawEvent during rapid unmount",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.5.0",
+        "broken": "4.5.0",
+        "fixed": "4.5.4",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Debounce back-navigation buttons or disable touch interception during route transitions",
+        "decommission_at": "4.5.4"
+      },
+      "impact_severity": "HIGH"
+    },
+    "reparenting_layout_crash": {
+      "display": "EXC_BAD_ACCESS in REANodesManager when re-parenting animated views",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.5.0",
+        "broken": "4.5.0",
+        "fixed": "4.5.3",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Tear down and remount component rather than re-parenting across layout containers",
+        "decommission_at": "4.5.3"
+      },
+      "impact_severity": "HIGH"
+    },
+    "odd_stroke_dasharray_crash": {
+      "display": "Android Canvas crash on odd-length SVG strokeDasharray",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.3.0",
+        "broken": "4.3.0",
+        "fixed": "4.4.3",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Duplicate odd-length array entries (e.g. [5] -> [5, 5])",
+        "decommission_at": "4.4.3"
+      },
+      "impact_severity": "MEDIUM"
+    },
+    "android_draw_pass_commit_crash": {
+      "display": "Android draw pass commit assertion crash during onDraw",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.2.0",
+        "broken": "4.2.0",
+        "fixed": "4.2.3",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Defer shadow tree commits past Android draw frame",
+        "decommission_at": "4.2.3"
+      },
+      "impact_severity": "HIGH"
+    },
+    "chronos_s1": {
+      "display": "Huge performance loss on New Arch with many animated components",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.1.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated 4 + New Arch + RN 0.81.x**; feature flags / newer 4.3+ cited as mitigations. What broke: Severe UI FPS drops scrolling screens with many Reanimated views on Fabric"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S1",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8250",
+        "status": "`fixed` (closed completed; residual risk → see S2)",
+        "heat": "very high — 72 reactions, 54 comments"
+      }
+    },
+    "chronos_s2": {
+      "display": "Performance degradation on Android after New Architecture migration",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated ↔ RN New Arch (Android)**"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S2",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/7435",
+        "status": "`open`",
+        "heat": "high"
+      }
+    },
+    "chronos_s3": {
+      "display": "Occasional crash on Android when entering animation",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "3.17.5",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S3",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/7493",
+        "status": "`fixed`",
+        "heat": "high"
+      }
+    },
+    "chronos_s4": {
+      "display": "NPE in `ViewGroup.dispatchGetDisplayList` when Modal exits + navigates",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.1.3",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated ↔ react-native-worklets** peer pair on New Arch Android"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S4",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8422",
+        "status": "`fixed`",
+        "heat": "high (38 rx / 118 c)"
+      }
+    },
+    "chronos_s5": {
+      "display": "Reanimated nulls out RN LayoutAnimation on Fabric",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "3.16.2",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated + RN New Arch LayoutAnimation** coexistence. What broke: RN `LayoutAnimation` configure bails because Reanimated clears UIManager callback"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S5",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/6751",
+        "status": "`fixed`",
+        "heat": "high (35 reactions)"
+      }
+    },
+    "chronos_s6": {
+      "display": "Must switch Babel plugin from `reanimated/plugin` → `worklets/plugin`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.1.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated 4 requires `react-native-worklets` + `react-native-worklets/plugin`** (not Margelo core). What broke: Animations / transitions after Expo 54 upgrade when plugin path wrong"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S6",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8231",
+        "status": "`fixed` as docs/migration; recurring misconfig",
+        "heat": "high (27 rx / 52 c)"
+      }
+    },
+    "chronos_s7": {
+      "display": "Crash: “Reanimated 4 supports only the React Native New Architecture”",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.0.2",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated ≥4 forces RN New Arch (bridgeless)**; Paper apps must stay on 3.x (`reanimated-3` dist-tag). What broke: `ReanimatedError` on NativeReanimatedModule construct"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S7",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8235",
+        "status": "`fixed` / expected constraint",
+        "heat": "high (14 rx / 39 c) — upgrade gate"
+      }
+    },
+    "chronos_s8": {
+      "display": "Importing Reanimated/worklets blows RAM ~25–30% on Hermes V1 (Legacy Eval)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.4.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated 4 + react-native-worklets + Hermes V1 + RN 0.84/0.85**"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S8",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/9650",
+        "status": "`fixed` (closed) with engine/worklets workarounds",
+        "heat": "high (36 rx / 58 c)"
+      }
+    },
+    "chronos_s9": {
+      "display": "App crashes on reload in development with JSC",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated ↔ JSC** (prefer Hermes in modern stacks)"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S9",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/4783",
+        "status": "`open`",
+        "heat": "high"
+      }
+    },
+    "chronos_s10": {
+      "display": "`scrollTo` performance issues on New Arch with many concurrent animated views",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated ↔ New Arch** scroll + multi-view animation"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S10",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/6999",
+        "status": "`open`",
+        "heat": "high (20 rx; Area: Performance)"
+      }
+    },
+    "chronos_s11": {
+      "display": "Intermittent EXC_BAD_ACCESS in `folly::dynamic::hash` via ShadowNode clone",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S11",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/7666",
+        "status": "`open`",
+        "heat": "high (11 rx / 38 c)"
+      }
+    },
+    "chronos_s12": {
+      "display": "[iOS] EXC_BAD_ACCESS in performOperations during screen pop on 4.3.1",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.3.1",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S12",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/9402",
+        "status": "`open`",
+        "heat": "medium–high"
+      }
+    },
+    "chronos_s13": {
+      "display": "All animations broken under `React.StrictMode` on v4.1.0",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.1.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S13",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8228",
+        "status": "`fixed`",
+        "heat": "medium–high (12 rx)"
+      }
+    },
+    "chronos_s14": {
+      "display": "`[3.7.0]` Data type not recognized by value unpacker (WorkletRuntime)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "3.7.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S14",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/5660",
+        "status": "`fixed`",
+        "heat": "high (18 rx / 80 c)"
+      }
+    },
+    "chronos_s15": {
+      "display": "exiting animation keeps Android view mounted in 3.17.0",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "3.17.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S15",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/7109",
+        "status": "`fixed`",
+        "heat": "high (30 reactions)"
+      }
+    },
+    "chronos_s16": {
+      "display": "Pressable in ScrollView fails when any Animated.View is used",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated Animated.View ↔ RN Pressable ↔ ScrollView**"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S16",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/6935",
+        "status": "`fixed`",
+        "heat": "medium–high"
+      }
+    }
+  }
+}

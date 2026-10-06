@@ -1,0 +1,81 @@
+{
+  "name": "@intuitui-labs/rn-terrain-scanner",
+  "version": "0.1.0",
+  "description": "AST-based legacy fence and capabilities radar for any React Native project. Powered by TCDI temporal intelligence — accumulates all signals between v_start and v_current across your project's full version history.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./git-drift": {
+      "types": "./dist/git-drift.d.ts",
+      "import": "./dist/git-drift.js",
+      "default": "./dist/git-drift.js"
+    },
+    "./accumulator": {
+      "types": "./dist/accumulator.d.ts",
+      "import": "./dist/accumulator.js",
+      "default": "./dist/accumulator.js"
+    },
+    "./ast-walker": {
+      "types": "./dist/ast-walker.d.ts",
+      "import": "./dist/ast-walker.js",
+      "default": "./dist/ast-walker.js"
+    },
+    "./reporter": {
+      "types": "./dist/reporter.d.ts",
+      "import": "./dist/reporter.js",
+      "default": "./dist/reporter.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --build --noEmit",
+    "clean": "node -e \"fs.rmSync('dist',{recursive:true,force:true})\"",
+    "prepublishOnly": "pnpm run check-types && pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/intuitui-labs/rn-terrain.git",
+    "directory": "packages/scanner"
+  },
+  "keywords": [
+    "react-native",
+    "ast",
+    "scanner",
+    "rn-terrain",
+    "legacy-fence",
+    "capabilities-radar",
+    "tcdi",
+    "temporal-intelligence",
+    "migration",
+    "expo"
+  ],
+  "author": "Intuitui Labs",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/parser": "^7.26.0",
+    "@babel/traverse": "^7.26.0",
+    "@babel/types": "^7.26.0"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.20.6",
+    "@types/node": "catalog:",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

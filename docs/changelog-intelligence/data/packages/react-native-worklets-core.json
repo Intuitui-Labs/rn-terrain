@@ -1,0 +1,273 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "react-native-worklets-core",
+  "vendor": "mrousavy",
+  "category": "RUNTIME_SUBSTRATE",
+  "canonical_docs": "https://github.com/margelo/react-native-worklets-core",
+  "features": {
+    "chronos_s1": {
+      "display": "For RN 0.82+, CMake must use `hermes-engine::hermesvm`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets-core ↔ RN ≥0.82 Hermes** — apply CMake branch or wait for release. What broke: CMake link against removed/renamed `libhermes`"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S1",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/261",
+        "status": "`open`",
+        "heat": "very high"
+      }
+    },
+    "chronos_s2": {
+      "display": "`librnworklets.so` still 0x1000 align — fails 16 KB requirement",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "1.6.2",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S2",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/260",
+        "status": "`open`",
+        "heat": "high"
+      }
+    },
+    "chronos_s3": {
+      "display": "Android class name collision with Software Mansion worklets on RN 0.83+",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.83.1",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets-core ↔ react-native-worklets ↔ RN ≥0.83**. What broke: Duplicate simple name `WorkletsPackage` in PackageList"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S3",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/266",
+        "status": "`open`",
+        "heat": "high for camera+reanimated apps"
+      }
+    },
+    "chronos_s4": {
+      "display": "CMake error: hermes-engine::libhermes target not found (New Arch)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets-core ↔ RN New Arch Hermes prefab**"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S4",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/269",
+        "status": "`open`",
+        "heat": "medium–high"
+      }
+    },
+    "chronos_s5": {
+      "display": "Crash when attempting `runOnJS` or `runAsync` on Android",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S5",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/232",
+        "status": "`open`",
+        "heat": "medium–high"
+      }
+    },
+    "chronos_s6": {
+      "display": "SIGSEGV on production when using `createContext`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S6",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/173",
+        "status": "`open`",
+        "heat": "high (prod SEGV)"
+      }
+    },
+    "chronos_s7": {
+      "display": "1.1.1: Frame Processors are not available",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "1.1.1",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets-core ↔ VisionCamera frame processors**"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S7",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/172",
+        "status": "`fixed`",
+        "heat": "medium–high (11 rx)"
+      }
+    },
+    "chronos_s8": {
+      "display": "Update support for React Native 0.76.0",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets-core ↔ RN minor**"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S8",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/220",
+        "status": "`fixed`",
+        "heat": "medium (9 rx)"
+      }
+    },
+    "chronos_s9": {
+      "display": "Worklets.createRunInJsFn crash with Hermes disabled",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets-core ↔ JSC (Hermes off)**"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S9",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/137",
+        "status": "`fixed`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s10": {
+      "display": "TurboModuleRegistry Worklets module missing",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S10",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/126",
+        "status": "`fixed`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s11": {
+      "display": "iOS build fails with New Arch enabled",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets-core ↔ RN New Arch iOS**"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S11",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/210",
+        "status": "`fixed`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s12": {
+      "display": "callInContext: function not a valid worklet across contexts",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S12",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/125",
+        "status": "`open`",
+        "heat": "medium"
+      }
+    }
+  }
+}

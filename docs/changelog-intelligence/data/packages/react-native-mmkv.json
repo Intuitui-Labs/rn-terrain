@@ -1,0 +1,85 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "react-native-mmkv",
+  "vendor": "mrousavy",
+  "category": "STORAGE",
+  "canonical_docs": "https://github.com/mrousavy/react-native-mmkv",
+  "features": {
+    "factory_function_create_mmkv": {
+      "display": "Factory function createMMKV() replaces class constructor",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "banned_call": "new MMKV()",
+        "required_call": "createMMKV()",
+        "required_peer": "react-native-nitro-modules"
+      },
+      "code_smell": "new\\s+MMKV\\(",
+      "impact_severity": "CRITICAL"
+    },
+    "remove_method_replaces_delete": {
+      "display": "Method .remove() replaces .delete()",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "banned_call": "storage.delete(",
+        "required_call": "storage.remove("
+      },
+      "impact_severity": "CRITICAL"
+    },
+    "recovery_strategy_resilience": {
+      "display": "Disk Corruption Auto-Recovery (recoveryStrategy: 'recover-or-recreate')",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.3.2",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "required_call": "recoveryStrategy: 'recover-or-recreate'",
+        "replaces_custom_code": "Try/catch blocks catching fatal MMKV C++ SIGSEGV during startup disk corruption",
+        "benefit": "Prevents unhandled app death on power-cut or storage full"
+      },
+      "code_smell": "createMMKV\\(\\{(?![^}]*recoveryStrategy)",
+      "impact_severity": "HIGH"
+    },
+    "check_content_changed": {
+      "display": "Cross-Process Cache Invalidation via checkContentChanged()",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.3.2",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "required_call": "storage.checkContentChanged()",
+        "replaces_custom_code": "Custom EventEmitter, AppState reload handlers, or bridge polling for iOS Widgets / App Clips",
+        "benefit": "Instant memory-mapped sync when native extensions write to shared App Group"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "byte_size_property_deprecation": {
+      "display": "Deprecated .byteSize property",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "3.0.0",
+        "deprecated": "4.3.2",
+        "removed": null
+      },
+      "rules": {
+        "banned_call": "storage.byteSize",
+        "replacement": "storage.getAllKeys().length or native storage metrics"
+      },
+      "code_smell": "\\.byteSize",
+      "impact_severity": "MEDIUM"
+    }
+  }
+}

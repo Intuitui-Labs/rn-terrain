@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CompactedTombstones",
+  "description": "Decayed milestones for features older than current major - 1. Compacted into single-line tombstones to prevent historical document bloat.",
+  "updated": "2026-09-26",
+  "tombstones": {
+    "react-native": {
+      "pre_0.76_paper_bridge": "React Native Bridge (Paper), NativeModulesEventEmitter, and ViewPropTypes permanently removed in 0.82; New Architecture default since 0.76."
+    },
+    "react-native-reanimated": {
+      "pre_v3_reanimated_v1_nodes": "Reanimated v1 nodes (Animated.Value, cond, set, block, call) fully removed; v2/v3 shared values and worklets are the sole foundation."
+    },
+    "react-native-gesture-handler": {
+      "pre_v2_legacy_wrappers": "Legacy component handlers (<PanGestureHandler>, <TapGestureHandler>) permanently obsolete; replaced by GestureDetector and v3 hooks."
+    },
+    "react-native-mmkv": {
+      "pre_v4_legacy_bridge": "MMKV v1/v2/v3 synchronous JSI classes (new MMKV()) replaced by Nitro Modules factory (createMMKV())."
+    }
+  }
+}

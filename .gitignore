@@ -18,3 +18,16 @@ build/
 .env.local
 .DS_Store
 
+# Databases & large dumps
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite3
+data/packages/DASHBOARD.html
+
+# Archives & extraction artifacts
+*.tar.gz
+*.tar
+*.zip
+rn-terrain/

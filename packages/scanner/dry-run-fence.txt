@@ -1,0 +1,41 @@
+
+[1mΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ[0m
+[1m  rn-terrain dry-run ┬╖ react-native-gesture-handler ┬╖ mode: fence[0m
+[1mΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ[0m
+
+[2m  Corpus: C:\projects\rn-terrain\docs\changelog-intelligence\graph\INDEX.json[0m
+[2m  App: c:/x/apps/gurudevi-mobile[0m
+[2m  Source dirs: c:\x\apps\gurudevi-mobile\src, c:\x\apps\gurudevi-mobile\app, c:\x\apps\gurudevi-mobile\features[0m
+
+[36m[1/4][0m Extracting version range from git historyΓÇª
+  [33mreact-native-gesture-handler[0m  [2m2.20.2[0m [1mΓåÆ[0m [36m3.3.0[0m
+
+[36m[2/4][0m Loading corpus entries in range [2.20.2, 3.3.0]ΓÇª
+  Total corpus entries for react-native-gesture-handler: [1m235[0m
+    [31mBREAKING_API_CHANGE[0m: 3
+    [2mBUILD_PIPELINE_CHANGE[0m: 1
+    [2mSETUP_CHANGE[0m: 1
+    [32mNEW_CAPABILITY[0m: 5
+    [2mBUG_FIX[0m: 1
+    [31mSILENT_BEHAVIORAL_BREAK[0m: 1
+    [33mDEPRECATION_WARNING[0m: 1
+    [2mMAINTENANCE[0m: 222
+
+[36m[3/4][0m Accumulating signalsΓÇª
+  [31mLegacy signals[0m (fence): [1m3[0m
+    [2m[DEPRECATION_WARNING] rngh 2.23.0 deprecation old-api-drawerlayout-touchables (active from v2.23.0)[0m
+      matchers: Regex
+    [2m[SILENT_BEHAVIORAL_BREAK] rngh 2.25.0 silbreak pressable-touch-propagation-regression (active from v2.25.0)[0m
+      matchers: Regex
+    [2m[BREAKING_API_CHANGE] rngh 3.0.0 breaking legacy-component-removal-and-fabric-mandate (active from v3.0.0)[0m
+      matchers: Regex, Regex
+  [32mCapability signals[0m (radar): [1m0[0m
+
+[36m[4/4][0m Walking source AST across 3 directoriesΓÇª
+
+[2mΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ[0m
+[1m  Summary[0m
+  Files walked: [1m322[0m
+  [31mFence violations: [1m0[0m
+  [32mΓ£ô No findings.[0m
+

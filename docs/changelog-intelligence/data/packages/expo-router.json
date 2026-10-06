@@ -1,0 +1,137 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "expo-router",
+  "vendor": "expo",
+  "category": "NAVIGATION",
+  "canonical_docs": "https://docs.expo.dev/router/introduction/",
+  "features": {
+    "direct_react_navigation_imports": {
+      "display": "Direct @react-navigation/* imports in route files",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "1.0.0",
+        "deprecated": "55.0.0",
+        "removed": "57.0.0"
+      },
+      "rules": {
+        "banned_import": "@react-navigation/native",
+        "replacement": "import { useRouter, useNavigation, useLocalSearchParams } from 'expo-router'"
+      },
+      "code_smell": "from\\s+['\"]@react-navigation\\/(native|core)['\"]",
+      "impact_severity": "CRITICAL"
+    },
+    "router_navigate_stack_append_shift": {
+      "display": "router.navigate() appends to stack instead of returning to existing route",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replacement": "Use router.dismissTo() to return to an existing screen instance without duplicating stack entries"
+      },
+      "impact_severity": "HIGH"
+    },
+    "auth_gate_redirect_loop": {
+      "display": "Auth Gate redirect loops in unhydrated root layout",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replaces_custom_code": "Placing unconditional <Redirect href='...' /> directly in RootLayout render body",
+        "benefit": "Render <Slot /> only after auth token hydration resolves, showing Splash/Boundary during init"
+      },
+      "code_smell": "RootLayout[\\s\\S]*?<Redirect",
+      "impact_severity": "CRITICAL"
+    },
+    "native_intent_deep_linking": {
+      "display": "Deterministic deep link interception via +native-intent.tsx",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "3.5.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "redirectSystemPath handles deferred deep links and prevents auth race conditions on cold launch"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "with_layout_context": {
+      "display": "withLayoutContext custom navigator wrapper",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.0.0",
+        "deprecated": "58.0.0-beta",
+        "removed": null
+      },
+      "rules": {
+        "banned_call": "withLayoutContext",
+        "replacement": "integrateWithRouter"
+      },
+      "code_smell": "withLayoutContext\\(",
+      "impact_severity": "HIGH"
+    },
+    "integrate_with_router": {
+      "display": "integrateWithRouter native layout wrapper",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "58.0.0-beta",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "required_import": "integrateWithRouter",
+        "benefit": "Native React Navigation 7+ router binding without React context latency"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "native_tabs": {
+      "display": "Stable Native Bottom Tabs (expo-router/native-tabs)",
+      "transition_milestones": {
+        "experimental": "57.0.0",
+        "added": "58.0.0-beta",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "required_import": "expo-router/native-tabs",
+        "replaces_custom_code": "JS-simulated bottom tab bars with custom touch intercepts",
+        "benefit": "True native UITabBar on iOS and NavigationBar on Android"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "tabs_initial_route_prop": {
+      "display": "initialRouteName prop directly on <Tabs>",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "1.0.0",
+        "deprecated": "58.0.0-beta",
+        "removed": null
+      },
+      "rules": {
+        "banned_call": "<Tabs initialRouteName=",
+        "replacement": "export const unstable_settings = { initialRouteName: '...' }"
+      },
+      "code_smell": "<Tabs[\\s\\S]*?initialRouteName=",
+      "impact_severity": "MEDIUM"
+    },
+    "server_web_rendering": {
+      "display": "Dynamic per-request SSR (web.output: 'server')",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "58.0.0-beta",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Renders HTML on each incoming HTTP request instead of static export"
+      },
+      "impact_severity": "HIGH"
+    }
+  }
+}

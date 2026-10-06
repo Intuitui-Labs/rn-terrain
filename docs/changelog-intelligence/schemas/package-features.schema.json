@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PackageFeatureCoordinateRegistry",
+  "description": "Schema for atomic feature coordinate shards for individual packages under the Temporal Convolutional Dependency Intelligence (TCDI) model.",
+  "type": "object",
+  "required": ["package", "vendor", "category", "features"],
+  "properties": {
+    "package": {
+      "type": "string",
+      "description": "Exact npm package name"
+    },
+    "vendor": {
+      "type": "string",
+      "description": "Vendor slug (e.g., software-mansion, expo, meta, mrousavy, nativewind)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "RUNTIME_SUBSTRATE",
+        "NAVIGATION",
+        "ANIMATION",
+        "GESTURE",
+        "NATIVE_BRIDGE",
+        "STORAGE",
+        "STYLING",
+        "UI_PRIMITIVES",
+        "UI_COMPONENTS",
+        "STATE",
+        "PLATFORM_SERVICES",
+        "OBSERVABILITY"
+      ]
+    },
+    "canonical_docs": {
+      "type": ["string", "null"]
+    },
+    "features": {
+      "type": "object",
+      "description": "Dictionary of atomic feature coordinates keyed by feature_id",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["display", "transition_milestones"],
+        "properties": {
+          "display": {
+            "type": "string"
+          },
+          "transition_milestones": {
+            "type": "object",
+            "properties": {
+              "experimental": { "type": ["string", "null"] },
+              "added": { "type": ["string", "null"] },
+              "broken": { "type": ["string", "null"], "description": "Version where API regressed or broke" },
+              "fixed": { "type": ["string", "null"], "description": "Version where broken API was restored to functional" },
+              "deprecated": { "type": ["string", "null"] },
+              "removed": { "type": ["string", "null"] }
+            }
+          },
+          "rules": {
+            "type": "object",
+            "properties": {
+              "banned_import": { "type": ["string", "null"] },
+              "required_import": { "type": ["string", "null"] },
+              "banned_call": { "type": ["string", "null"] },
+              "required_call": { "type": ["string", "null"] },
+              "required_peer": { "type": ["string", "null"] },
+              "replacement": { "type": ["string", "null"] },
+              "replaces_custom_code": { "type": ["string", "null"] },
+              "dev_dance": { "type": ["string", "null"], "description": "Workaround pattern or monkey-patch required while broken" },
+              "decommission_at": { "type": ["string", "null"], "description": "Version where the dev dance must be removed" },
+              "benefit": { "type": ["string", "null"] }
+            }
+          },
+          "code_smell": {
+            "type": ["string", "null"],
+            "description": "Regex pattern detecting legacy workarounds or anti-patterns"
+          },
+          "impact_severity": {
+            "type": "string",
+            "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "OPPORTUNITY"],
+            "default": "MEDIUM"
+          }
+        }
+      }
+    }
+  }
+}

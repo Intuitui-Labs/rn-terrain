@@ -1,0 +1,207 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "nitrogen",
+  "vendor": "mrousavy",
+  "category": "NATIVE_BRIDGE",
+  "canonical_docs": "https://nitro.margelo.com/docs/nitrogen",
+  "features": {
+    "chronos_s1": {
+      "display": "Nitrogen: Maximum call stack on self-referential structs",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "What broke: nitrogen CLI / codegen recursion"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S1",
+        "source_url": "https://github.com/margelo/nitro/issues/1070",
+        "status": "`open`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s2": {
+      "display": "Generated C++/Swift interop: vector `.map` missing",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **nitrogen ↔ Swift CxxStdlib**"
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S2",
+        "source_url": "https://github.com/margelo/nitro/issues/1186",
+        "status": "`open`",
+        "heat": "medium (19 comments)"
+      }
+    },
+    "chronos_s3": {
+      "display": "Generated struct `operator==` breaks CxxRandomAccessCollection `.map`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S3",
+        "source_url": "https://github.com/margelo/nitro/issues/1376",
+        "status": "`open`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s4": {
+      "display": "Union `undefined` inside array type missing in C++",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S4",
+        "source_url": "https://github.com/margelo/nitro/issues/1202",
+        "status": "`fixed`",
+        "heat": "low–medium"
+      }
+    },
+    "chronos_s5": {
+      "display": "Nitrogen generates duplicate constructors for nested structs-with-functions",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S5",
+        "source_url": "https://github.com/margelo/nitro/issues/795",
+        "status": "`fixed`",
+        "heat": "low–medium"
+      }
+    },
+    "chronos_s6": {
+      "display": "Swift nested objects crashing or props missing",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S6",
+        "source_url": "https://github.com/margelo/nitro/issues/930",
+        "status": "`fixed`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s7": {
+      "display": "`malloc` crash when accessing primitive array",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S7",
+        "source_url": "https://github.com/margelo/nitro/issues/977",
+        "status": "`fixed`",
+        "heat": "medium"
+      }
+    },
+    "chronos_s8": {
+      "display": "(Shared) 0.37.0 iOS glog/modulemap break — nitrogen version aligned",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.37.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: Keep **nitrogen ↔ nitro-modules** version-locked; see modules leaf links"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S8",
+        "source_url": "https://github.com/margelo/nitro/issues/1573",
+        "status": "`open`",
+        "heat": "high"
+      }
+    },
+    "chronos_s9": {
+      "display": "C++ types from `__ObjC` do not support library evolution",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "MEDIUM",
+      "_chronos_meta": {
+        "signal_id": "S9",
+        "source_url": "https://github.com/margelo/nitro/issues/696",
+        "status": "`open`",
+        "heat": "medium (25 comments)"
+      }
+    }
+  }
+}

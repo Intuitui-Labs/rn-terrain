@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ChangelogIntelligenceEntry",
+  "description": "Universal schema for any single changelog event, breaking change, or capability across the React Native ecosystem.",
+  "type": "object",
+  "required": [
+    "id",
+    "package",
+    "version_to",
+    "impact_type",
+    "severity",
+    "scope"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier formatted as {package-slug}_{versionTo}_{impactType-short}_{slug}"
+    },
+    "package": {
+      "type": "string",
+      "description": "Exact npm package name matching registry.json key"
+    },
+    "version_to": {
+      "type": "string",
+      "description": "Version where this change appears or takes effect"
+    },
+    "date_released": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "ISO-8601 release date (YYYY-MM-DD), or null for horizon entries"
+    },
+    "impact_type": {
+      "type": "string",
+      "enum": [
+        "BREAKING_API_CHANGE",
+        "SILENT_BEHAVIORAL_BREAK",
+        "DEPRECATION_WARNING",
+        "REMOVAL",
+        "PEER_DEP_BREAK",
+        "SETUP_CHANGE",
+        "TYPE_SYSTEM_CHANGE",
+        "BUILD_PIPELINE_CHANGE",
+        "NATIVE_LAYER_CHANGE",
+        "NEW_CAPABILITY",
+        "PERFORMANCE_CHANGE",
+        "WORKAROUND",
+        "BUG_FIX",
+        "HORIZON_SIGNAL"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+    },
+    "scope": {
+      "type": "object",
+      "required": ["code", "config", "native", "build", "peer_dep", "runtime"],
+      "properties": {
+        "code": { "type": "boolean" },
+        "config": { "type": "boolean" },
+        "native": { "type": "boolean" },
+        "build": { "type": "boolean" },
+        "peer_dep": { "type": "boolean" },
+        "runtime": { "type": "boolean" }
+      }
+    },
+    "version_from": {
+      "type": ["string", "null"]
+    },
+    "api_pattern_before": {
+      "type": ["string", "null"]
+    },
+    "api_pattern_after": {
+      "type": ["string", "null"]
+    },
+    "code_smell_signatures": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Regex or substring signatures indicating legacy workarounds or anti-patterns in user code"
+    },
+    "capabilities_unlocked": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["capability", "replaces_custom_code"],
+        "properties": {
+          "capability": { "type": "string" },
+          "replaces_custom_code": { "type": "string" },
+          "benefit": { "type": "string" }
+        }
+      },
+      "description": "New native capabilities that replace custom application boilerplate"
+    },
+    "transitional_debt": {
+      "type": ["object", "null"],
+      "properties": {
+        "is_hybrid_state": { "type": "boolean" },
+        "bridge_mechanism": { "type": "string" },
+        "complete_migration_action": { "type": "string" }
+      }
+    },
+    "affects_expo_managed": {
+      "type": "boolean",
+      "default": true
+    },
+    "affects_bare_workflow": {
+      "type": "boolean",
+      "default": true
+    },
+    "new_arch_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "cascade_deps": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "workaround_exists": {
+      "type": "boolean",
+      "default": false
+    },
+    "workaround_code": {
+      "type": ["string", "null"]
+    },
+    "workaround_works_until": {
+      "type": ["string", "null"]
+    },
+    "fixed_in_version": {
+      "type": ["string", "null"]
+    },
+    "fixed_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "changelog_url": {
+      "type": ["string", "null"]
+    },
+    "github_issue_url": {
+      "type": ["string", "null"]
+    },
+    "github_pr_url": {
+      "type": ["string", "null"]
+    },
+    "migration_guide_url": {
+      "type": ["string", "null"]
+    },
+    "community_thread_urls": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "agent_confidence": {
+      "type": "string",
+      "enum": ["HIGH", "MEDIUM", "LOW"],
+      "default": "HIGH"
+    },
+    "needs_verification": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_verified": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "captured_by": {
+      "type": "string",
+      "enum": ["human", "agent"],
+      "default": "agent"
+    },
+    "captured_date": {
+      "type": "string",
+      "format": "date"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "nativewind",
+  "vendor": "nativewind",
+  "category": "STYLING",
+  "canonical_docs": "https://www.nativewind.dev/",
+  "features": {
+    "babel_plugin_removal": {
+      "display": "Elimination of nativewind/babel plugin",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "1.0.0",
+        "deprecated": "4.1.0",
+        "removed": "5.0.0-rc.0"
+      },
+      "rules": {
+        "banned_import": "nativewind/babel",
+        "benefit": "Zero Babel transform overhead during JS bundle builds"
+      },
+      "code_smell": "plugins:.*nativewind/babel",
+      "impact_severity": "CRITICAL"
+    },
+    "css_first_theme_directives": {
+      "display": "CSS-First @theme configuration replacing tailwind.config.js",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "5.0.0-rc.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replacement": "@theme { --color-*: ... } in global.css",
+        "replaces_custom_code": "tailwind.config.js JS object theme extension",
+        "benefit": "Declarative CSS compilation powered by react-native-css"
+      },
+      "code_smell": "@config.*tailwind\\.config\\.js",
+      "impact_severity": "HIGH"
+    },
+    "metro_wrapper_casing": {
+      "display": "Metro configuration function renamed to withNativewind",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "5.0.0-rc.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "banned_call": "withNativeWind",
+        "required_call": "withNativewind"
+      },
+      "code_smell": "withNativeWind\\(",
+      "impact_severity": "HIGH"
+    }
+  }
+}

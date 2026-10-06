@@ -1,0 +1,78 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "expo",
+  "vendor": "expo",
+  "category": "PLATFORM_SERVICES",
+  "canonical_docs": "https://docs.expo.dev/",
+  "features": {
+    "new_architecture_default": {
+      "display": "New Architecture (Fabric/TurboModules) enabled by default",
+      "transition_milestones": {
+        "experimental": "51.0.0",
+        "added": "52.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "First-class TurboModule native bindings across all Expo core packages"
+      },
+      "impact_severity": "CRITICAL"
+    },
+    "legacy_jsc_engine_dropped": {
+      "display": "JavaScriptCore (JSC) engine dropped in Expo Go",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "52.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replacement": "Hermes engine is mandatory across all platforms"
+      },
+      "impact_severity": "HIGH"
+    },
+    "expo_file_system_next_migration": {
+      "display": "expo-file-system object-based API migration from /next",
+      "transition_milestones": {
+        "experimental": "53.0.0",
+        "added": "54.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "banned_import": "expo-file-system/next",
+        "replacement": "import { File, Directory } from 'expo-file-system'"
+      },
+      "code_smell": "from\\s+['\"]expo-file-system\\/next['\"]",
+      "impact_severity": "HIGH"
+    },
+    "react_navigation_fork_sdk56": {
+      "display": "Expo Router forked internal navigation core",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "56.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "banned_import": "@react-navigation/native, @react-navigation/core",
+        "replacement": "Import all navigation primitives from 'expo-router'"
+      },
+      "code_smell": "from\\s+['\"]@react-navigation\\/(native|core)['\"]",
+      "impact_severity": "CRITICAL"
+    },
+    "stable_expo_ui": {
+      "display": "Stable native Expo UI components",
+      "transition_milestones": {
+        "experimental": "55.0.0",
+        "added": "56.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Zero-overhead native UI controls (Buttons, Switches, Sliders) directly binding SwiftUI and Jetpack Compose"
+      },
+      "impact_severity": "OPPORTUNITY"
+    }
+  }
+}

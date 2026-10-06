@@ -1,0 +1,309 @@
+{
+  "$schema": "./entry.schema.json",
+  "version": "1.0.0",
+  "updated": "2026-09-26",
+  "sample_source": "c:/x/apps/gurudevi-mobile/package.json",
+  "packages": {
+    "react-native": {
+      "npm": "react-native",
+      "display": "React Native",
+      "github": "facebook/react-native",
+      "changelog_url": "https://github.com/facebook/react-native/releases",
+      "primary_role": "RUNTIME_SUBSTRATE",
+      "secondary_role": null,
+      "vendor": "meta",
+      "audit_start_version": "0.71.0",
+      "audit_start_rationale": "0.71 introduced New Architecture opt-in, Hermes default, TypeScript default, and Flexbox gap",
+      "audit_end_version": "0.87.1",
+      "tier": 0,
+      "tier_score": 1,
+      "current_version": "0.86.2",
+      "latest_version": "0.87.1",
+      "entry_count": 125,
+      "audit_status": "COMPLETE",
+      "last_audited": "2026-09-26"
+    },
+    "expo": {
+      "npm": "expo",
+      "display": "Expo SDK",
+      "github": "expo/expo",
+      "changelog_url": "https://expo.dev/changelog",
+      "primary_role": "PLATFORM_SERVICES",
+      "secondary_role": "RUNTIME_SUBSTRATE",
+      "vendor": "expo",
+      "audit_start_version": "52.0.0",
+      "audit_start_rationale": "SDK 52 enabled New Architecture by default",
+      "audit_end_version": "57.0.24",
+      "tier": 0,
+      "tier_score": 0.95,
+      "current_version": "57.0.24",
+      "latest_version": "57.0.24",
+      "entry_count": 0,
+      "audit_status": "IN_PROGRESS"
+    },
+    "expo-router": {
+      "npm": "expo-router",
+      "display": "Expo Router",
+      "github": "expo/expo",
+      "changelog_url": "https://github.com/expo/expo/blob/main/packages/expo-router/CHANGELOG.md",
+      "primary_role": "NAVIGATION",
+      "secondary_role": null,
+      "vendor": "expo",
+      "audit_start_version": "4.0.0",
+      "audit_start_rationale": "SDK 52/53 alignment, SDK 56 direct React Navigation import break",
+      "audit_end_version": "57.0.22",
+      "tier": 1,
+      "tier_score": 0.88,
+      "current_version": "57.0.22",
+      "latest_version": "57.0.22",
+      "entry_count": 2,
+      "audit_status": "IN_PROGRESS"
+    },
+    "react-native-reanimated": {
+      "npm": "react-native-reanimated",
+      "display": "React Native Reanimated",
+      "github": "software-mansion/react-native-reanimated",
+      "changelog_url": "https://github.com/software-mansion/react-native-reanimated/releases",
+      "primary_role": "ANIMATION",
+      "secondary_role": "NATIVE_BRIDGE",
+      "vendor": "software-mansion",
+      "audit_start_version": "3.0.0",
+      "audit_start_rationale": "v3 first Fabric support; v4 separated worklets and made New Arch mandatory",
+      "audit_end_version": "4.6.0",
+      "tier": 1,
+      "tier_score": 0.85,
+      "current_version": "4.6.0",
+      "latest_version": "4.6.0",
+      "entry_count": 3,
+      "audit_status": "IN_PROGRESS"
+    },
+    "react-native-gesture-handler": {
+      "npm": "react-native-gesture-handler",
+      "display": "React Native Gesture Handler",
+      "github": "software-mansion/react-native-gesture-handler",
+      "changelog_url": "https://github.com/software-mansion/react-native-gesture-handler/releases",
+      "primary_role": "GESTURE",
+      "secondary_role": null,
+      "vendor": "software-mansion",
+      "audit_start_version": "2.0.0",
+      "audit_start_rationale": "v2 introduced GestureDetector; v3 dropped legacy components & arch, added hooks",
+      "audit_end_version": "3.3.0",
+      "tier": 1,
+      "tier_score": 0.82,
+      "current_version": "3.3.0",
+      "latest_version": "3.3.0",
+      "entry_count": 1,
+      "audit_status": "IN_PROGRESS"
+    },
+    "react-native-mmkv": {
+      "npm": "react-native-mmkv",
+      "display": "React Native MMKV",
+      "github": "mrousavy/react-native-mmkv",
+      "changelog_url": "https://github.com/mrousavy/react-native-mmkv/releases",
+      "primary_role": "STORAGE",
+      "secondary_role": null,
+      "vendor": "mrousavy",
+      "audit_start_version": "3.0.0",
+      "audit_start_rationale": "v3 pure C++ TurboModule; v4 switched to Nitro Modules with createMMKV() & .remove()",
+      "audit_end_version": "4.3.2",
+      "tier": 1,
+      "tier_score": 0.78,
+      "current_version": "4.3.2",
+      "latest_version": "4.3.2",
+      "entry_count": 2,
+      "audit_status": "IN_PROGRESS"
+    },
+    "react-native-worklets": {
+      "npm": "react-native-worklets",
+      "display": "React Native Worklets",
+      "github": "software-mansion/react-native-reanimated",
+      "changelog_url": "https://github.com/software-mansion/react-native-reanimated/releases",
+      "primary_role": "ANIMATION",
+      "secondary_role": "RUNTIME_SUBSTRATE",
+      "vendor": "software-mansion",
+      "audit_start_version": "0.1.0",
+      "audit_start_rationale": "Extracted standalone package from Reanimated v4; independent runtime",
+      "audit_end_version": "0.12.2",
+      "tier": 1,
+      "tier_score": 0.81,
+      "current_version": "0.12.2",
+      "latest_version": "0.12.2",
+      "entry_count": 1,
+      "audit_status": "IN_PROGRESS"
+    },
+    "react-native-nitro-modules": {
+      "npm": "react-native-nitro-modules",
+      "display": "Nitro Modules",
+      "github": "mrousavy/nitro",
+      "changelog_url": "https://github.com/mrousavy/nitro/releases",
+      "primary_role": "NATIVE_BRIDGE",
+      "secondary_role": null,
+      "vendor": "mrousavy",
+      "audit_start_version": "0.1.0",
+      "audit_start_rationale": "Next-gen zero-overhead C++ / Swift hybrid framework; required peer of MMKV v4",
+      "audit_end_version": "0.37.1",
+      "tier": 2,
+      "tier_score": 0.68,
+      "current_version": "0.37.1",
+      "latest_version": "0.37.1",
+      "entry_count": 0,
+      "audit_status": "IN_PROGRESS"
+    },
+    "nativewind": {
+      "npm": "nativewind",
+      "display": "NativeWind",
+      "github": "nativewind/nativewind",
+      "changelog_url": "https://www.nativewind.dev/",
+      "primary_role": "STYLING",
+      "secondary_role": null,
+      "vendor": "nativewind",
+      "audit_start_version": "4.0.0",
+      "audit_start_rationale": "v4 was babel/runtime interop; v5 is complete CSS-first rewrite aligned with Tailwind v4",
+      "audit_end_version": "5.0.0-rc.0",
+      "tier": 1,
+      "tier_score": 0.77,
+      "current_version": "5.0.0-rc.0",
+      "latest_version": "5.0.0-rc.0",
+      "entry_count": 1,
+      "audit_status": "IN_PROGRESS"
+    },
+    "tailwindcss": {
+      "npm": "tailwindcss",
+      "display": "Tailwind CSS",
+      "github": "tailwindlabs/tailwindcss",
+      "changelog_url": "https://tailwindcss.com/blog",
+      "primary_role": "STYLING",
+      "secondary_role": null,
+      "vendor": "independent",
+      "audit_start_version": "3.4.0",
+      "audit_start_rationale": "v4 switched to CSS-first @theme/@utility architecture removing JS config",
+      "audit_end_version": "4.3.0",
+      "tier": 2,
+      "tier_score": 0.65,
+      "current_version": "4.3.0",
+      "latest_version": "4.3.0",
+      "entry_count": 0,
+      "audit_status": "IN_PROGRESS"
+    },
+    "zod": {
+      "npm": "zod",
+      "display": "Zod",
+      "github": "colinhacks/zod",
+      "changelog_url": "https://github.com/colinhacks/zod/releases",
+      "primary_role": "STATE",
+      "secondary_role": null,
+      "vendor": "independent",
+      "audit_start_version": "3.22.0",
+      "audit_start_rationale": "v4 rewritten type-system and performance core",
+      "audit_end_version": "4.5.4",
+      "tier": 2,
+      "tier_score": 0.58,
+      "current_version": "4.5.4",
+      "latest_version": "4.5.4",
+      "entry_count": 0,
+      "audit_status": "PENDING"
+    }
+  },
+  "vendors": {
+    "software-mansion": {
+      "display": "Software Mansion",
+      "packages": [
+        "react-native-reanimated",
+        "react-native-gesture-handler",
+        "react-native-screens",
+        "react-native-worklets",
+        "@swmansion/react-native-bottom-sheet"
+      ],
+      "signal_urls": {
+        "blog": "https://blog.swmansion.com",
+        "github": "https://github.com/software-mansion"
+      }
+    },
+    "expo": {
+      "display": "Expo",
+      "packages": [
+        "expo",
+        "expo-router"
+      ],
+      "signal_urls": {
+        "changelog": "https://expo.dev/changelog",
+        "blog": "https://expo.dev/blog",
+        "github": "https://github.com/expo"
+      }
+    },
+    "meta": {
+      "display": "Meta / React Native Core",
+      "packages": [
+        "react-native"
+      ],
+      "signal_urls": {
+        "releases": "https://github.com/facebook/react-native/releases"
+      }
+    },
+    "mrousavy": {
+      "display": "Marc Rousavy / Margelo",
+      "packages": [
+        "react-native-mmkv",
+        "react-native-nitro-modules"
+      ],
+      "signal_urls": {
+        "github": "https://github.com/mrousavy"
+      }
+    },
+    "nativewind": {
+      "display": "NativeWind",
+      "packages": [
+        "nativewind"
+      ],
+      "signal_urls": {
+        "website": "https://www.nativewind.dev"
+      }
+    },
+    "independent": {
+      "display": "Independent / Open Source Community",
+      "packages": [
+        "tailwindcss",
+        "zod"
+      ],
+      "signal_urls": {}
+    }
+  },
+  "roles": {
+    "RUNTIME_SUBSTRATE": {
+      "cascade_weight": 1
+    },
+    "NAVIGATION": {
+      "cascade_weight": 0.8
+    },
+    "ANIMATION": {
+      "cascade_weight": 0.7
+    },
+    "GESTURE": {
+      "cascade_weight": 0.65
+    },
+    "NATIVE_BRIDGE": {
+      "cascade_weight": 0.75
+    },
+    "STORAGE": {
+      "cascade_weight": 0.5
+    },
+    "STYLING": {
+      "cascade_weight": 0.6
+    },
+    "UI_PRIMITIVES": {
+      "cascade_weight": 0.55
+    },
+    "UI_COMPONENTS": {
+      "cascade_weight": 0.35
+    },
+    "STATE": {
+      "cascade_weight": 0.4
+    },
+    "PLATFORM_SERVICES": {
+      "cascade_weight": 0.3
+    },
+    "OBSERVABILITY": {
+      "cascade_weight": 0.2
+    }
+  }
+}

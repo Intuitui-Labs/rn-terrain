@@ -1,0 +1,294 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "react-native",
+  "vendor": "meta",
+  "category": "RUNTIME_SUBSTRATE",
+  "canonical_docs": "https://reactnative.dev/",
+  "features": {
+    "hermes_default_engine": {
+      "display": "Hermes Default JavaScript Engine",
+      "transition_milestones": {
+        "experimental": "0.60.0",
+        "added": "0.71.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Accelerates app cold start, reduces APK/IPA binary footprint, and unifies garbage collection across platforms"
+      },
+      "impact_severity": "CRITICAL"
+    },
+    "default_typescript_template": {
+      "display": "Default TypeScript Project Template",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.71.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replacement": "All new projects and community examples default to .tsx/.ts syntax with zero configuration required"
+      },
+      "impact_severity": "HIGH"
+    },
+    "flexbox_gap_support": {
+      "display": "CSS Flexbox gap (gap, rowGap, columnGap) support in Yoga",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.71.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replaces_custom_code": "Manual margin calculations and child spacer views",
+        "benefit": "Native CSS gap property support in layout styling without margin hacks"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "metro_symlink_support": {
+      "display": "First-class Metro Symlink & Package Exports Support",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.72.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Enables seamless monorepo (pnpm, yarn workspaces) package resolution without complex metro.config hacks"
+      },
+      "impact_severity": "HIGH"
+    },
+    "bridgeless_mode": {
+      "display": "Bridgeless Mode Architecture (direct JSI / TurboModule calls)",
+      "transition_milestones": {
+        "experimental": "0.73.0",
+        "added": "0.76.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "banned_call": "NativeModules.LegacyModule",
+        "replacement": "TurboModuleRegistry.getEnforcing or NitroModules",
+        "benefit": "Bypasses legacy JSON bridge message queue completely, eliminating bridge serialization overhead"
+      },
+      "impact_severity": "CRITICAL"
+    },
+    "kotlin_template_default": {
+      "display": "Kotlin Default for Android Project Template",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.73.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replacement": "MainApplication.kt and MainActivity.kt replace Java equivalents in Android root"
+      },
+      "impact_severity": "MEDIUM"
+    },
+    "flipper_deprecation_and_removal": {
+      "display": "Flipper Desktop Debugger Deprecation & Removal",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.62.0",
+        "deprecated": "0.73.0",
+        "removed": "0.74.0"
+      },
+      "rules": {
+        "banned_call": "ReactNativeFlipper.initializeFlipper",
+        "replacement": "React Native DevTools / Chrome DevTools protocol target connection"
+      },
+      "code_smell": "(ReactNativeFlipper|initializeFlipper)",
+      "impact_severity": "HIGH"
+    },
+    "yoga_3_layout_engine": {
+      "display": "Yoga 3.0 Layout Engine (strict standard rounding)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.74.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Corrects flex-basis percentage calculation and pixel snapping to match W3C web CSS standards"
+      },
+      "impact_severity": "HIGH"
+    },
+    "batched_on_layout": {
+      "display": "Batched onLayout Layout Events",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.74.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Batches multiple onLayout notifications into a single frame, preventing event queue flooding"
+      },
+      "impact_severity": "MEDIUM"
+    },
+    "autolinking_v2_cpp": {
+      "display": "C++ Native Autolinking Engine",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.75.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Reduces native build and link times significantly on Android and iOS"
+      },
+      "impact_severity": "MEDIUM"
+    },
+    "new_architecture_default": {
+      "display": "New Architecture (Fabric + TurboModules) default",
+      "transition_milestones": {
+        "experimental": "0.68.0",
+        "added": "0.76.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Synchronous JSI layout, concurrent React 19 rendering, and zero-bridge serialization"
+      },
+      "impact_severity": "CRITICAL"
+    },
+    "css_box_shadow_and_filter": {
+      "display": "Official CSS filter and boxShadow style property support",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.76.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replaces_custom_code": "Platform-specific elevation / shadowOffset / shadowRadius objects",
+        "benefit": "Cross-platform W3C CSS boxShadow and filter styling natively on Fabric"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "react_19_concurrency_support": {
+      "display": "React 19 Concurrency & Compiler Compatibility",
+      "transition_milestones": {
+        "experimental": "0.76.0",
+        "added": "0.78.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Unlocks React 19 useTransition, useActionState, and React Compiler optimizations"
+      },
+      "impact_severity": "HIGH"
+    },
+    "swift_template_support": {
+      "display": "Swift iOS Project Template Support",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.77.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replacement": "AppDelegate.swift replaces AppDelegate.mm in the standard iOS template"
+      },
+      "impact_severity": "MEDIUM"
+    },
+    "legacy_paper_architecture_removal": {
+      "display": "Permanent removal of Old Architecture (Paper / Bridge)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.1.0",
+        "deprecated": "0.76.0",
+        "removed": "0.82.0"
+      },
+      "rules": {
+        "banned_call": "newArchEnabled=false",
+        "replacement": "All native libraries must implement TurboModule / Fabric ShadowNodes"
+      },
+      "code_smell": "newArchEnabled\\s*=\\s*false",
+      "impact_severity": "CRITICAL"
+    },
+    "view_prop_types_elimination": {
+      "display": "ViewPropTypes and ColorPropType permanently deleted",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.1.0",
+        "deprecated": "0.68.0",
+        "removed": "0.82.0"
+      },
+      "rules": {
+        "banned_import": "ViewPropTypes, ColorPropType",
+        "replacement": "Use ViewProps or standard TypeScript types"
+      },
+      "code_smell": "(ViewPropTypes|ColorPropType)",
+      "impact_severity": "CRITICAL"
+    },
+    "legacy_rctbridge_elimination": {
+      "display": "RCTBridge Native API Elimination",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.1.0",
+        "deprecated": "0.76.0",
+        "removed": "0.83.0"
+      },
+      "rules": {
+        "banned_call": "[bridge moduleForName:]",
+        "replacement": "RCTBridgeInstance or Nitro / TurboModule JSI bindings"
+      },
+      "impact_severity": "CRITICAL"
+    },
+    "hermes_v1_compiler_and_runtime": {
+      "display": "Hermes V1 Compiler & Static Optimization Pipeline",
+      "transition_milestones": {
+        "experimental": "0.80.0",
+        "added": "0.84.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Native ahead-of-time bytecode compilation, improved GC pause times, and strict memory limits"
+      },
+      "impact_severity": "CRITICAL"
+    },
+    "android_15_edge_to_edge_enforcement": {
+      "display": "Android 15 edge-to-edge system insets & measureInWindow stabilization",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.86.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Fixes measurement clipping with react-native-safe-area-context and StatusBar"
+      },
+      "impact_severity": "HIGH"
+    },
+    "strict_typescript_api_default": {
+      "display": "Strict TypeScript API as default (source-generated types)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.87.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "replacement": "Do not use internal deep imports from 'react-native/Libraries/*'; import from 'react-native'"
+      },
+      "code_smell": "from\\s+['\"]react-native\\/Libraries\\/",
+      "impact_severity": "HIGH"
+    },
+    "swiftpm_experimental_support": {
+      "display": "Swift Package Manager (SwiftPM) Experimental Integration",
+      "transition_milestones": {
+        "experimental": "0.87.0",
+        "added": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Enables native dependency resolution via Apple SwiftPM alongside or replacing CocoaPods"
+      },
+      "impact_severity": "OPPORTUNITY"
+    }
+  }
+}

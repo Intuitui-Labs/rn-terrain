@@ -1,0 +1,224 @@
+{
+  "$schema": "../../schemas/package-features.schema.json",
+  "package": "react-native-worklets",
+  "vendor": "software-mansion",
+  "category": "ANIMATION",
+  "canonical_docs": "https://github.com/software-mansion/react-native-reanimated",
+  "features": {
+    "proto_serialization_security_fix": {
+      "display": "__proto__ serialization crash fix in clonePlainJSObject",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.12.2",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Prevents uncaught SIGSEGV when passing complex prototype-backed objects across thread boundary"
+      },
+      "impact_severity": "HIGH"
+    },
+    "is_on_ui_thread_api": {
+      "display": "isOnUIThread C++ Stable API",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.12.1",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Enables deterministic runtime thread identity checks without JS bridge pinging"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "weakref_runtime_support": {
+      "display": "Native WeakRef support in Worklet Runtimes",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "0.12.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Allows garbage collection of background worklet contexts without memory leaks"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "chronos_s1": {
+      "display": "Use `react-native-worklets/plugin` instead of `reanimated/plugin`",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.1.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **Reanimated ≥4 forces SWM `react-native-worklets` + its Babel plugin**; do not substitute Margelo `worklets-core`. What broke: Animations after upgrade when Babel still points at reanimated plugin or wrong worklets package"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S1",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8231",
+        "status": "`fixed` (docs); recurring misconfig",
+        "heat": "high"
+      }
+    },
+    "chronos_s2": {
+      "display": "Worklets Legacy Eval Mode memory regression in production",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.9.1",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets + Reanimated 4 + Hermes V1 + RN 0.84/0.85**"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S2",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/9650",
+        "status": "`fixed` (closed) with engine/mode workarounds",
+        "heat": "high"
+      }
+    },
+    "chronos_s3": {
+      "display": "Stack pairs Reanimated 4 + worklets but New Arch not active → crash",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.4.1",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets (as Reanimated 4 peer) ↔ RN New Arch**"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S3",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8235",
+        "status": "`fixed` / expected peer constraint",
+        "heat": "high (upgrade gate)"
+      }
+    },
+    "chronos_s4": {
+      "display": "Android Modal exit NPE (Reanimated 4.1.3 + worklets 0.6.1)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.6.1",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **worklets ↔ Reanimated** layout exit path"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S4",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8422",
+        "status": "`fixed`",
+        "heat": "high"
+      }
+    },
+    "chronos_s5": {
+      "display": "`WorkletsPackage` collision: SWM worklets vs Margelo worklets-core",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.7.2",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: **react-native-worklets ↔ react-native-worklets-core ↔ RN ≥0.83** — exclude one from autolinking or rename (proposed `WorkletsCorePackage`). What broke: Ambiguous `WorkletsPackage` import in `PackageList.java`"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S5",
+        "source_url": "https://github.com/margelo/react-native-worklets-core/issues/266",
+        "status": "`open`",
+        "heat": "high for dual-worklets apps"
+      }
+    },
+    "chronos_s6": {
+      "display": "New Arch FPS loss with Reanimated 4 + worklets present",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "0.5.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": "Context: Keep **worklets peer matched to Reanimated 4.x**"
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S6",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8250",
+        "status": "`fixed` (closed)",
+        "heat": "very high"
+      }
+    },
+    "chronos_s7": {
+      "display": "StrictMode animation break on Reanimated 4.1.0 (worklets plugin era)",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": "4.1.0",
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "HIGH",
+      "_chronos_meta": {
+        "signal_id": "S7",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues/8228",
+        "status": "`fixed`",
+        "heat": "medium–high"
+      }
+    },
+    "chronos_s8": {
+      "display": "Gap: sparse issue titles pinning worklets 0.12 / 0.13",
+      "transition_milestones": {
+        "experimental": null,
+        "added": null,
+        "broken": null,
+        "fixed": null,
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "dev_dance": null
+      },
+      "code_smell": null,
+      "impact_severity": "LOW",
+      "_chronos_meta": {
+        "signal_id": "S8",
+        "source_url": "https://github.com/software-mansion/react-native-reanimated/issues?q=worklets",
+        "status": "`open` (meta gap)",
+        "heat": "low (documentation gap)"
+      }
+    }
+  }
+}

@@ -1,0 +1,219 @@
+# FIX_PLAN.patch — UNAPPLIED. Review only. Generated with FIX_PLAN.md.
+# ---- FIX-001 Cedar client calls missing `evaluate` export ----
+--- a/packages/core/src/logic/permissions/cedarClientEvaluator.ts
++++ b/packages/core/src/logic/permissions/cedarClientEvaluator.ts
+@@ -32,12 +32,36 @@ let _wasmLoaded = false;
+ function getWasmEvaluator(): Promise<EvaluateFn> {
+   if (_wasmPromise) return _wasmPromise;
+   _wasmPromise = (async () => {
+     try {
+       // @ts-expect-error - Dynamic import for cross-platform WASM compat
+       const mod = await import('@cedar-policy/cedar-wasm/web');
+       _wasmLoaded = true;
+-      return mod.evaluate as EvaluateFn;
++      // 4.12.0 exports isAuthorized (no evaluate). Match Node evaluator.
++      const evaluate: EvaluateFn = async (args) => {
++        const authResult = mod.isAuthorized({
++          principal: args.request.principal,
++          action: args.request.action,
++          resource: args.request.resource,
++          context: args.request.context,
++          policies: args.policies,
++          entities: args.entities,
++          ...(args.schema ? { schema: args.schema } : {}),
++        });
++        if (authResult.type === 'failure') {
++          throw new Error(
++            'CedarClientEvaluator: isAuthorized failure: ' +
++              JSON.stringify(authResult.errors),
++          );
++        }
++        return { decision: authResult.response.decision };
++      };
++      return evaluate;
+     } catch {
+       _wasmLoaded = false;
+       throw new Error('CedarClientEvaluator: failed to load @cedar-policy/cedar-wasm/web');
+     }
+   })();
+@@ -109,7 +133,8 @@ export async function evaluateShape1(policyString: string, req: Shape1Request):
+       },
+     ],
+   });
+-  return decision.decision === 'Allow';
++  const d = String(decision.decision);
++  return d === 'Allow' || d === 'allow';
+@@ -141,7 +166,8 @@ export async function evaluateShape2(policyString: string, req: Shape2Request):
+       },
+     ],
+   });
+-  return decision.decision === 'Allow';
++  const d = String(decision.decision);
++  return d === 'Allow' || d === 'allow';
+# ---- FIX-002 expo-file-system main-entry writeAsStringAsync throws ----
+--- a/packages/library/src/api/spreadsheet.ts
++++ b/packages/library/src/api/spreadsheet.ts
+@@ -334,7 +334,8 @@ export class Spreadsheet {
+   ): Promise<void> {
+     const bytes = this.write(workbook, { bookType, type: 'array' }) as Uint8Array;
+-    // This requires expo-file-system or similar
+-    const { writeAsStringAsync, EncodingType } = await import('expo-file-system');
++    // Root expo-file-system stubs throw; legacy path matches useMediaDownloader.
++    const { writeAsStringAsync, EncodingType } = await import('expo-file-system/legacy');
+     await writeAsStringAsync(filePath, bytesToBase64(bytes), {
+       encoding: EncodingType.Base64,
+     });
+# ---- FIX-003 reanimated-carousel default import (no default export) ----
+--- a/packages/ui/src/components/SanctuaryCarousel.tsx
++++ b/packages/ui/src/components/SanctuaryCarousel.tsx
+@@ -2,8 +2,7 @@ import { Theme } from '@repo/ui/theme/Theme';
+ import React from 'react';
+ import { Dimensions } from 'react-native';
+ import Animated, { withTiming } from 'react-native-reanimated';
+-// @ts-expect-error - Module has no type declarations
+-import Carousel from 'react-native-reanimated-carousel';
++import { Carousel } from 'react-native-reanimated-carousel';
+# ---- FIX-004 react-native-web shim re-exports nonexistent default ----
+--- a/apps/gurudevi-mobile/src/shims/react-native-web-augmented.js
++++ b/apps/gurudevi-mobile/src/shims/react-native-web-augmented.js
+@@ -8,8 +8,7 @@
+ // We can import directly because metro.config.js skips the redirect
+ // when the request originates from this shim file.
+ export * from 'react-native-web';
+-export { default } from 'react-native-web';
+-
+ import { View } from 'react-native-web';
+# ---- FIX-005 getFreeDiskStorageAsync stub → catch reports 0 free disk ----
+--- a/apps/gurudevi-mobile/src/storage/retention-scheduler.ts
++++ b/apps/gurudevi-mobile/src/storage/retention-scheduler.ts
+@@ -108,14 +108,14 @@
+   try {
+     const Battery = await import('expo-battery');
+     const Network = await import('expo-network');
+-    const FileSystem = await import('expo-file-system');
++    const { Paths } = await import('expo-file-system');
+ 
+     const [batteryLevel, batteryState, networkState, diskInfo] = await Promise.all([
+       import('expo-battery').then((m) => m.getBatteryLevelAsync()),
+       import('expo-battery').then((m) => m.getBatteryStateAsync()),
+       import('expo-network').then((m) => m.getNetworkStateAsync()),
+-      import('expo-file-system').then((m) => m.getFreeDiskStorageAsync()),
++      Promise.resolve(Paths.availableDiskSpace),
+     ]);
+@@ -519,14 +519,14 @@
+   try {
+     const Battery = await import('expo-battery');
+     const Network = await import('expo-network');
+-    const FileSystem = await import('expo-file-system');
++    const { Paths } = await import('expo-file-system');
+ 
+     const [batteryLevel, batteryState, networkState, diskInfo] = await Promise.all([
+       Battery.getBatteryLevelAsync(),
+       Battery.getBatteryStateAsync(),
+       Network.getNetworkStateAsync(),
+-      FileSystem.getFreeDiskStorageAsync(),
++      Promise.resolve(Paths.availableDiskSpace),
+     ]);
+# ---- FIX-006 nitroThemeTransition looks for startTransition; package exports withThemeTransition ----
+--- a/packages/ui/src/theme/nitroThemeTransition.ts
++++ b/packages/ui/src/theme/nitroThemeTransition.ts
+@@ -21,12 +21,20 @@ export async function startThemeTransition(
+ ): Promise<void> {
+   const transitionType = options?.type || 'circularReveal';
+ 
+-  if (nitroThemeModule && typeof nitroThemeModule.startTransition === 'function') {
++  const withThemeTransition = nitroThemeModule?.withThemeTransition;
++  if (typeof withThemeTransition === 'function') {
+     try {
+-      await nitroThemeModule.startTransition(transitionType, async () => {
+-        await updateThemeCallback();
+-      });
++      // applyTheme must be synchronous per 1.0.0 docs; fire-and-forget async work.
++      withThemeTransition(
++        () => {
++          void updateThemeCallback();
++        },
++        {
++          kind: transitionType,
++          durationMs: options?.duration ?? 400,
++        },
++      );
+       return;
+     } catch (error) {
+# ---- FIX-007 Reanimated Layout → LinearTransition (~22 call sites / 15 files) ----
+--- a/packages/self/src/components/DailyContentCard.tsx
++++ b/packages/self/src/components/DailyContentCard.tsx
+@@ -21,7 +21,7 @@
+ } from '@repo/ui/primitives';
+ import { useEffect, useState } from 'react';
+ import { useTranslation } from 'react-i18next';
+-import Animated, { FadeIn, Layout } from 'react-native-reanimated';
++import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
+@@ -90,7 +90,7 @@
+   const needsExpansion = content.content.length > 120;
+ 
+   return (
+-    <Animated.View layout={Layout} entering={FadeIn.duration(800)}>
++    <Animated.View layout={LinearTransition} entering={FadeIn.duration(800)}>
+# Apply the same Layout → LinearTransition (and Layout.springify → LinearTransition.springify)
+# rename across the 15 files listed in FIX-007. Exemplar above is DailyContentCard.tsx.
+# ---- FIX-008 expo-image-picker MediaTypeOptions → MediaType array ----
+--- a/packages/classroom/src/components/SubmissionModal.tsx
++++ b/packages/classroom/src/components/SubmissionModal.tsx
+@@ -77,12 +77,12 @@
+         const result = await ImagePicker.launchImageLibraryAsync({
+-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
++            mediaTypes: ['images'],
+             allowsEditing: true,
+@@ -82,7 +82,7 @@
+         const result = await ImagePicker.launchCameraAsync({
+-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
++            mediaTypes: ['images'],
+# Same MediaTypeOptions.Images → ['images'] in the other 5 files listed under FIX-008.
+# ---- FIX-009 expo-image-manipulator manipulateAsync → contextual API ----
+--- a/packages/profile/src/components/AvatarDisplay.tsx
++++ b/packages/profile/src/components/AvatarDisplay.tsx
+@@ -74,10 +74,12 @@
+     setUploading(true);
+     try {
+-      const manipulated = await ImageManipulator.manipulateAsync(
+-        result.assets[0].uri,
+-        [{ resize: { width: 400, height: 400 } }],
+-        { compress: 0.85, format: ImageManipulator.SaveFormat.JPEG },
+-      );
++      const context = ImageManipulator.manipulate(result.assets[0].uri);
++      const resized = await context.resize({ width: 400, height: 400 }).renderAsync();
++      const manipulated = await resized.saveAsync({
++        compress: 0.85,
++        format: ImageManipulator.SaveFormat.JPEG,
++      });
+# image-to-pdf.ts and ocr.ts need the same contextual migrate; verify SaveFormat/base64 options
+# against installed expo-image-manipulator typings before applying blindly.
+# ---- FIX-010 RNGH Gesture builder (actionsheet) + dead import (SelfNavigator) ----
+--- a/packages/self/src/components/SelfNavigator.tsx
++++ b/packages/self/src/components/SelfNavigator.tsx
+@@ -13,7 +13,6 @@ import { hapticLight, hapticMedium, hapticSelection } from '@repo/ui/utils/hapti
+ import React, { useCallback, useState } from 'react';
+ import { Platform, useWindowDimensions } from 'react-native';
+-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+ import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
+# actionsheet Gesture.Pan remains functional under RNGH 3.3.0; migrate to the hook API in a
+# dedicated PR once the recommended replacement is confirmed against 3.3.0 docs. Do not downgrade.
+# ---- FIX-011 Keychain.Options type removed in 10.0.0 ----
+--- a/packages/core/src/adapters/native/NativeDeviceIdentityAdapter.ts
++++ b/packages/core/src/adapters/native/NativeDeviceIdentityAdapter.ts
+@@ -19,7 +19,7 @@ export class NativeDeviceIdentityAdapter implements IDeviceIdentity {
+   }
+ 
+   async generateHardwareKey(alias: string): Promise<string> {
+-    const storageOptions: Keychain.Options = {
++    const storageOptions: Keychain.SetOptions = {
+       service: alias,
+       accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+       securityLevel: Keychain.SECURITY_LEVEL.SECURE_HARDWARE,
+@@ -43,7 +43,7 @@ export class NativeDeviceIdentityAdapter implements IDeviceIdentity {
+   async signWithHardwareKey(alias: string, challenge: string): Promise<string> {
+-    const storageOptions: Keychain.Options = {
++    const storageOptions: Keychain.GetOptions = {
+       service: alias,
+       authenticationPrompt: {
