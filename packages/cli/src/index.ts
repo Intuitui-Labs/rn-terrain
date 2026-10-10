@@ -12,7 +12,8 @@ import {
   ArchiveDatasetSeeder,
   CapabilityResolver,
   RustToolingDoctor,
-  NodeModulesAffordanceEngine
+  NodeModulesAffordanceEngine,
+  CuratedKnowledgeBridge
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -751,6 +752,52 @@ cli
       console.log('');
     } catch (e: any) {
       consola.error('Failed to generate affordance:', e.message);
+    }
+  });
+
+cli
+  .command('seed:curated [xDir]', 'Ingest curated annotations, technology radar, and 50-vendor ecosystem from C:\\x vault')
+  .option('--views-out <dir>', 'Output directory for synthesized agent views', { default: 'docs/agent-views' })
+  .action((xDir = 'C:\\x', options: { viewsOut: string }) => {
+    try {
+      consola.info(`Ingesting curated architectural knowledge from vault: ${chalk.cyan(xDir)}`);
+      const db = new CanonicalDatabase();
+      const bridge = new CuratedKnowledgeBridge(db, xDir);
+      const stats = bridge.runFullIngestion(options.viewsOut);
+
+      console.log(`\n${chalk.bold('CURATED KNOWLEDGE VAULT INGESTION SUMMARY')}`);
+      console.log(chalk.dim('────────────────────────────────────────────────'));
+      console.log(`  Global Tools Ingested:        ${chalk.green(stats.globalToolsCount)}`);
+      console.log(`  Dependencies Ingested:        ${chalk.green(stats.dependencyEntriesCount)}`);
+      console.log(`  Sacred Version Pins Tracked:  ${chalk.cyan.bold(stats.sacredPinsCount)}`);
+      console.log(`  Technology Radar Records:     ${chalk.yellow(stats.radarRecordsCount)}`);
+      console.log(`  Callstack & AI Packages:      ${chalk.magenta(stats.callstackPackagesCount)}`);
+      console.log('');
+      if (stats.dangerZonesPath) {
+        console.log(`  🚨 Agent Danger Zones:        ${chalk.green(stats.dangerZonesPath)}`);
+      }
+      if (stats.currentStatePath) {
+        console.log(`  🧭 Agent Current State:       ${chalk.green(stats.currentStatePath)}`);
+      }
+      console.log('');
+      consola.success('Curated knowledge vault and agent views successfully synthesized!');
+    } catch (e: any) {
+      consola.error('Failed to run curated vault ingestion:', e.message);
+    }
+  });
+
+cli
+  .command('agent:views [outDir]', 'Synthesize canonical DANGER-ZONES.md and CURRENT-STATE.md agent views')
+  .action((outDir = 'docs/agent-views') => {
+    try {
+      consola.info(`Synthesizing canonical agent views into: ${chalk.cyan(outDir)}`);
+      const db = new CanonicalDatabase();
+      const bridge = new CuratedKnowledgeBridge(db);
+      const views = bridge.synthesizeAgentViews(outDir);
+      consola.success(`Generated ${views.dangerZones}`);
+      consola.success(`Generated ${views.currentState}`);
+    } catch (e: any) {
+      consola.error('Failed to synthesize agent views:', e.message);
     }
   });
 

@@ -3,6 +3,8 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   getAlternatives,
   getEcosystemTopology,
@@ -15,7 +17,8 @@ import {
   DevToolsRegistry,
   CapabilityResolver,
   RustToolingDoctor,
-  NodeModulesAffordanceEngine
+  NodeModulesAffordanceEngine,
+  CuratedKnowledgeBridge
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -136,6 +139,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
           },
           required: ['package_name'],
+        },
+      },
+      {
+        name: 'tcdi_agent_views',
+        description:
+          'Agent Views Grounding: Returns canonical DANGER-ZONES (top severed/banned APIs across Reanimated 4, RNGH 3, MMKV 4 Nitro) and CURRENT-STATE (sacred stack pins and modern allowed APIs) directly to AI coding agents.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            view: {
+              type: 'string',
+              description: 'Target view: "danger_zones", "current_state", or "all"',
+            },
+          },
         },
       },
       {
@@ -374,6 +391,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const card = engine.generateAffordance(packageName);
       return {
         content: [{ type: 'text', text: JSON.stringify(card, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_agent_views') {
+      const view = (args?.view as string) || 'all';
+      const db = new CanonicalDatabase();
+      const bridge = new CuratedKnowledgeBridge(db);
+      const tempViewsDir = path.resolve(process.cwd(), 'docs/agent-views');
+      const views = bridge.synthesizeAgentViews(tempViewsDir);
+
+      let text = '';
+      if (view === 'danger_zones' || view === 'all') {
+        text += fs.readFileSync(views.dangerZones, 'utf-8') + '\n\n';
+      }
+      if (view === 'current_state' || view === 'all') {
+        text += fs.readFileSync(views.currentState, 'utf-8');
+      }
+
+      return {
+        content: [{ type: 'text', text }],
       };
     }
 

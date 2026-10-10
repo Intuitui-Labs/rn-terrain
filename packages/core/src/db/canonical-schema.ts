@@ -174,6 +174,22 @@ CREATE TABLE IF NOT EXISTS package_capabilities (
 
 CREATE INDEX IF NOT EXISTS idx_pkg_capabilities_lookup 
   ON package_capabilities(capability_id, package_id);
+
+-- 11. Technology Radar Decisions & Assessments
+CREATE TABLE IF NOT EXISTS technology_radar (
+  id TEXT PRIMARY KEY,                       -- e.g. 'react-native-uniffi-bridge', 'legendapp-state'
+  subject TEXT NOT NULL,
+  subject_type TEXT NOT NULL DEFAULT 'package',
+  verdict TEXT NOT NULL,                     -- 'ADOPT', 'TRIAL', 'ASSESS', 'HOLD'
+  confidence TEXT,                           -- 'high', 'medium', 'low'
+  category TEXT,
+  use_case TEXT,
+  problem TEXT,
+  decision TEXT,
+  revisit_when TEXT,
+  metadata_json TEXT,                        -- JSON object with compatibility, risks, alternatives
+  updated_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+);
 `;
 
 
@@ -305,5 +321,20 @@ export interface PackageCapabilityRecord {
   quality_tier: 'CANONICAL' | 'INCUBATING' | 'LEGACY_BRIDGED';
   performance_profile?: 'UI_THREAD_NATIVE' | 'JS_THREAD_ASYNC' | 'WORKLET_NATIVE' | null;
   caveats?: string | null;
+}
+
+export interface TechnologyRadarRecord {
+  id: string;
+  subject: string;
+  subject_type: string;
+  verdict: 'ADOPT' | 'TRIAL' | 'ASSESS' | 'HOLD';
+  confidence: 'high' | 'medium' | 'low';
+  category: string | null;
+  use_case?: string | null;
+  problem?: string | null;
+  decision?: string | null;
+  revisit_when?: string | null;
+  metadata_json?: string | null;
+  updated_at?: number;
 }
 

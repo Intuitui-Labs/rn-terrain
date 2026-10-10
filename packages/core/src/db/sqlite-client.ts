@@ -21,7 +21,8 @@ import {
   type DecisionActionRecord,
   type DevToolRecord,
   type GranularCapabilityRecord,
-  type PackageCapabilityRecord
+  type PackageCapabilityRecord,
+  type TechnologyRadarRecord
 } from './canonical-schema.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -329,6 +330,46 @@ export class CanonicalDatabase {
   public getAllCapabilities(): GranularCapabilityRecord[] {
     const stmt = this.db.prepare('SELECT * FROM granular_capabilities ORDER BY category, name');
     return stmt.all() as GranularCapabilityRecord[];
+  }
+
+  // ─── Technology Radar ───────────────────────────────────────────────────────
+
+  public upsertRadarRecord(record: TechnologyRadarRecord): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO technology_radar (
+        id, subject, subject_type, verdict, confidence, category,
+        use_case, problem, decision, revisit_when, metadata_json, updated_at
+      ) VALUES (
+        @id, @subject, @subject_type, @verdict, @confidence, @category,
+        @use_case, @problem, @decision, @revisit_when, @metadata_json, @updated_at
+      )
+      ON CONFLICT(id) DO UPDATE SET
+        subject = excluded.subject,
+        subject_type = excluded.subject_type,
+        verdict = excluded.verdict,
+        confidence = excluded.confidence,
+        category = excluded.category,
+        use_case = excluded.use_case,
+        problem = excluded.problem,
+        decision = excluded.decision,
+        revisit_when = excluded.revisit_when,
+        metadata_json = excluded.metadata_json,
+        updated_at = excluded.updated_at
+    `);
+    stmt.run({
+      ...record,
+      use_case: record.use_case ?? null,
+      problem: record.problem ?? null,
+      decision: record.decision ?? null,
+      revisit_when: record.revisit_when ?? null,
+      metadata_json: record.metadata_json ?? null,
+      updated_at: record.updated_at ?? Math.floor(Date.now() / 1000)
+    });
+  }
+
+  public getAllRadarRecords(): TechnologyRadarRecord[] {
+    const stmt = this.db.prepare('SELECT * FROM technology_radar ORDER BY verdict, id ASC');
+    return stmt.all() as TechnologyRadarRecord[];
   }
 }
 

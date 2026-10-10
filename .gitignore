@@ -11,6 +11,7 @@ build/
 *.tsbuildinfo
 .atlas-cache/
 .turbo/
+coverage/
 
 # Environment & Logs
 *.log
