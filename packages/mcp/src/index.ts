@@ -14,7 +14,8 @@ import {
   generatePnpmDevToolCompass,
   DevToolsRegistry,
   CapabilityResolver,
-  RustToolingDoctor
+  RustToolingDoctor,
+  NodeModulesAffordanceEngine
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -113,6 +114,25 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             version: {
               type: 'string',
               description: 'Target version (e.g. 12.11.2 or latest)',
+            },
+          },
+          required: ['package_name'],
+        },
+      },
+      {
+        name: 'tcdi_affordance',
+        description:
+          'Local node_modules Affordance: Grounding tool that inspects physically installed packages in node_modules, parsing .d.ts files to return verified exported hooks, components, functions, and README code snippets directly from disk.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            package_name: {
+              type: 'string',
+              description: 'Target package name installed in node_modules (e.g. react-native-reanimated, cac)',
+            },
+            project_root: {
+              type: 'string',
+              description: 'Optional path to project root (defaults to current working directory)',
             },
           },
           required: ['package_name'],
@@ -344,6 +364,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const manifest = resolver.inspectPackageCapabilities(packageName, version);
       return {
         content: [{ type: 'text', text: JSON.stringify(manifest, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_affordance') {
+      const packageName = args?.package_name as string;
+      const projectRoot = (args?.project_root as string) || process.cwd();
+      const engine = new NodeModulesAffordanceEngine(projectRoot);
+      const card = engine.generateAffordance(packageName);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(card, null, 2) }],
       };
     }
 

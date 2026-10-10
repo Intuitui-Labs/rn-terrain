@@ -79,9 +79,24 @@ export function generateAgentCompass(
         identifier: 'useAnimatedGestureHandler',
         status: 'UNSUPPORTED_REMOVED',
         replacement: 'Gesture.Pan().onUpdate(...)',
-        codemodHint: 'Migrate to RNGH v2 Gestures'
+        codemodHint: 'Migrate to RNGH Gestures: <GestureDetector gesture={Gesture.Pan().onUpdate(...)} />'
       });
-      allowedModernSymbols.push('useAnimatedStyle', 'useSharedValue', 'withSpring', 'withTiming');
+      bannedSeveredSymbols.push({
+        identifier: 'interpolateNode',
+        status: 'UNSUPPORTED_REMOVED',
+        replacement: 'interpolate',
+        codemodHint: 'Replace legacy interpolateNode with modern interpolate'
+      });
+      allowedModernSymbols.push(
+        'useAnimatedStyle',
+        'useSharedValue',
+        'withSpring',
+        'withTiming',
+        'FadeIn',
+        'FadeOut',
+        'LinearTransition',
+        'react-native-worklets'
+      );
     }
   }
 

@@ -11,7 +11,8 @@ import {
   generatePnpmDevToolCompass,
   ArchiveDatasetSeeder,
   CapabilityResolver,
-  RustToolingDoctor
+  RustToolingDoctor,
+  NodeModulesAffordanceEngine
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -697,6 +698,59 @@ cli
       }
     } catch (e: any) {
       consola.error('Failed to inspect package capabilities:', e.message);
+    }
+  });
+
+cli
+  .command('affordance <package> [cwd]', 'Inspect physical node_modules installation, types (.d.ts), and code graph affordances')
+  .option('--json', 'Output raw JSON for agent injection')
+  .action((packageName, cwd = process.cwd(), options) => {
+    try {
+      const engine = new NodeModulesAffordanceEngine(cwd);
+      const card = engine.generateAffordance(packageName);
+
+      if (options.json) {
+        console.log(JSON.stringify(card, null, 2));
+        return;
+      }
+
+      console.log(`\n${chalk.bold.underline(`📂  PHYSICAL NODE_MODULES AFFORDANCE: ${card.packageName}@${card.installedVersion}`)}`);
+      console.log(`Path: ${chalk.cyan(card.packagePath)}`);
+      if (card.typesEntrypoint) {
+        console.log(`Types: ${chalk.green(card.typesEntrypoint)}`);
+      }
+      console.log(`Symbols Detected in .d.ts: ${chalk.bold(card.exportedSymbolsCount)}`);
+      console.log('');
+
+      if (card.exportedHooks.length > 0) {
+        console.log(chalk.green.bold('🎣 GROUNDED HOOKS:'));
+        console.log(`  ${card.exportedHooks.join(', ')}`);
+        console.log('');
+      }
+
+      if (card.exportedComponents.length > 0) {
+        console.log(chalk.cyan.bold('🧩 GROUNDED COMPONENTS:'));
+        console.log(`  ${card.exportedComponents.join(', ')}`);
+        console.log('');
+      }
+
+      if (card.exportedFunctions.length > 0) {
+        console.log(chalk.blue.bold('⚡ GROUNDED FUNCTIONS:'));
+        console.log(`  ${card.exportedFunctions.slice(0, 15).join(', ')}`);
+        console.log('');
+      }
+
+      if (card.usageSnippet) {
+        console.log(chalk.yellow.bold('📖 EXTRACTED CODE SNIPPET (FROM README/EXAMPLE):'));
+        console.log(chalk.dim(card.usageSnippet));
+        console.log('');
+      }
+
+      console.log(chalk.magenta.bold('📋 PRE-FLIGHT AGENT PROMPT:'));
+      console.log(chalk.dim(card.preflightInstruction));
+      console.log('');
+    } catch (e: any) {
+      consola.error('Failed to generate affordance:', e.message);
     }
   });
 

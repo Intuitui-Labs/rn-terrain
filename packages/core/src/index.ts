@@ -22,3 +22,4 @@ export * from './ingestion/archive-seeder.js';
 export * from './capabilities/capability-model.js';
 export * from './capabilities/capability-resolver.js';
 export * from './capabilities/doctor.js';
+export * from './compass/node-modules-affordance.js';
