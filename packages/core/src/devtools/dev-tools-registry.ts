@@ -6,6 +6,7 @@
  * and Rust "Shiny Tools") that React Native ecosystems depend on.
  */
 
+import type { TerrainCatalogPort } from '../db/catalog-port.js';
 import { CanonicalDatabase } from '../db/sqlite-client.js';
 import type { DevToolRecord } from '../db/canonical-schema.js';
 
@@ -122,7 +123,7 @@ export const CANONICAL_DEV_TOOLS: DevToolMetadata[] = [
 ];
 
 export class DevToolsRegistry {
-  constructor(private readonly db: CanonicalDatabase) {}
+  constructor(private readonly db: TerrainCatalogPort) {}
 
   public seedDefaults(): void {
     for (const tool of CANONICAL_DEV_TOOLS) {

@@ -1,6 +1,6 @@
 {
   "name": "@intuitui-labs/openeval",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Transparent, participatory evaluation and recommendation framework for complex ecosystems and catalog intelligence.",
   "type": "module",
   "sideEffects": false,

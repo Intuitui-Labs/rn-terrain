@@ -8,8 +8,11 @@
 
 import Database from 'better-sqlite3';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { TerrainCatalogPort, PackageFilter } from './catalog-port.js';
+import { EmbeddedCatalogAdapter } from './embedded-catalog.js';
 import {
   MASTER_DDL,
   type PackageRecord,
@@ -27,15 +30,30 @@ import {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DEFAULT_DB_PATH = path.resolve(__dirname, '../../data/rn-terrain-canonical.db');
+const LOCAL_DEV_DB_PATH = path.resolve(__dirname, '../../data/rn-terrain-canonical.db');
+const USER_CACHE_DB_PATH = path.join(os.homedir(), '.rn-terrain', 'terrain.db');
 
-export class CanonicalDatabase {
+export function resolveDefaultDatabasePath(): string {
+  if (process.env.RN_TERRAIN_DB_PATH) {
+    return process.env.RN_TERRAIN_DB_PATH;
+  }
+  if (fs.existsSync(LOCAL_DEV_DB_PATH)) {
+    return LOCAL_DEV_DB_PATH;
+  }
+  return USER_CACHE_DB_PATH;
+}
+
+export class CanonicalDatabase implements TerrainCatalogPort {
   public readonly db: InstanceType<typeof Database>;
 
-  constructor(dbPath: string = DEFAULT_DB_PATH) {
+  constructor(dbPath: string = resolveDefaultDatabasePath()) {
     const dir = path.dirname(dbPath);
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      try {
+        fs.mkdirSync(dir, { recursive: true });
+      } catch {
+        // Handled if restricted
+      }
     }
     this.db = new Database(dbPath);
     this.db.pragma('foreign_keys = ON');
@@ -370,6 +388,129 @@ export class CanonicalDatabase {
   public getAllRadarRecords(): TechnologyRadarRecord[] {
     const stmt = this.db.prepare('SELECT * FROM technology_radar ORDER BY verdict, id ASC');
     return stmt.all() as TechnologyRadarRecord[];
+  }
+
+  // ─── TerrainCatalogPort Protocol Aliases ────────────────────────────────────
+
+  public listPackages(filter?: PackageFilter): PackageRecord[] {
+    let pkgs = this.getAllPackages();
+    if (filter?.vendor) pkgs = pkgs.filter((p) => p.vendor === filter.vendor);
+    if (filter?.category) pkgs = pkgs.filter((p) => p.category === filter.category);
+    if (filter?.tier) pkgs = pkgs.filter((p) => p.tier === filter.tier);
+    return pkgs;
+  }
+
+  public upsertPackageVersion(v: PackageVersionRecord): void {
+    this.upsertVersion(v);
+  }
+
+  public getPackageVersions(packageId: string): PackageVersionRecord[] {
+    return this.getVersions(packageId);
+  }
+
+  public upsertApiSymbol(s: ApiSymbolRecord): void {
+    this.upsertSymbol(s);
+  }
+
+  public getApiSymbols(packageId: string, version?: string): ApiSymbolRecord[] {
+    if (version) {
+      return this.getSymbols(packageId, version);
+    }
+    const stmt = this.db.prepare('SELECT * FROM api_symbols WHERE package_id = ?');
+    return stmt.all(packageId) as ApiSymbolRecord[];
+  }
+
+  public getSeveredSymbols(packageId: string): ApiSymbolRecord[] {
+    const stmt = this.db.prepare(`
+      SELECT * FROM api_symbols 
+      WHERE package_id = ? AND status IN ('UNSUPPORTED_REMOVED', 'BROKEN_DEFECTIVE')
+    `);
+    return stmt.all(packageId) as ApiSymbolRecord[];
+  }
+
+  public upsertCompatibilityMatrix(m: CompatibilityMatrixRecord): void {
+    this.insertMatrixSlice(m);
+  }
+
+  public getCompatibilityMatrix(packageA: string, packageB: string): CompatibilityMatrixRecord[] {
+    const comboKey = `${packageA}__${packageB}`;
+    return this.getCompatibility(comboKey);
+  }
+
+  public getRadarRecords(verdict?: string): TechnologyRadarRecord[] {
+    const all = this.getAllRadarRecords();
+    if (!verdict) return all;
+    return all.filter((r) => r.verdict.toUpperCase() === verdict.toUpperCase());
+  }
+
+  public listDevTools(category?: string): DevToolRecord[] {
+    const all = this.getAllDevTools();
+    if (!category) return all;
+    return all.filter((t) => t.category === category);
+  }
+
+  public upsertGranularCapability(c: GranularCapabilityRecord): void {
+    this.upsertCapability(c);
+  }
+
+  public listGranularCapabilities(category?: string): GranularCapabilityRecord[] {
+    const all = this.getAllCapabilities();
+    if (!category) return all;
+    return all.filter((c) => c.category === category);
+  }
+
+  public upsertPackageCapability(m: PackageCapabilityRecord): void {
+    this.linkPackageCapability({
+      package_id: m.package_id,
+      version_introduced: m.version_introduced,
+      version_deprecated: m.version_deprecated,
+      version_severed: m.version_severed,
+      capability_id: m.capability_id,
+      quality_tier: m.quality_tier,
+      performance_profile: m.performance_profile,
+      caveats: m.caveats,
+    });
+  }
+
+  public getProvidersForCapability(
+    capabilityId: string
+  ): { packageId: string; qualityTier: string; performanceProfile: string | null }[] {
+    const pkgs = this.getPackagesByCapability(capabilityId);
+    return pkgs.map((p) => ({
+      packageId: p.package_id,
+      qualityTier: p.quality_tier,
+      performanceProfile: p.performance_profile ?? null,
+    }));
+  }
+
+  public getLatestVersion(packageId: string): PackageVersionRecord | null {
+    const versions = this.getVersions(packageId);
+    return versions[0] || null;
+  }
+
+  public getRadarRecord(id: string): TechnologyRadarRecord | null {
+    const stmt = this.db.prepare('SELECT * FROM technology_radar WHERE id = ?');
+    return (stmt.get(id) as TechnologyRadarRecord | undefined) || null;
+  }
+
+  public getPackageCapabilities(packageId: string): PackageCapabilityRecord[] {
+    const stmt = this.db.prepare('SELECT * FROM package_capabilities WHERE package_id = ?');
+    return stmt.all(packageId) as PackageCapabilityRecord[];
+  }
+}
+
+/**
+ * Universal catalog factory: Returns a TerrainCatalogPort instance.
+ * Automatically falls back to EmbeddedCatalogAdapter if SQLite fails to initialize.
+ */
+export function createCatalog(options?: { inMemoryOnly?: boolean; dbPath?: string }): TerrainCatalogPort {
+  if (options?.inMemoryOnly) {
+    return new EmbeddedCatalogAdapter();
+  }
+  try {
+    return new CanonicalDatabase(options?.dbPath);
+  } catch {
+    return new EmbeddedCatalogAdapter();
   }
 }
 

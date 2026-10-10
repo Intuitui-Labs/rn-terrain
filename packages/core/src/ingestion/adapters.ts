@@ -14,41 +14,119 @@ import {
   type NpmPackageMetadata,
   type BundlephobiaSizeMetrics
 } from './ports.js';
+import { SovereignCacheAdapter } from '../db/sovereign-cache.js';
 import { CanonicalDatabase } from '../db/sqlite-client.js';
 import type { PackageRecord, PackageVersionRecord, ApiSymbolRecord } from '../db/canonical-schema.js';
 
 /**
- * React Native Directory Adapter
+ * React Native Directory Adapter (Live API + Sovereign Cache + Foundational Snapshot)
  */
 export class ReactNativeDirectoryAdapter implements IRnDirectoryPort {
+  private readonly cache = new SovereignCacheAdapter();
+  private readonly cacheKey = 'rn_directory_catalog_v1';
+  private readonly apiUrl = 'https://reactnative.directory/api/libraries';
+
+  private readonly fallbackCatalog: RnDirectoryPackageInfo[] = [
+    {
+      name: 'react-native-gesture-handler',
+      npmPkg: 'react-native-gesture-handler',
+      githubUrl: 'https://github.com/software-mansion/react-native-gesture-handler',
+      supportsNewArchitecture: true,
+      isExpoCompatible: true,
+      category: 'gesture-system'
+    },
+    {
+      name: 'react-native-reanimated',
+      npmPkg: 'react-native-reanimated',
+      githubUrl: 'https://github.com/software-mansion/react-native-reanimated',
+      supportsNewArchitecture: true,
+      isExpoCompatible: true,
+      category: 'animation'
+    },
+    {
+      name: 'react-native-screens',
+      npmPkg: 'react-native-screens',
+      githubUrl: 'https://github.com/software-mansion/react-native-screens',
+      supportsNewArchitecture: true,
+      isExpoCompatible: true,
+      category: 'navigation'
+    },
+    {
+      name: '@shopify/react-native-skia',
+      npmPkg: '@shopify/react-native-skia',
+      githubUrl: 'https://github.com/shopify/react-native-skia',
+      supportsNewArchitecture: true,
+      isExpoCompatible: true,
+      category: '2d-graphics'
+    },
+    {
+      name: 'react-native-mmkv',
+      npmPkg: 'react-native-mmkv',
+      githubUrl: 'https://github.com/mrousavy/react-native-mmkv',
+      supportsNewArchitecture: true,
+      isExpoCompatible: true,
+      category: 'storage'
+    },
+    {
+      name: '@shopify/flash-list',
+      npmPkg: '@shopify/flash-list',
+      githubUrl: 'https://github.com/Shopify/flash-list',
+      supportsNewArchitecture: true,
+      isExpoCompatible: true,
+      category: 'list-rendering'
+    }
+  ];
+
   async fetchDirectoryCatalog(): Promise<RnDirectoryPackageInfo[]> {
-    // Curated foundational directory packages
-    return [
-      {
-        name: 'react-native-gesture-handler',
-        npmPkg: 'react-native-gesture-handler',
-        githubUrl: 'https://github.com/software-mansion/react-native-gesture-handler',
-        supportsNewArchitecture: true,
-        isExpoCompatible: true,
-        category: 'gesture-system'
-      },
-      {
-        name: 'react-native-reanimated',
-        npmPkg: 'react-native-reanimated',
-        githubUrl: 'https://github.com/software-mansion/react-native-reanimated',
-        supportsNewArchitecture: true,
-        isExpoCompatible: true,
-        category: 'animation'
-      },
-      {
-        name: 'react-native-screens',
-        npmPkg: 'react-native-screens',
-        githubUrl: 'https://github.com/software-mansion/react-native-screens',
-        supportsNewArchitecture: true,
-        isExpoCompatible: true,
-        category: 'navigation'
+    // 1. Check local sovereign cache (TTL: 24h = 86400s)
+    const cached = this.cache.get<RnDirectoryPackageInfo[]>(this.cacheKey);
+    if (cached && Array.isArray(cached) && cached.length > 0) {
+      return cached;
+    }
+
+    // 2. Fetch live from React Native Directory API
+    try {
+      const res = await fetch(this.apiUrl, {
+        headers: { 'User-Agent': 'rn-terrain-hexagonal-ingestion' },
+        signal: AbortSignal.timeout(6000)
+      });
+
+      if (res.ok) {
+        const json = (await res.json()) as {
+          libraries?: Array<{
+            npmPkg?: string;
+            githubUrl?: string;
+            newArchitecture?: boolean;
+            github?: {
+              configPlugin?: boolean;
+              topicSearchString?: string;
+            };
+          }>;
+        };
+
+        if (json.libraries && Array.isArray(json.libraries)) {
+          const mapped: RnDirectoryPackageInfo[] = json.libraries
+            .filter((lib) => Boolean(lib.npmPkg))
+            .map((lib) => ({
+              name: lib.npmPkg!,
+              npmPkg: lib.npmPkg!,
+              githubUrl: lib.githubUrl || `https://www.npmjs.com/package/${lib.npmPkg}`,
+              supportsNewArchitecture: Boolean(lib.newArchitecture),
+              isExpoCompatible: Boolean(lib.github?.configPlugin),
+              category: 'community-directory'
+            }));
+
+          if (mapped.length > 0) {
+            this.cache.set(this.cacheKey, mapped, 86400);
+            return mapped;
+          }
+        }
       }
-    ];
+    } catch {
+      // Offline, timeout, or restricted network environment: smoothly fallback
+    }
+
+    return this.fallbackCatalog;
   }
 }
 

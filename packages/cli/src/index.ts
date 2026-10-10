@@ -2,6 +2,7 @@
 import {
   getVitalityCard,
   scanProject,
+  createCatalog,
   CanonicalDatabase,
   PolicyGate,
   generateAgentCompass,
@@ -18,7 +19,12 @@ import {
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
-import { AgentGuardrail, TcdiStackDoctor } from '@intuitui-labs/rn-terrain-scanner';
+import {
+  AgentGuardrail,
+  TcdiStackDoctor,
+  TcdiDependencyDoctor,
+  ExpoDoctorBridge
+} from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
 import { cac } from 'cac';
 import chalk from 'chalk';
@@ -710,6 +716,141 @@ cli
       execSync(`npx react-doctor@latest ${passArgs}`, { stdio: 'inherit' });
     } catch (e: any) {
       consola.error('React Doctor encountered issues or exited with non-zero code.');
+    }
+  });
+
+cli
+  .command('doctor:deps [projectDir]', 'TCDI Dependency Doctor: Audit manifest against Sacred Native Pins and dialect drift')
+  .action((projectDir = '.') => {
+    try {
+      const resolved = path.resolve(projectDir);
+      const pkgPath = path.join(resolved, 'package.json');
+      if (!fs.existsSync(pkgPath)) {
+        consola.error(`No package.json found at ${resolved}`);
+        return;
+      }
+
+      console.log(`\n${chalk.bold.underline('🛡️  TCDI DEPENDENCY & SACRED PIN DOCTOR')}`);
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+      console.log(`  Target Project:  ${chalk.cyan.bold(resolved)}`);
+
+      const doctor = new TcdiDependencyDoctor();
+      const report = doctor.auditManifest(pkgPath);
+
+      console.log(`  Scanned Deps:    ${chalk.bold(report.totalDependenciesScanned)}`);
+      console.log(`  Sacred Pins:     ${chalk.bold(report.sacredPinsChecked)} evaluated`);
+      console.log(`  Status:          ${report.isHealthy ? chalk.green.bold('CLEAN (All sacred pins respected)') : chalk.red.bold(`${report.errorsCount} errors, ${report.warningsCount} warnings`)}`);
+      console.log('');
+
+      if (report.issues.length === 0) {
+        consola.success('All native module pins and framework versions strictly conform to canonical guidelines!');
+      } else {
+        console.log(chalk.bold('DEPENDENCY ISSUES:'));
+        for (const issue of report.issues) {
+          const badge = issue.severity === 'error' ? chalk.red.bold('❌ [ERROR]') : chalk.yellow.bold('⚠️  [WARN]');
+          console.log(`  ${badge} ${chalk.bold(issue.packageName)} (${chalk.cyan(issue.currentVersion)})`);
+          console.log(`     ${chalk.dim('Rule:')}         ${issue.ruleType}`);
+          console.log(`     ${chalk.yellow('Detail:')}       ${issue.message}`);
+          console.log(`     ${chalk.green('Remediation:')}  ${issue.remediation}`);
+          console.log('');
+        }
+      }
+    } catch (e: any) {
+      consola.error('Failed to run Dependency Doctor:', e.message);
+    }
+  });
+
+cli
+  .command('doctor:expo [projectDir]', 'Expo Doctor Bridge: Inspect Expo SDK version and native module compliance')
+  .action((projectDir = '.') => {
+    try {
+      const resolved = path.resolve(projectDir);
+      console.log(`\n${chalk.bold.underline('📱  EXPO DOCTOR COMPLIANCE BRIDGE')}`);
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+      console.log(`  Target Project:  ${chalk.cyan.bold(resolved)}`);
+
+      const bridge = new ExpoDoctorBridge();
+      const res = bridge.auditExpoProject(resolved);
+
+      if (!res.isExpoProject) {
+        consola.info('Project is a bare React Native project (expo dependency not declared).');
+        return;
+      }
+
+      console.log(`  Expo SDK:        ${chalk.cyan.bold(`SDK ${res.expoSdkVersion}`)}`);
+      console.log(`  Status:          ${res.status === 'VALID' ? chalk.green.bold('VALID') : chalk.yellow.bold('WARNINGS_DETECTED')}`);
+      console.log('');
+      console.log(chalk.dim(res.output));
+      console.log('');
+
+      if (res.advice.length > 0) {
+        for (const adv of res.advice) {
+          console.log(`  💡 ${chalk.green(adv)}`);
+        }
+        console.log('');
+      }
+    } catch (e: any) {
+      consola.error('Failed to run Expo Doctor Bridge:', e.message);
+    }
+  });
+
+cli
+  .command('doctor:all [projectDir]', 'Unified Multi-Diagnostic: Run Stack, Dependency, Expo, and Rust Tooling diagnostics')
+  .action((projectDir = '.') => {
+    try {
+      const resolved = path.resolve(projectDir);
+      console.log(`\n${chalk.bold.bgBlue(' 🩺  RN-TERRAIN UNIFIED ECOSYSTEM DOCTOR ')}`);
+      console.log(chalk.dim('═════════════════════════════════════════════════════════════════'));
+      console.log(`  Auditing workspace: ${chalk.cyan.bold(resolved)}\n`);
+
+      // 1. Rust Tooling
+      console.log(chalk.bold('1. SOVEREIGN RUST TOOLING LAYER:'));
+      const rustDoctor = new RustToolingDoctor();
+      const rustReport = rustDoctor.runDiagnostic();
+      const activeRustTools = rustReport.installedCount;
+      console.log(`   ${chalk.green('✓')} Found ${chalk.bold(activeRustTools)} active Rust high-performance tools.\n`);
+
+      // 2. Dependency Doctor
+      console.log(chalk.bold('2. SACRED NATIVE PINS & MANIFEST HEALTH:'));
+      const pkgPath = path.join(resolved, 'package.json');
+      let depErrors = 0;
+      let depWarnings = 0;
+      if (fs.existsSync(pkgPath)) {
+        const depDoctor = new TcdiDependencyDoctor();
+        const depReport = depDoctor.auditManifest(pkgPath);
+        depErrors = depReport.errorsCount;
+        depWarnings = depReport.warningsCount;
+        if (depReport.isHealthy) {
+          console.log(`   ${chalk.green('✓')} All native dependencies conform to Sacred Pins.`);
+        } else {
+          console.log(`   ${chalk.yellow('⚠️')} Detected ${depErrors} errors, ${depWarnings} warnings in dependencies.`);
+        }
+      } else {
+        console.log(`   ${chalk.dim('ℹ No package.json in current directory, skipping manifest pin check.')}`);
+      }
+      console.log('');
+
+      // 3. Expo Bridge
+      console.log(chalk.bold('3. EXPO SDK ECOSYSTEM ALIGNMENT:'));
+      const expoBridge = new ExpoDoctorBridge();
+      const expoRes = expoBridge.auditExpoProject(resolved);
+      if (expoRes.isExpoProject) {
+        console.log(`   ${chalk.green('✓')} Expo SDK ${expoRes.expoSdkVersion} detected: ${expoRes.status}`);
+      } else {
+        console.log(`   ${chalk.dim('ℹ Bare React Native project detected.')}`);
+      }
+      console.log('');
+
+      // Executive Scorecard
+      let overallScore = 100 - (depErrors * 20) - (depWarnings * 5);
+      if (activeRustTools < 2) overallScore -= 10;
+      if (overallScore < 0) overallScore = 0;
+
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+      console.log(`  EXECUTIVE SCORE: ${overallScore >= 80 ? chalk.green.bold(overallScore) : chalk.yellow.bold(overallScore)} / 100`);
+      console.log(chalk.dim('═════════════════════════════════════════════════════════════════\n'));
+    } catch (e: any) {
+      consola.error('Failed to run unified doctor:', e.message);
     }
   });
 

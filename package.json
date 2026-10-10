@@ -1,6 +1,6 @@
 {
   "name": "rn-terrain",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "The live intelligence layer for the React Native ecosystem.",
@@ -14,6 +14,10 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "clean": "pnpm -r run clean",
+    "deps:check": "pnpm dlx taze -r",
+    "deps:audit": "pnpm dlx taze major -r --no-node-version",
+    "deps:upgrade": "pnpm dlx taze -r -w && pnpm install",
+    "deps:upgrade:major": "pnpm dlx taze major -r -w && pnpm install",
     "atlas:dev": "pnpm --filter github-atlas dev",
     "atlas:build": "pnpm --filter github-atlas build",
     "atlas:collect": "pnpm --filter github-atlas collect"
@@ -25,7 +29,7 @@
     "vitest": "catalog:"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.1",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "better-sqlite3": "^13.0.3"
   }
 }

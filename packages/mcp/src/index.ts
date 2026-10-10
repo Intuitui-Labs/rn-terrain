@@ -17,6 +17,7 @@ import {
   getEcosystemTopology,
   getVitalityCard,
   scanProject,
+  createCatalog,
   CanonicalDatabase,
   PolicyGate,
   generateAgentCompass,
@@ -28,13 +29,18 @@ import {
   NodeModulesAffordanceEngine,
   CuratedKnowledgeBridge
 } from '@intuitui-labs/rn-terrain-core';
-import { AgentGuardrail, TcdiStackDoctor } from '@intuitui-labs/rn-terrain-scanner';
+import {
+  AgentGuardrail,
+  TcdiStackDoctor,
+  TcdiDependencyDoctor,
+  ExpoDoctorBridge
+} from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
 
 const server = new Server(
   {
     name: 'rn-terrain-mcp',
-    version: '0.2.0',
+    version: '0.3.0',
   },
   {
     capabilities: {
@@ -377,6 +383,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['code_snippet'],
         },
       },
+      {
+        name: 'tcdi_doctor_deps',
+        description:
+          'Audits project manifest (package.json) against Sacred Native Pins, floating range hazards, and dialect drift (React 19 vs RN 0.76).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            project_dir: {
+              type: 'string',
+              description: 'Target project directory containing package.json (defaults to current working directory)',
+            },
+          },
+        },
+      },
+      {
+        name: 'tcdi_doctor_expo',
+        description:
+          'Inspects Expo SDK alignment, configuration, and native module compatibility via Expo Doctor.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            project_dir: {
+              type: 'string',
+              description: 'Target project directory (defaults to current working directory)',
+            },
+          },
+        },
+      },
+      {
+        name: 'tcdi_doctor_all',
+        description:
+          'Runs the universal multi-diagnostic scorecard: Sovereign Rust Tooling, TCDI Stack Doctor, Dependency Sacred Pins, and Expo SDK Compliance.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            project_dir: {
+              type: 'string',
+              description: 'Target project directory (defaults to current working directory)',
+            },
+          },
+        },
+      },
     ],
   };
 });
@@ -654,6 +702,65 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const report = doctor.diagnoseSnippet(codeSnippet, filePath);
       return {
         content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_doctor_deps') {
+      const projectDir = (args?.project_dir as string) || process.cwd();
+      const pkgPath = path.resolve(projectDir, 'package.json');
+      if (!fs.existsSync(pkgPath)) {
+        return {
+          content: [{ type: 'text', text: JSON.stringify({ error: `package.json not found in ${projectDir}` }, null, 2) }],
+        };
+      }
+      const doctor = new TcdiDependencyDoctor();
+      const report = doctor.auditManifest(pkgPath);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_doctor_expo') {
+      const projectDir = (args?.project_dir as string) || process.cwd();
+      const bridge = new ExpoDoctorBridge();
+      const report = bridge.auditExpoProject(projectDir);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_doctor_all') {
+      const projectDir = (args?.project_dir as string) || process.cwd();
+      const rustDoctor = new RustToolingDoctor();
+      const rustReport = rustDoctor.runDiagnostic();
+
+      let depReport = null;
+      const pkgPath = path.resolve(projectDir, 'package.json');
+      if (fs.existsSync(pkgPath)) {
+        const depDoctor = new TcdiDependencyDoctor();
+        depReport = depDoctor.auditManifest(pkgPath);
+      }
+
+      const expoBridge = new ExpoDoctorBridge();
+      const expoReport = expoBridge.auditExpoProject(projectDir);
+
+      const combinedScorecard = {
+        projectDir,
+        timestamp: new Date().toISOString(),
+        rustTooling: rustReport,
+        dependenciesAndSacredPins: depReport,
+        expoSdk: expoReport,
+        summary: {
+          hasPackageManifest: Boolean(depReport),
+          isExpoProject: expoReport.isExpoProject,
+          sacredPinsHealthy: depReport?.isHealthy ?? true,
+          depErrorsCount: depReport?.errorsCount ?? 0,
+          depWarningsCount: depReport?.warningsCount ?? 0,
+        },
+      };
+
+      return {
+        content: [{ type: 'text', text: JSON.stringify(combinedScorecard, null, 2) }],
       };
     }
 

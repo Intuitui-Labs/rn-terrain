@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
+import type { TerrainCatalogPort } from '../db/catalog-port.js';
 import { CanonicalDatabase } from '../db/sqlite-client.js';
 import type { TechnologyRadarRecord } from '../db/canonical-schema.js';
 
@@ -29,7 +30,7 @@ export class CuratedKnowledgeBridge {
   private readonly defaultXPath = 'C:\\x';
 
   constructor(
-    private readonly db: CanonicalDatabase,
+    private readonly db: TerrainCatalogPort,
     private readonly xRoot: string = 'C:\\x'
   ) {}
 
@@ -132,7 +133,7 @@ export class CuratedKnowledgeBridge {
         dependencies++;
 
         if (pkgData.sacred) {
-          this.db.upsertVersion({
+          const vRecord = {
             package_id: pkgId,
             version: String(pkgData.sacred),
             valid_from_epoch: now,
@@ -141,7 +142,12 @@ export class CuratedKnowledgeBridge {
             react_native_max: null,
             supports_new_arch: 1,
             tarball_url: null,
-          });
+          };
+          if (this.db.upsertVersion) {
+            this.db.upsertVersion(vRecord);
+          } else if (this.db.upsertPackageVersion) {
+            this.db.upsertPackageVersion(vRecord);
+          }
           sacredPins++;
         }
       }
@@ -279,8 +285,9 @@ export class CuratedKnowledgeBridge {
     fs.writeFileSync(dangerZonesPath, dangerZonesContent, 'utf-8');
 
     // ─── 2. CURRENT-STATE.md ─────────────────────────────────────────────────
-    const packages = this.db.getAllPackages().filter((p) => p.tier === 'CORE');
-    const tools = this.db.getAllDevTools();
+    const allPkgs = this.db.getAllPackages ? this.db.getAllPackages() : (this.db.listPackages ? this.db.listPackages() : []);
+    const packages = allPkgs.filter((p: any) => p.tier === 'CORE');
+    const tools = this.db.getAllDevTools ? this.db.getAllDevTools() : (this.db.listDevTools ? this.db.listDevTools() : []);
 
     const currentStateContent = `# 🧭 CURRENT STATE: Sacred Platform Pins & Grounded APIs
 *Auto-synthesized by rn-terrain CuratedKnowledgeBridge from C:\\x knowledge vault*
@@ -295,8 +302,9 @@ export class CuratedKnowledgeBridge {
 | Package | Sacred Pin | Category | New Architecture | Role & Architectural Purpose |
 | :--- | :--- | :--- | :--- | :--- |
 ${packages
-  .map((p) => {
-    const version = this.db.getVersions(p.id)[0]?.version ?? 'latest';
+  .map((p: any) => {
+    const vList = this.db.getVersions ? this.db.getVersions(p.id) : (this.db.getPackageVersions ? this.db.getPackageVersions(p.id) : []);
+    const version = vList[0]?.version ?? 'latest';
     return `| \`${p.id}\` | \`${version}\` | \`${p.category}\` | Fabric / TurboModule | Grounded in \`dependency-annotations.yaml\` |`;
   })
   .join('\n')}
@@ -307,7 +315,7 @@ ${packages
 | Tool | Category | Status | Primary Purpose & Interop Notes |
 | :--- | :--- | :--- | :--- |
 ${tools
-  .map((t) => `| \`${t.id}\` | \`${t.category}\` | \`${t.status}\` | ${t.primary_advantage ?? 'Standard tool'} (${t.rn_compatibility_notes ?? 'OK'}) |`)
+  .map((t: any) => `| \`${t.id}\` | \`${t.category}\` | \`${t.status}\` | ${t.primary_advantage ?? 'Standard tool'} (${t.rn_compatibility_notes ?? 'OK'}) |`)
   .join('\n')}
 
 ---
