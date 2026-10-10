@@ -144,7 +144,38 @@ CREATE TABLE IF NOT EXISTS dev_tools_ecosystem (
   rn_compatibility_notes TEXT,
   docs_url TEXT
 );
+
+-- 9. Granular Capabilities Registry
+CREATE TABLE IF NOT EXISTS granular_capabilities (
+  id TEXT PRIMARY KEY,                       -- e.g. 'gesture.pan_recognition', 'storage.synchronous_kv', 'monorepo.polyglot_rust_build', 'agent.skills_protocol'
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,                    -- 'GESTURE', 'ANIMATION', 'STORAGE', 'NETWORKING', 'MONOREPO', 'AGENT_TOOLING', 'RUST_COMPUTE'
+  description TEXT,
+  level TEXT NOT NULL DEFAULT 'PRIMITIVE',   -- 'PRIMITIVE', 'COMPOSED', 'ARCHITECTURAL'
+  fabric_native_required INTEGER NOT NULL DEFAULT 0,
+  alternative_capabilities TEXT              -- JSON array of alternate capability IDs
+);
+
+-- 10. Package & Tool Capabilities Mapping (Bitemporal)
+CREATE TABLE IF NOT EXISTS package_capabilities (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  package_id TEXT NOT NULL,
+  version_introduced TEXT NOT NULL,
+  version_deprecated TEXT,
+  version_severed TEXT,
+  capability_id TEXT NOT NULL,
+  quality_tier TEXT NOT NULL DEFAULT 'CANONICAL', -- 'CANONICAL', 'INCUBATING', 'LEGACY_BRIDGED'
+  performance_profile TEXT,                  -- 'UI_THREAD_NATIVE', 'JS_THREAD_ASYNC', 'WORKLET_NATIVE'
+  caveats TEXT,
+  FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE CASCADE,
+  FOREIGN KEY (capability_id) REFERENCES granular_capabilities(id) ON DELETE CASCADE,
+  UNIQUE (package_id, capability_id, version_introduced)
+);
+
+CREATE INDEX IF NOT EXISTS idx_pkg_capabilities_lookup 
+  ON package_capabilities(capability_id, package_id);
 `;
+
 
 export type SymbolLifecycleStatus =
   | 'NEW_CAPABILITY'
@@ -253,3 +284,26 @@ export interface DevToolRecord {
   rn_compatibility_notes: string | null;
   docs_url: string | null;
 }
+
+export interface GranularCapabilityRecord {
+  id: string;
+  name: string;
+  category: 'GESTURE' | 'ANIMATION' | 'STORAGE' | 'NETWORKING' | 'MONOREPO' | 'AGENT_TOOLING' | 'RUST_COMPUTE' | 'UI_COMPONENT';
+  description: string | null;
+  level: 'PRIMITIVE' | 'COMPOSED' | 'ARCHITECTURAL';
+  fabric_native_required: number; // 0 or 1
+  alternative_capabilities?: string | null; // JSON array
+}
+
+export interface PackageCapabilityRecord {
+  id?: number;
+  package_id: string;
+  version_introduced: string;
+  version_deprecated?: string | null;
+  version_severed?: string | null;
+  capability_id: string;
+  quality_tier: 'CANONICAL' | 'INCUBATING' | 'LEGACY_BRIDGED';
+  performance_profile?: 'UI_THREAD_NATIVE' | 'JS_THREAD_ASYNC' | 'WORKLET_NATIVE' | null;
+  caveats?: string | null;
+}
+

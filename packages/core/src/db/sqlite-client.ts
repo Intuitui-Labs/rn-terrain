@@ -19,7 +19,9 @@ import {
   type CompatibilityMatrixRecord,
   type EvalScoreRecord,
   type DecisionActionRecord,
-  type DevToolRecord
+  type DevToolRecord,
+  type GranularCapabilityRecord,
+  type PackageCapabilityRecord
 } from './canonical-schema.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -252,6 +254,81 @@ export class CanonicalDatabase {
   public getAllDevTools(): DevToolRecord[] {
     const stmt = this.db.prepare('SELECT * FROM dev_tools_ecosystem ORDER BY category, id');
     return stmt.all() as DevToolRecord[];
+  }
+
+  // ─── Granular Capabilities ──────────────────────────────────────────────────
+
+  public upsertCapability(cap: GranularCapabilityRecord): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO granular_capabilities (
+        id, name, category, description, level, fabric_native_required, alternative_capabilities
+      ) VALUES (
+        @id, @name, @category, @description, @level, @fabric_native_required, @alternative_capabilities
+      )
+      ON CONFLICT(id) DO UPDATE SET
+        name = excluded.name,
+        category = excluded.category,
+        description = excluded.description,
+        level = excluded.level,
+        fabric_native_required = excluded.fabric_native_required,
+        alternative_capabilities = excluded.alternative_capabilities
+    `);
+    stmt.run({
+      ...cap,
+      description: cap.description ?? null,
+      alternative_capabilities: cap.alternative_capabilities ?? null
+    });
+  }
+
+  public linkPackageCapability(link: PackageCapabilityRecord): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO package_capabilities (
+        package_id, version_introduced, version_deprecated, version_severed,
+        capability_id, quality_tier, performance_profile, caveats
+      ) VALUES (
+        @package_id, @version_introduced, @version_deprecated, @version_severed,
+        @capability_id, @quality_tier, @performance_profile, @caveats
+      )
+      ON CONFLICT(package_id, capability_id, version_introduced) DO UPDATE SET
+        version_deprecated = excluded.version_deprecated,
+        version_severed = excluded.version_severed,
+        quality_tier = excluded.quality_tier,
+        performance_profile = excluded.performance_profile,
+        caveats = excluded.caveats
+    `);
+    stmt.run({
+      ...link,
+      version_deprecated: link.version_deprecated ?? null,
+      version_severed: link.version_severed ?? null,
+      performance_profile: link.performance_profile ?? null,
+      caveats: link.caveats ?? null
+    });
+  }
+
+  public getCapabilitiesByPackage(packageId: string): (GranularCapabilityRecord & { version_introduced: string; quality_tier: string })[] {
+    const stmt = this.db.prepare(`
+      SELECT c.*, pc.version_introduced, pc.quality_tier
+      FROM granular_capabilities c
+      JOIN package_capabilities pc ON c.id = pc.capability_id
+      WHERE pc.package_id = ?
+      ORDER BY c.category, c.name
+    `);
+    return stmt.all(packageId) as (GranularCapabilityRecord & { version_introduced: string; quality_tier: string })[];
+  }
+
+  public getPackagesByCapability(capabilityId: string): (PackageCapabilityRecord & { package_name: string })[] {
+    const stmt = this.db.prepare(`
+      SELECT pc.*, pc.package_id as package_name
+      FROM package_capabilities pc
+      WHERE pc.capability_id = ?
+      ORDER BY pc.quality_tier, pc.package_id
+    `);
+    return stmt.all(capabilityId) as (PackageCapabilityRecord & { package_name: string })[];
+  }
+
+  public getAllCapabilities(): GranularCapabilityRecord[] {
+    const stmt = this.db.prepare('SELECT * FROM granular_capabilities ORDER BY category, name');
+    return stmt.all() as GranularCapabilityRecord[];
   }
 }
 

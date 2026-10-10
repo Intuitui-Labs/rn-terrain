@@ -12,7 +12,9 @@ import {
   PolicyGate,
   generateAgentCompass,
   generatePnpmDevToolCompass,
-  DevToolsRegistry
+  DevToolsRegistry,
+  CapabilityResolver,
+  RustToolingDoctor
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -71,6 +73,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
           },
           required: ['tool_name'],
+        },
+      },
+      {
+        name: 'tcdi_doctor_rust_tools',
+        description:
+          'Rust Tooling Doctor: Diagnostic tool inspecting host machine for sovereign Rust utilities (rg, fd, sd, bat, eza, delta, oxlint, biome) with elegant nudges and one-liner install recipes.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'tcdi_resolve_capability',
+        description:
+          'Granular Capability Resolver: Resolves a required capability (e.g. gesture.pan_recognition, monorepo.polyglot_rust_workspace, storage.synchronous_kv) to grounded canonical packages, minimum supported versions, and architectural flags.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            capability_id: {
+              type: 'string',
+              description: 'Target capability ID (e.g. gesture.pan_recognition, monorepo.catalog_governance)',
+            },
+          },
+          required: ['capability_id'],
+        },
+      },
+      {
+        name: 'tcdi_inspect_capabilities',
+        description:
+          'Inspect all granular capabilities unlocked by a package or tool at a specific target version.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            package_name: {
+              type: 'string',
+              description: 'Package or tool name (e.g. react-native-gesture-handler, pnpm)',
+            },
+            version: {
+              type: 'string',
+              description: 'Target version (e.g. 12.11.2 or latest)',
+            },
+          },
+          required: ['package_name'],
         },
       },
       {
@@ -270,6 +315,35 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const tool = registry.getTool(toolName);
       return {
         content: [{ type: 'text', text: JSON.stringify(tool ?? { error: `Tool ${toolName} not found` }, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_doctor_rust_tools') {
+      const doctor = new RustToolingDoctor();
+      const report = doctor.runDiagnostic();
+      return {
+        content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_resolve_capability') {
+      const capabilityId = args?.capability_id as string;
+      const db = new CanonicalDatabase();
+      const resolver = new CapabilityResolver(db);
+      const res = resolver.resolveCapability(capabilityId);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(res ?? { error: `Capability ${capabilityId} not found` }, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_inspect_capabilities') {
+      const packageName = args?.package_name as string;
+      const version = (args?.version as string) || 'latest';
+      const db = new CanonicalDatabase();
+      const resolver = new CapabilityResolver(db);
+      const manifest = resolver.inspectPackageCapabilities(packageName, version);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(manifest, null, 2) }],
       };
     }
 

@@ -9,7 +9,9 @@ import {
   DevToolsRegistry,
   CANONICAL_DEV_TOOLS,
   generatePnpmDevToolCompass,
-  ArchiveDatasetSeeder
+  ArchiveDatasetSeeder,
+  CapabilityResolver,
+  RustToolingDoctor
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -558,6 +560,143 @@ cli
       consola.success('Historical archive datasets ingested successfully into canonical SQLite DB.');
     } catch (e: any) {
       consola.error('Failed to seed archive dataset:', e.message);
+    }
+  });
+
+cli
+  .command('doctor', 'Rust Tooling Doctor: Inspect sovereign shiny tools and get elegant taste-of-the-best nudges')
+  .action(() => {
+    try {
+      const doctor = new RustToolingDoctor();
+      const report = doctor.runDiagnostic();
+
+      console.log(`\n${chalk.bold.underline('🩺  SOVEREIGN RUST TOOLING DOCTOR & NUDGE REPORT')}`);
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+      console.log(`  Tools Audited: ${chalk.bold(report.totalTools)} | Installed: ${chalk.green.bold(report.installedCount)} | Missing: ${report.missingCount > 0 ? chalk.yellow.bold(report.missingCount) : chalk.green.bold(0)}`);
+      console.log('');
+
+      for (const t of report.tools) {
+        if (t.installed) {
+          console.log(`  ${chalk.green('✅')} ${chalk.bold(t.id.padEnd(8))} | ${chalk.green(t.name.padEnd(12))} | ${chalk.dim(t.version ?? 'installed')}`);
+          console.log(`     ${chalk.dim('Purpose:')} ${t.purpose}`);
+        } else {
+          console.log(`  ${chalk.red('❌')} ${chalk.bold(t.id.padEnd(8))} | ${chalk.yellow(t.name.padEnd(12))} | ${chalk.red.bold('MISSING')}`);
+          console.log(`     ${chalk.dim('Purpose:')} ${t.purpose}`);
+          console.log(`     ${chalk.cyan('✨ Nudge:')}   ${chalk.yellow(t.tasteOfTheBestRationale)}`);
+          console.log(`     ${chalk.cyan('📦 Recipe:')}  ${chalk.green.bold(t.installRecipes.windows)}`);
+        }
+        console.log('');
+      }
+
+      if (report.missingCount === 0) {
+        consola.success('All sovereign Rust tools are installed, verified, and active for peak agent performance!');
+      } else {
+        consola.info(`Run the recipes above to elevate your developer and agent toolchain.`);
+      }
+      console.log('');
+    } catch (e: any) {
+      consola.error('Failed to run Rust doctor:', e.message);
+    }
+  });
+
+cli
+  .command('capability:list', 'List granular ecosystem capabilities across mobile, monorepo, and agent tooling')
+  .option('--category <category>', 'Filter by category (GESTURE, ANIMATION, STORAGE, MONOREPO, AGENT_TOOLING, RUST_COMPUTE)')
+  .action((options) => {
+    try {
+      const db = new CanonicalDatabase();
+      const resolver = new CapabilityResolver(db);
+      const caps = resolver.listAllCapabilities(options.category);
+
+      console.log(`\n${chalk.bold.underline('🧬  GRANULAR CAPABILITIES REGISTRY')}`);
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+
+      for (const c of caps) {
+        console.log(`  ${chalk.bold(c.id.padEnd(35))} [${chalk.cyan(c.category)}] (${chalk.dim(c.level)})`);
+        console.log(`    ${chalk.dim('Name:')}        ${c.name}`);
+        if (c.description) console.log(`    ${chalk.dim('Function:')}    ${c.description}`);
+        console.log(`    ${chalk.dim('Fabric Native:')} ${c.fabric_native_required ? chalk.green('Yes') : chalk.dim('No')}`);
+        console.log('');
+      }
+    } catch (e: any) {
+      consola.error('Failed to list capabilities:', e.message);
+    }
+  });
+
+cli
+  .command('capability:resolve <capabilityId>', 'Resolve a capability to recommended packages, introduced versions, and alternatives')
+  .action((capabilityId) => {
+    try {
+      const db = new CanonicalDatabase();
+      const resolver = new CapabilityResolver(db);
+      const res = resolver.resolveCapability(capabilityId);
+
+      if (!res) {
+        consola.warn(`Capability '${capabilityId}' not found. Run 'rn-terrain capability:list' to see available capabilities.`);
+        return;
+      }
+
+      console.log(`\n${chalk.bold.underline(`🎯  CAPABILITY RESOLUTION: ${res.capabilityId}`)}`);
+      console.log(`Name: ${chalk.bold(res.name)} | Category: ${chalk.cyan(res.category)}`);
+      if (res.description) console.log(`Description: ${res.description}`);
+      console.log(`Fabric Native Required: ${res.fabricNativeRequired ? chalk.green('Yes') : chalk.dim('No')}`);
+      console.log('');
+
+      if (res.recommendedPackage) {
+        console.log(chalk.green.bold('⭐ RECOMMENDED PACKAGE:'));
+        console.log(`  Package:     ${chalk.green.bold(res.recommendedPackage.packageId)} (introduced in ${chalk.cyan(res.recommendedPackage.versionIntroduced)})`);
+        console.log(`  Tier:        ${res.recommendedPackage.qualityTier}`);
+        if (res.recommendedPackage.performanceProfile) {
+          console.log(`  Performance: ${chalk.cyan(res.recommendedPackage.performanceProfile)}`);
+        }
+        if (res.recommendedPackage.caveats) {
+          console.log(`  Caveats:     ${chalk.yellow(res.recommendedPackage.caveats)}`);
+        }
+        console.log('');
+      }
+
+      if (res.allProviders.length > 1) {
+        console.log(chalk.dim('All Providers:'));
+        for (const p of res.allProviders) {
+          console.log(`  • ${p.packageId} (>=${p.versionIntroduced}) [${p.qualityTier}]`);
+        }
+        console.log('');
+      }
+
+      if (res.alternativeCapabilities.length > 0) {
+        console.log(chalk.dim(`Alternative Capabilities: ${res.alternativeCapabilities.join(', ')}`));
+        console.log('');
+      }
+    } catch (e: any) {
+      consola.error('Failed to resolve capability:', e.message);
+    }
+  });
+
+cli
+  .command('capability:inspect <package> [version]', 'Inspect all granular capabilities unlocked by a package/tool')
+  .action((packageName, version = 'latest') => {
+    try {
+      const db = new CanonicalDatabase();
+      const resolver = new CapabilityResolver(db);
+      const manifest = resolver.inspectPackageCapabilities(packageName, version);
+
+      console.log(`\n${chalk.bold.underline(`📦  CAPABILITIES UNLOCKED BY: ${manifest.packageId}@${manifest.targetVersion}`)}`);
+      console.log(`Total Capabilities: ${chalk.bold(manifest.capabilitiesCount)}`);
+      console.log('');
+
+      if (manifest.capabilities.length === 0) {
+        console.log(chalk.dim('  No explicit capabilities registered for this package.'));
+      } else {
+        for (const c of manifest.capabilities) {
+          const badge = c.isNewInThisVersion ? chalk.green.bold('[NEW IN THIS VERSION]') : '';
+          console.log(`  • ${chalk.bold(c.id)} ${badge}`);
+          console.log(`    Name:       ${c.name} (${chalk.cyan(c.category)})`);
+          console.log(`    Introduced: >=${c.versionIntroduced} [${c.qualityTier}]`);
+          console.log('');
+        }
+      }
+    } catch (e: any) {
+      consola.error('Failed to inspect package capabilities:', e.message);
     }
   });
 

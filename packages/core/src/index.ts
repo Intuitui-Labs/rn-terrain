@@ -19,3 +19,6 @@ export * from './radar.js';
 export * from './devtools/dev-tools-registry.js';
 export * from './devtools/pnpm-terrain.js';
 export * from './ingestion/archive-seeder.js';
+export * from './capabilities/capability-model.js';
+export * from './capabilities/capability-resolver.js';
+export * from './capabilities/doctor.js';
