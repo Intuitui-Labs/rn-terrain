@@ -1,6 +1,6 @@
 {
   "name": "@intuitui-labs/rn-terrain-core",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Core intelligence, architectural health signals, vitality algorithms, and schema models for the React Native ecosystem.",
   "type": "module",
   "sideEffects": false,

@@ -1,6 +1,6 @@
 {
   "name": "@intuitui-labs/rn-terrain-scanner",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "AST-based legacy fence and capabilities radar for any React Native project. Powered by TCDI temporal intelligence — accumulates all signals between v_start and v_current across your project's full version history.",
   "type": "module",
   "sideEffects": false,

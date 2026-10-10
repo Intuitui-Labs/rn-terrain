@@ -40,7 +40,7 @@ import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval
 const server = new Server(
   {
     name: 'rn-terrain-mcp',
-    version: '0.3.0',
+    version: '0.3.1',
   },
   {
     capabilities: {

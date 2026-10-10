@@ -305,6 +305,9 @@ importers:
 
   packages/mcp:
     dependencies:
+      '@intuitui-labs/openeval':
+        specifier: workspace:*
+        version: link:../openeval-core
       '@intuitui-labs/rn-terrain-core':
         specifier: workspace:*
         version: link:../core
