@@ -14,6 +14,8 @@ export * from './polyglot-bridge.js';
 export * from './tcdi-doctor.js';
 export * from './dependency-doctor.js';
 export * from './expo-doctor-bridge.js';
+export * from './config-loader.js';
+export * from './native-surface.js';
 
 export type {
   ScanOptions,

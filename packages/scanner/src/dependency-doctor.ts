@@ -1,17 +1,25 @@
 /**
  * @file dependency-doctor.ts
- * TCDI Dependency Drift & Sacred Native Pin Diagnostic Engine.
+ * Generalized TCDI Dependency Drift, Native Surface & Local Shape Doctor.
  *
- * Scans project manifests (package.json) to detect:
- *   1. Sacred Native Pin violations (unpinned or out-of-bounds native modules)
- *   2. Major dependency drift (latest.major - current.major >= 1)
- *   3. Framework dialect deprecations (React 19, RN 0.76+, Expo 52+)
- *   4. Hazardous floating version ranges in native libraries (^ or ~ on binary packages)
+ * Implements a 2-tier architecture:
+ *   1. Universal Structural Invariants (Zero-Config):
+ *      - Dynamic Native Surface detection (flags floating carets on compiled C++/JNI binaries)
+ *      - Algebraic Peer Dependency Matrix checks (host RN vs declared peerDependencies)
+ *      - Framework Dialect Drift (React 19 vs RN <0.76)
+ *   2. Contextual Local Shape:
+ *      - Project configuration (.terrainrc, terrain.config.json, package.json#terrain)
+ *      - Stack Presets (standard, expo, enterprise, loose)
+ *      - In-house local pins (localPins)
+ *      - Fork / Wrapper Aliases (aliases)
+ *      - Rule severity overrides and ignore lists
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
+import { loadTerrainConfig, type TerrainProjectConfig, type RuleSeverity } from './config-loader.js';
+import { detectNativeSurface, type NativeSurfaceInfo } from './native-surface.js';
 
 export interface SacredPinRule {
   packageName: string;
@@ -56,7 +64,12 @@ export const SACRED_NATIVE_PINS: SacredPinRule[] = [
 export interface DependencyIssue {
   packageName: string;
   currentVersion: string;
-  ruleType: 'SACRED_PIN_VIOLATION' | 'HAZARDOUS_FLOATING_RANGE' | 'FRAMEWORK_DIALECT_RISK';
+  ruleType:
+    | 'SACRED_PIN_VIOLATION'
+    | 'HAZARDOUS_FLOATING_RANGE'
+    | 'FRAMEWORK_DIALECT_RISK'
+    | 'PEER_ABI_INCOMPATIBILITY'
+    | 'LOCAL_PIN_VIOLATION';
   severity: 'error' | 'warn' | 'info';
   message: string;
   remediation: string;
@@ -68,15 +81,43 @@ export interface DependencyAuditReport {
   isHealthy: boolean;
   errorsCount: number;
   warningsCount: number;
+  nativeModulesDetected: number;
+  activePreset: string;
   issues: DependencyIssue[];
   sacredPinsChecked: number;
 }
 
+export interface DependencyDoctorOptions {
+  config?: TerrainProjectConfig;
+  configPath?: string;
+  preset?: TerrainProjectConfig['preset'];
+}
+
 export class TcdiDependencyDoctor {
+  private config: TerrainProjectConfig;
+
+  constructor(options?: DependencyDoctorOptions) {
+    if (options?.config) {
+      this.config = options.config;
+    } else {
+      this.config = loadTerrainConfig(options?.configPath || process.cwd());
+    }
+
+    if (options?.preset) {
+      this.config.preset = options.preset;
+    }
+  }
+
   public auditManifest(packageJsonPath: string): DependencyAuditReport {
     if (!fs.existsSync(packageJsonPath)) {
       throw new Error(`package.json not found at ${packageJsonPath}`);
     }
+
+    const projectDir = path.dirname(packageJsonPath);
+    // Reload local config if running inside a specific project directory
+    const activeConfig = this.config.preset
+      ? this.config
+      : loadTerrainConfig(projectDir);
 
     const raw = fs.readFileSync(packageJsonPath, 'utf8');
     const pkg = JSON.parse(raw) as {
@@ -90,53 +131,138 @@ export class TcdiDependencyDoctor {
     };
 
     const issues: DependencyIssue[] = [];
+    const ignoreSet = new Set(activeConfig.ignore || []);
+    let nativeModulesCount = 0;
 
-    // 1. Audit Sacred Native Pins
-    for (const rule of SACRED_NATIVE_PINS) {
-      const current = allDeps[rule.packageName];
-      if (!current) continue;
+    const hostRnRaw = allDeps['react-native'];
+    const hostReactRaw = allDeps['react'];
+    const hostRnClean = hostRnRaw ? hostRnRaw.replace(/^[~^>=<]+/, '') : null;
+    const hostReactClean = hostReactRaw ? hostReactRaw.replace(/^[~^>=<]+/, '') : null;
 
-      const cleanCurrent = current.replace(/^[~^>=<]+/, '');
+    // ──────────────────────────────────────────────────────────────────────────
+    // 1. Universal Invariants: Native Surface & Hazardous Floating Ranges
+    // ──────────────────────────────────────────────────────────────────────────
+    const floatingRuleSeverity = activeConfig.rules?.disallowFloatingNativeRanges ?? 'warn';
 
-      // Check if current version satisfies the recommended semver range
-      if (!semver.satisfies(cleanCurrent, rule.recommendedRange)) {
-        issues.push({
-          packageName: rule.packageName,
-          currentVersion: current,
-          ruleType: 'SACRED_PIN_VIOLATION',
-          severity: rule.severity,
-          message: `${rule.packageName}@${current} violates sacred native pin range (${rule.recommendedRange}). ${rule.reason}`,
-          remediation: `Pin ${rule.packageName} to ${rule.recommendedRange} in package.json`,
-        });
+    for (const [depName, versionRange] of Object.entries(allDeps)) {
+      if (ignoreSet.has(depName)) continue;
+
+      // Resolve alias if mapped (e.g. @myorg/reanimated -> react-native-reanimated)
+      const canonicalName = activeConfig.aliases?.[depName] || depName;
+
+      // Inspect native surface dynamically
+      const surface = detectNativeSurface(canonicalName, projectDir);
+      if (surface.isNative) {
+        nativeModulesCount++;
+
+        // Invariant A: Native binary with floating caret
+        if (
+          floatingRuleSeverity !== 'off' &&
+          versionRange.startsWith('^') &&
+          activeConfig.strictNativeFloating
+        ) {
+          const cleanVer = versionRange.replace(/^[~^>=<]+/, '');
+          issues.push({
+            packageName: depName,
+            currentVersion: versionRange,
+            ruleType: 'HAZARDOUS_FLOATING_RANGE',
+            severity: floatingRuleSeverity === 'error' ? 'error' : 'warn',
+            message: `Floating range '${versionRange}' on compiled native library '${depName}' risks non-deterministic C++/JNI ABI crashes across team builds.`,
+            remediation: `Pin exact version (e.g. '${cleanVer}' without caret) or use strict tilde (~).`,
+          });
+        }
+
+        // Invariant B: Algebraic Peer Dependency Matrix Intersection
+        const peerRnRange = surface.peerDependencies['react-native'];
+        if (
+          peerRnRange &&
+          hostRnClean &&
+          activeConfig.rules?.enforcePeerMatrixAlignment !== 'off'
+        ) {
+          const peerSeverity = activeConfig.rules?.enforcePeerMatrixAlignment === 'error' ? 'error' : 'warn';
+          if (!semver.satisfies(hostRnClean, peerRnRange)) {
+            issues.push({
+              packageName: depName,
+              currentVersion: versionRange,
+              ruleType: 'PEER_ABI_INCOMPATIBILITY',
+              severity: peerSeverity,
+              message: `${depName}@${versionRange} requires react-native '${peerRnRange}', but project provides '${hostRnRaw}'.`,
+              remediation: `Upgrade ${depName} to a version supporting react-native ${hostRnRaw}, or adjust react-native.`,
+            });
+          }
+        }
       }
+    }
 
-      // Check if hazardous floating major/minor is used on sensitive native binaries
-      if (current.startsWith('^') && (rule.packageName.includes('reanimated') || rule.packageName.includes('skia'))) {
+    // ──────────────────────────────────────────────────────────────────────────
+    // 2. Framework Dialect Deprecations (React 19 vs RN 0.76)
+    // ──────────────────────────────────────────────────────────────────────────
+    if (hostReactClean && semver.satisfies(hostReactClean, '>=19.0.0')) {
+      if (hostRnClean && semver.satisfies(hostRnClean, '<0.76.0')) {
         issues.push({
-          packageName: rule.packageName,
-          currentVersion: current,
-          ruleType: 'HAZARDOUS_FLOATING_RANGE',
-          severity: 'warn',
-          message: `Floating range '${current}' on native binary library ${rule.packageName} can cause non-deterministic native crashes across team builds.`,
-          remediation: `Pin exact version (e.g. '${cleanCurrent}' without caret) or use strict tilde (~).`,
+          packageName: 'react',
+          currentVersion: hostReactRaw!,
+          ruleType: 'FRAMEWORK_DIALECT_RISK',
+          severity: 'error',
+          message: `React 19 requires React Native >= 0.76. Current react-native version (${hostRnRaw}) will fail to resolve native renderer symbols.`,
+          remediation: 'Upgrade react-native to >=0.76.0 or downgrade react to ^18.3.1',
         });
       }
     }
 
-    // 2. Dialect Deprecation Checks (React 19 vs RN 0.76)
-    const reactVersion = allDeps['react'];
-    const rnVersion = allDeps['react-native'];
+    // ──────────────────────────────────────────────────────────────────────────
+    // 3. Local Shape: Custom Local Pins (.terrainrc localPins)
+    // ──────────────────────────────────────────────────────────────────────────
+    if (activeConfig.localPins) {
+      for (const [pinPkg, pinRule] of Object.entries(activeConfig.localPins)) {
+        if (ignoreSet.has(pinPkg)) continue;
+        const current = allDeps[pinPkg];
+        if (!current) continue;
 
-    if (reactVersion && semver.satisfies(reactVersion.replace(/^[~^]/, ''), '>=19.0.0')) {
-      if (rnVersion && semver.satisfies(rnVersion.replace(/^[~^]/, ''), '<0.76.0')) {
-        issues.push({
-          packageName: 'react',
-          currentVersion: reactVersion,
-          ruleType: 'FRAMEWORK_DIALECT_RISK',
-          severity: 'error',
-          message: `React 19 requires React Native >= 0.76. Current react-native version (${rnVersion}) will fail to resolve native renderer symbols.`,
-          remediation: 'Upgrade react-native to >=0.76.0 or downgrade react to ^18.3.1',
-        });
+        const cleanCurrent = current.replace(/^[~^>=<]+/, '');
+        if (!semver.satisfies(cleanCurrent, pinRule.recommendedRange)) {
+          issues.push({
+            packageName: pinPkg,
+            currentVersion: current,
+            ruleType: 'LOCAL_PIN_VIOLATION',
+            severity: pinRule.severity || 'error',
+            message: `${pinPkg}@${current} violates local organization pin (${pinRule.recommendedRange}). ${pinRule.reason}`,
+            remediation: `Pin ${pinPkg} to ${pinRule.recommendedRange} in package.json as required by organization policy.`,
+          });
+        }
+      }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // 4. Default Baseline Sacred Pins (unless overridden or in Expo preset)
+    // ──────────────────────────────────────────────────────────────────────────
+    const sacredSeverity = activeConfig.rules?.sacredPins ?? 'warn';
+    if (sacredSeverity !== 'off' && activeConfig.preset !== 'expo') {
+      for (const rule of SACRED_NATIVE_PINS) {
+        // Check either the canonical name or any alias mapped to it
+        const matchedDepKey = Object.keys(allDeps).find(
+          (d) => d === rule.packageName || activeConfig.aliases?.[d] === rule.packageName
+        );
+
+        if (!matchedDepKey || ignoreSet.has(matchedDepKey)) continue;
+
+        // If user defined a custom localPin for this package, localPin takes precedence
+        if (activeConfig.localPins?.[matchedDepKey]) continue;
+
+        const current = allDeps[matchedDepKey];
+        if (!current) continue;
+        const cleanCurrent = current.replace(/^[~^>=<]+/, '');
+
+        if (!semver.satisfies(cleanCurrent, rule.recommendedRange)) {
+          issues.push({
+            packageName: matchedDepKey,
+            currentVersion: current,
+            ruleType: 'SACRED_PIN_VIOLATION',
+            severity: rule.severity === 'error' ? 'error' : (sacredSeverity === 'error' ? 'error' : 'warn'),
+            message: `${matchedDepKey}@${current} violates sacred native pin range (${rule.recommendedRange}). ${rule.reason}`,
+            remediation: `Pin ${matchedDepKey} to ${rule.recommendedRange} in package.json`,
+          });
+        }
       }
     }
 
@@ -144,13 +270,15 @@ export class TcdiDependencyDoctor {
     const warningsCount = issues.filter((i) => i.severity === 'warn').length;
 
     return {
-      projectDir: path.dirname(packageJsonPath),
+      projectDir,
       totalDependenciesScanned: Object.keys(allDeps).length,
       isHealthy: errorsCount === 0,
       errorsCount,
       warningsCount,
+      nativeModulesDetected: nativeModulesCount,
+      activePreset: activeConfig.preset || 'standard',
       issues,
-      sacredPinsChecked: SACRED_NATIVE_PINS.length,
+      sacredPinsChecked: SACRED_NATIVE_PINS.length + Object.keys(activeConfig.localPins || {}).length,
     };
   }
 }

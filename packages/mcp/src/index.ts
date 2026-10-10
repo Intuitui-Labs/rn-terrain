@@ -713,7 +713,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [{ type: 'text', text: JSON.stringify({ error: `package.json not found in ${projectDir}` }, null, 2) }],
         };
       }
-      const doctor = new TcdiDependencyDoctor();
+      const doctor = new TcdiDependencyDoctor({ configPath: projectDir });
       const report = doctor.auditManifest(pkgPath);
       return {
         content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
@@ -737,7 +737,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       let depReport = null;
       const pkgPath = path.resolve(projectDir, 'package.json');
       if (fs.existsSync(pkgPath)) {
-        const depDoctor = new TcdiDependencyDoctor();
+        const depDoctor = new TcdiDependencyDoctor({ configPath: projectDir });
         depReport = depDoctor.auditManifest(pkgPath);
       }
 

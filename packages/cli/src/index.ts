@@ -720,8 +720,10 @@ cli
   });
 
 cli
-  .command('doctor:deps [projectDir]', 'TCDI Dependency Doctor: Audit manifest against Sacred Native Pins and dialect drift')
-  .action((projectDir = '.') => {
+  .command('doctor:deps [projectDir]', 'TCDI Dependency Doctor: Audit manifest against Native Surfaces, Peer ABI Matrix, and Local Pins')
+  .option('--preset <preset>', 'Stack preset: standard, expo, enterprise, or loose')
+  .option('--config <configPath>', 'Path to custom terrain.config.json or .terrainrc')
+  .action((projectDir = '.', options) => {
     try {
       const resolved = path.resolve(projectDir);
       const pkgPath = path.join(resolved, 'package.json');
@@ -730,20 +732,25 @@ cli
         return;
       }
 
-      console.log(`\n${chalk.bold.underline('🛡️  TCDI DEPENDENCY & SACRED PIN DOCTOR')}`);
+      console.log(`\n${chalk.bold.underline('🛡️  TCDI DEPENDENCY & NATIVE SURFACE DOCTOR')}`);
       console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
       console.log(`  Target Project:  ${chalk.cyan.bold(resolved)}`);
 
-      const doctor = new TcdiDependencyDoctor();
+      const doctor = new TcdiDependencyDoctor({
+        configPath: options.config,
+        preset: options.preset as any,
+      });
       const report = doctor.auditManifest(pkgPath);
 
       console.log(`  Scanned Deps:    ${chalk.bold(report.totalDependenciesScanned)}`);
-      console.log(`  Sacred Pins:     ${chalk.bold(report.sacredPinsChecked)} evaluated`);
-      console.log(`  Status:          ${report.isHealthy ? chalk.green.bold('CLEAN (All sacred pins respected)') : chalk.red.bold(`${report.errorsCount} errors, ${report.warningsCount} warnings`)}`);
+      console.log(`  Native Modules:  ${chalk.cyan.bold(report.nativeModulesDetected)} detected`);
+      console.log(`  Active Preset:   ${chalk.magenta.bold(report.activePreset.toUpperCase())}`);
+      console.log(`  Pins Audited:    ${chalk.bold(report.sacredPinsChecked)} evaluated`);
+      console.log(`  Status:          ${report.isHealthy ? chalk.green.bold('CLEAN (All invariants & pins respected)') : chalk.red.bold(`${report.errorsCount} errors, ${report.warningsCount} warnings`)}`);
       console.log('');
 
       if (report.issues.length === 0) {
-        consola.success('All native module pins and framework versions strictly conform to canonical guidelines!');
+        consola.success('All native module pins, ABI surfaces, and framework versions strictly conform to guidelines!');
       } else {
         console.log(chalk.bold('DEPENDENCY ISSUES:'));
         for (const issue of report.issues) {
@@ -816,14 +823,14 @@ cli
       let depErrors = 0;
       let depWarnings = 0;
       if (fs.existsSync(pkgPath)) {
-        const depDoctor = new TcdiDependencyDoctor();
+        const depDoctor = new TcdiDependencyDoctor({ configPath: resolved });
         const depReport = depDoctor.auditManifest(pkgPath);
         depErrors = depReport.errorsCount;
         depWarnings = depReport.warningsCount;
         if (depReport.isHealthy) {
-          console.log(`   ${chalk.green('✓')} All native dependencies conform to Sacred Pins.`);
+          console.log(`   ${chalk.green('✓')} All native dependencies conform to Sacred Pins & ABI invariants (${depReport.nativeModulesDetected} native modules, preset: ${depReport.activePreset}).`);
         } else {
-          console.log(`   ${chalk.yellow('⚠️')} Detected ${depErrors} errors, ${depWarnings} warnings in dependencies.`);
+          console.log(`   ${chalk.yellow('⚠️')} Detected ${depErrors} errors, ${depWarnings} warnings in dependencies (preset: ${depReport.activePreset}).`);
         }
       } else {
         console.log(`   ${chalk.dim('ℹ No package.json in current directory, skipping manifest pin check.')}`);
