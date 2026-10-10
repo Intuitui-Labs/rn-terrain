@@ -8,7 +8,7 @@ import {
   type WeightProfileName,
   WEIGHT_PROFILES,
   normalizeWeights
-} from './weights';
+} from './weights.js';
 
 export interface PackageRawMetrics {
   packageId: string;

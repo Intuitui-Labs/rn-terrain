@@ -3,7 +3,9 @@ import {
   getVitalityCard,
   scanProject,
   CanonicalDatabase,
-  PolicyGate
+  PolicyGate,
+  generateAgentCompass,
+  HexagonalIngestionPipeline
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -371,6 +373,76 @@ cli
       console.log('');
     } catch (e: any) {
       consola.error('Failed to run OpenEval:', e.message);
+    }
+  });
+
+cli
+  .command('compass <package> [version]', 'Pre-flight Agent Compass: Grounded API checklist before writing React Native code')
+  .option('--json', 'Output raw JSON for agent injection')
+  .action((packageName, version = 'latest', options) => {
+    try {
+      const briefing = generateAgentCompass(packageName, version);
+
+      if (options.json) {
+        console.log(JSON.stringify(briefing, null, 2));
+        return;
+      }
+
+      console.log(`\n${chalk.bold.underline(`🧭  RN TERRAIN AGENT COMPASS: ${briefing.package}@${briefing.version}`)}`);
+      console.log(chalk.dim(`Architecture: ${chalk.cyan(briefing.architecture)}`));
+      console.log('');
+
+      if (briefing.bannedSeveredSymbols.length > 0) {
+        console.log(chalk.red.bold('🚫 FORBIDDEN / SEVERED APIS (DO NOT CODE):'));
+        for (const b of briefing.bannedSeveredSymbols) {
+          console.log(`  • ${chalk.strikethrough(b.identifier)} -> Use: ${chalk.green.bold(b.replacement ?? 'None')}`);
+          if (b.codemodHint) console.log(chalk.dim(`    Tip: ${b.codemodHint}`));
+        }
+        console.log('');
+      }
+
+      if (briefing.allowedModernSymbols.length > 0) {
+        console.log(chalk.green.bold('✅ CANONICAL MODERN APIS (SAFE TO USE):'));
+        console.log(`  ${briefing.allowedModernSymbols.join(', ')}`);
+        console.log('');
+      }
+
+      if (briefing.knownPeerConflicts.length > 0) {
+        console.log(chalk.yellow.bold('⚠️  KNOWN PEER COMBO CONFLICTS:'));
+        for (const c of briefing.knownPeerConflicts) {
+          console.log(`  • ${c.peerPackage} (${c.safeRange}): ${c.conflictNote} (Severity: ${c.severity}/10)`);
+        }
+        console.log('');
+      }
+
+      console.log(chalk.cyan.bold('📋 PRE-FLIGHT AGENT PROMPT:'));
+      console.log(chalk.dim(briefing.preflightInstruction));
+      console.log('');
+    } catch (e: any) {
+      consola.error('Failed to generate agent compass:', e.message);
+    }
+  });
+
+cli
+  .command('sync <package>', 'Run Hexagonal Ingestion Pipeline across RN Directory, GitHub, npm, and Bundlephobia')
+  .action(async (packageName) => {
+    try {
+      consola.info(`Triggering Hexagonal Ingestion Pipeline for: ${chalk.cyan(packageName)}`);
+      const pipeline = new HexagonalIngestionPipeline();
+      const res = await pipeline.ingestPackage(packageName);
+
+      console.log(`\n${chalk.bold('HEXAGONAL INGESTION RESULT')}`);
+      console.log(chalk.dim('────────────────────────────────────────'));
+      console.log(`  Package:          ${chalk.green(res.packageName)}`);
+      console.log(`  Latest Version:   ${chalk.green(res.latestVersion)}`);
+      console.log(`  Versions Tracked: ${res.versionsIngested}`);
+      console.log(`  New Arch Ready:   ${res.supportsNewArchitecture ? chalk.green('Yes') : chalk.yellow('No')}`);
+      console.log(`  Bundle Gzip Size: ${(res.bundleGzipBytes / 1024).toFixed(1)} kB`);
+      console.log(`  GitHub Stars:     ${res.githubStars.toLocaleString()}`);
+      console.log('');
+      consola.success(`Successfully ingested and synchronized ${packageName} into canonical SQLite DB.`);
+    } catch (e: any) {
+      consola.error('Failed hexagonal ingestion:', e.message);
     }
   });
 

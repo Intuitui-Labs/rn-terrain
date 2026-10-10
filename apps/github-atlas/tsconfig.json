@@ -8,10 +8,10 @@
     ],
     "paths": {
       "@intuitui-labs/openeval": [
-        "../../packages/openeval-core/src/index.ts"
+        "../../packages/openeval-core/dist/index.d.ts"
       ],
       "@intuitui-labs/openeval/*": [
-        "../../packages/openeval-core/src/*"
+        "../../packages/openeval-core/dist/*"
       ]
     },
     "allowJs": false,

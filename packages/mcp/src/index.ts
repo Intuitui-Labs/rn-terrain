@@ -9,7 +9,8 @@ import {
   getVitalityCard,
   scanProject,
   CanonicalDatabase,
-  PolicyGate
+  PolicyGate,
+  generateAgentCompass
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -32,6 +33,25 @@ const policyGate = new PolicyGate();
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
+      {
+        name: 'tcdi_compass',
+        description:
+          'Pre-flight Agent Compass: The FIRST place an agent should check before generating React Native code. Ingests package and target version, returning grounded whitelist of canonical modern APIs, explicit blacklist of severed APIs, New Architecture flags, and pre-flight instructions.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            package_name: {
+              type: 'string',
+              description: 'Target package name (e.g. react-native-gesture-handler)',
+            },
+            version: {
+              type: 'string',
+              description: 'Target version (e.g. 2.16.0 or latest)',
+            },
+          },
+          required: ['package_name'],
+        },
+      },
       {
         name: 'tcdi_verify_ast_diff',
         description:
@@ -206,6 +226,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
+    if (name === 'tcdi_compass') {
+      const packageName = args?.package_name as string;
+      const version = (args?.version as string) || 'latest';
+      const briefing = generateAgentCompass(packageName, version);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(briefing, null, 2) }],
+      };
+    }
+
     if (name === 'tcdi_verify_ast_diff') {
       const packageName = args?.package_name as string;
       const targetVersion = args?.target_version as string;
