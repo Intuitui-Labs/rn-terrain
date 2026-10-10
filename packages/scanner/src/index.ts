@@ -11,6 +11,7 @@ export { formatReport } from './reporter.js';
 export * from './tree-sitter-matcher.js';
 export * from './agent-guardrail.js';
 export * from './polyglot-bridge.js';
+export * from './tcdi-doctor.js';
 
 export type {
   ScanOptions,

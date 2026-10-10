@@ -28,7 +28,7 @@ import {
   NodeModulesAffordanceEngine,
   CuratedKnowledgeBridge
 } from '@intuitui-labs/rn-terrain-core';
-import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
+import { AgentGuardrail, TcdiStackDoctor } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
 
 const server = new Server(
@@ -345,6 +345,38 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      {
+        name: 'tcdi_doctor_stack',
+        description:
+          'Audits React Native code against temporal New Architecture (Fabric), Worklet thread-safety, gestures, and storage patterns. Rules are dynamically adapted based on the project configured target stack range (e.g. RN 0.74 Paper vs RN 0.76+ Fabric vs RN 0.88 Reanimated 4).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            code_snippet: {
+              type: 'string',
+              description: 'Code snippet or file content to audit',
+            },
+            file_path: {
+              type: 'string',
+              description: 'Virtual file path (e.g. src/screens/Feed.tsx)',
+            },
+            target_rn_version: {
+              type: 'string',
+              description: 'Target React Native version (e.g. ^0.76.0, 0.74.2, ^0.88.0). Defaults to modern stack.',
+            },
+            architecture: {
+              type: 'string',
+              enum: ['new-arch', 'paper', 'interop'],
+              description: 'Target architecture mode. Defaults to new-arch.',
+            },
+            target_reanimated_version: {
+              type: 'string',
+              description: 'Target Reanimated version (e.g. ^3.16.0, ^4.0.0)',
+            },
+          },
+          required: ['code_snippet'],
+        },
+      },
     ],
   };
 });
@@ -599,6 +631,27 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === 'tcdi_doctor_rust_tools') {
       const doctor = new RustToolingDoctor();
       const report = doctor.runDiagnostic();
+      return {
+        content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_doctor_stack') {
+      const codeSnippet = args?.code_snippet as string;
+      const filePath = (args?.file_path as string) || 'code.tsx';
+      const targetRn = (args?.target_rn_version as string) || '^0.88.0';
+      const arch = (args?.architecture as 'new-arch' | 'paper' | 'interop') || 'new-arch';
+      const targetReanimated = args?.target_reanimated_version as string | undefined;
+
+      const doctor = new TcdiStackDoctor({
+        targetStack: {
+          reactNative: targetRn,
+          architecture: arch,
+          reanimated: targetReanimated ?? (arch === 'paper' ? '^3.16.0' : '^4.7.1'),
+        },
+      });
+
+      const report = doctor.diagnoseSnippet(codeSnippet, filePath);
       return {
         content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
       };
