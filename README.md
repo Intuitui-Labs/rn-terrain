@@ -33,14 +33,20 @@ All packages are authored in TypeScript with strict mode, full subpath exports, 
 Run commands directly via `npx`:
 
 ```bash
+# 🩺 TCDI React Native Stack Doctor: Dynamic New Arch & gesture audit parameterized by stack
+npx @intuitui-labs/rn-terrain-cli doctor:stack --rn "^0.88.0" --arch new-arch
+
+# 🦀 Rust Tooling Doctor: Audit sovereign shiny tools (rg, fd, sd, bat, eza, delta, oxlint, biome)
+npx @intuitui-labs/rn-terrain-cli doctor
+
+# 🩺 React Doctor Companion: Component-level hook, a11y, and web render checks
+npx @intuitui-labs/rn-terrain-cli doctor:react
+
 # 🧭 Pre-flight Agent Compass: Ground modern APIs before coding (e.g. Reanimated v4 vs v2)
 npx @intuitui-labs/rn-terrain-cli compass react-native-reanimated
 
 # 🔍 Ground directly on physical node_modules (.d.ts symbols and README snippets)
 npx @intuitui-labs/rn-terrain-cli affordance react-native-reanimated
-
-# 🦀 Rust Tooling Doctor: Audit sovereign shiny tools (rg, fd, sd, bat, eza, delta, oxlint, biome)
-npx @intuitui-labs/rn-terrain-cli doctor
 
 # 🎯 Granular Capability Resolver: Find grounded packages for specific primitives
 npx @intuitui-labs/rn-terrain-cli capability:resolve gesture.pan_recognition
@@ -67,7 +73,10 @@ Add `@intuitui-labs/rn-terrain-mcp` to your MCP configuration (`claude_desktop_c
 }
 ```
 
-Agents can now query `tcdi_compass`, `tcdi_affordance`, and `tcdi_verify_ast_diff` before generating React Native code.
+The MCP server provides **Tri-Capability Architecture (v1.30.1)**:
+- **Tools**: `tcdi_compass`, `tcdi_affordance`, `tcdi_doctor_stack`, `tcdi_doctor_rust_tools`, `tcdi_agent_views`, `tcdi_mcp_compass`.
+- **Resources**: `terrain://agent-views/danger-zones`, `terrain://agent-views/current-state`, `terrain://radar/records`.
+- **Prompts**: `preflight_grounding`, `migration_pathfinder`, `doctor_elevate`.
 
 ### 3. Tree-Shakable Subpath Usage in TypeScript
 ```typescript
@@ -80,7 +89,7 @@ import { evaluatePackage } from '@intuitui-labs/openeval';
 
 ## 🛠️ Development & Quality Gates
 
-This monorepo is powered by **pnpm 12.4.2** and **Vitest 5**:
+This monorepo is powered by **pnpm 12.11.2** and **Vitest 5**:
 
 ```bash
 # Install workspace dependencies via pnpm catalogs
