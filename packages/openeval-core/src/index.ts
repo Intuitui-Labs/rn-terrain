@@ -43,3 +43,5 @@ export function encodeShareState(profile: UserProfile): string { return encodeUR
 export function decodeShareState(value: string): UserProfile | null { try { const parsed = JSON.parse(decodeURIComponent(value)); if (!Array.isArray(parsed.goals) || !parsed.weights) return null; return parsed as UserProfile; } catch { return null; } }
 
 export * from './ingestion';
+export * from './weights';
+export * from './package-eval';

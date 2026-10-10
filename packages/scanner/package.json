@@ -68,6 +68,7 @@
   "author": "Intuitui Labs",
   "license": "MIT",
   "dependencies": {
+    "@ast-grep/napi": "^0.45.3",
     "@babel/parser": "^7.26.0",
     "@babel/traverse": "^7.26.0",
     "@babel/types": "^7.26.0"

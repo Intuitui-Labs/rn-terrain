@@ -1,6 +1,6 @@
-import type { ScoreBreakdown, VitalityCard } from '@intuitui-labs/rn-terrain-core/types';
-import { calculateRhythmStatus } from '@intuitui-labs/rn-terrain-core/scoring/rhythm';
-import { applyVendorPrior } from '@intuitui-labs/rn-terrain-core/scoring/vendor-priors';
+import type { ScoreBreakdown, VitalityCard } from '../types/index.js';
+import { calculateRhythmStatus } from './rhythm.js';
+import { applyVendorPrior } from './vendor-priors.js';
 
 export function calculateVitalityScore(data: Partial<VitalityCard>): ScoreBreakdown {
   const maintenance = scoreMaintenanceHealth(data);

@@ -1,15 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
-import { supabase } from '@intuitui-labs/rn-terrain-core/db';
-import { calculateVitalityScore } from '@intuitui-labs/rn-terrain-core/scoring';
+import { supabase } from './db.js';
+import { calculateVitalityScore } from './scoring/index.js';
 import type {
   DeveloperContext,
   EcosystemTopology,
   ProjectAudit,
   VitalityCardFull,
   Warning,
-} from '@intuitui-labs/rn-terrain-core/types';
+} from './types/index.js';
 
 // Helper to map DB row to canonical VitalityCard structure
 function mapRowToCard(row: any): VitalityCardFull {

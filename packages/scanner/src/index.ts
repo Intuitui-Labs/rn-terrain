@@ -8,6 +8,9 @@ export { extractVersionRanges, compareSemver } from './git-drift.js';
 export { accumulateSignals, loadCorpus, getCorpusPackages } from './accumulator.js';
 export { walkProject } from './ast-walker.js';
 export { formatReport } from './reporter.js';
+export * from './tree-sitter-matcher.js';
+export * from './agent-guardrail.js';
+export * from './polyglot-bridge.js';
 
 export type {
   ScanOptions,
