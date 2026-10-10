@@ -1,5 +1,6 @@
 {
   "name": "@intuitui-labs/rn-terrain-vscode",
+  "private": true,
   "displayName": "RN Terrain",
   "description": "Visual React Native package intelligence, compatibility, and version checks directly inside package.json.",
   "version": "0.1.0",
