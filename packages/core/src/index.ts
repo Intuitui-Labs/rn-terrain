@@ -24,3 +24,4 @@ export * from './capabilities/capability-resolver.js';
 export * from './capabilities/doctor.js';
 export * from './compass/node-modules-affordance.js';
 export * from './ingestion/curated-bridge.js';
+export * from './devtools/mcp-terrain.js';

@@ -106,6 +106,18 @@ export const CANONICAL_DEV_TOOLS: DevToolMetadata[] = [
     docs_url: 'https://github.com/dandavison/delta',
     installCommand: 'winget install dandavison.delta',
     recommendedFlags: ['--side-by-side', '--line-numbers']
+  },
+  {
+    id: 'mcp',
+    category: 'AGENT_PROTOCOL',
+    status: 'RECOMMENDED',
+    binaryName: 'rn-terrain-mcp',
+    primary_advantage: 'Universal AI Agent Context & Tool Protocol (JSON-RPC 2.0). Powers Antigravity, Cursor, Claude Desktop.',
+    rn_compatibility_notes: 'Runs locally over stdio with full access to developer node_modules and local git diffs.',
+    docs_url: 'https://modelcontextprotocol.io',
+    installCommand: 'npx @intuitui-labs/rn-terrain-mcp',
+    recommendedFlags: ['--stdio'],
+    bannedFlagsOrCommands: ['console.log to stdout in stdio servers', 'unhandled tool exceptions']
   }
 ];
 

@@ -2,7 +2,14 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema
+} from '@modelcontextprotocol/sdk/types.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import {
@@ -14,6 +21,7 @@ import {
   PolicyGate,
   generateAgentCompass,
   generatePnpmDevToolCompass,
+  generateMcpDevToolCompass,
   DevToolsRegistry,
   CapabilityResolver,
   RustToolingDoctor,
@@ -31,6 +39,8 @@ const server = new Server(
   {
     capabilities: {
       tools: {},
+      resources: {},
+      prompts: {},
     },
   },
 );
@@ -77,6 +87,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
           },
           required: ['tool_name'],
+        },
+      },
+      {
+        name: 'tcdi_mcp_compass',
+        description:
+          'Pre-flight MCP DevTool Compass: Grounding and policy check for developing and consuming Model Context Protocol servers. Highlights banned stdio stdout contamination, unhandled exceptions, OpenEval 9.6 scorecard, and Tri-Capability standards.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            version: {
+              type: 'string',
+              description: 'Target MCP SDK version (defaults to 1.30.1)',
+            },
+          },
         },
       },
       {
@@ -325,6 +349,209 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   };
 });
 
+// ─── Resources (URI-Addressable Read-Only Context) ──────────────────────────
+
+server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  return {
+    resources: [
+      {
+        uri: 'terrain://agent-views/danger-zones',
+        name: 'Agent Danger Zones (Severed APIs)',
+        description: 'Canonical markdown catalog of severed/banned APIs across Reanimated 4, RNGH 3, MMKV 4 Nitro, and React Native New Architecture.',
+        mimeType: 'text/markdown',
+      },
+      {
+        uri: 'terrain://agent-views/current-state',
+        name: 'Current Sacred Platform Stack',
+        description: 'Authoritative markdown reference of sacred pins, global toolchains, and sovereign Rust tooling standards.',
+        mimeType: 'text/markdown',
+      },
+      {
+        uri: 'terrain://radar/records',
+        name: 'Technology Radar Decisions',
+        description: 'JSON catalog of ADOPT/TRIAL/ASSESS/HOLD technology radar evaluations (including Rust UniFFI, LegendApp State).',
+        mimeType: 'application/json',
+      },
+      {
+        uri: 'terrain://devtools/doctor',
+        name: 'Sovereign Rust Tooling Diagnostic',
+        description: 'Live audit of host machine Rust shiny tools (rg, fd, sd, bat, eza, delta, oxlint, biome) with installation recipes.',
+        mimeType: 'application/json',
+      },
+      {
+        uri: 'terrain://devtools/mcp-compass',
+        name: 'Model Context Protocol Grounding Compass',
+        description: 'Pre-flight MCP devtool compass with banned anti-patterns, OpenEval 9.6 scorecard, and canonical stdio workflows.',
+        mimeType: 'application/json',
+      },
+    ],
+  };
+});
+
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  const { uri } = request.params;
+
+  try {
+    const db = new CanonicalDatabase();
+
+    if (uri === 'terrain://agent-views/danger-zones') {
+      const bridge = new CuratedKnowledgeBridge(db);
+      const views = bridge.synthesizeAgentViews(path.resolve(process.cwd(), 'docs/agent-views'));
+      const text = fs.readFileSync(views.dangerZones, 'utf-8');
+      return {
+        contents: [{ uri, mimeType: 'text/markdown', text }],
+      };
+    }
+
+    if (uri === 'terrain://agent-views/current-state') {
+      const bridge = new CuratedKnowledgeBridge(db);
+      const views = bridge.synthesizeAgentViews(path.resolve(process.cwd(), 'docs/agent-views'));
+      const text = fs.readFileSync(views.currentState, 'utf-8');
+      return {
+        contents: [{ uri, mimeType: 'text/markdown', text }],
+      };
+    }
+
+    if (uri === 'terrain://radar/records') {
+      const records = db.getAllRadarRecords();
+      return {
+        contents: [{ uri, mimeType: 'application/json', text: JSON.stringify(records, null, 2) }],
+      };
+    }
+
+    if (uri === 'terrain://devtools/doctor') {
+      const doctor = new RustToolingDoctor();
+      const report = doctor.runDiagnostic();
+      return {
+        contents: [{ uri, mimeType: 'application/json', text: JSON.stringify(report, null, 2) }],
+      };
+    }
+
+    if (uri === 'terrain://devtools/mcp-compass') {
+      const compass = generateMcpDevToolCompass();
+      return {
+        contents: [{ uri, mimeType: 'application/json', text: JSON.stringify(compass, null, 2) }],
+      };
+    }
+
+    throw new Error(`Resource URI not found: ${uri}`);
+  } catch (err: any) {
+    throw new Error(`Failed to read resource ${uri}: ${err.message}`);
+  }
+});
+
+// ─── Prompts (Parameterized Agent Workflows) ────────────────────────────────
+
+server.setRequestHandler(ListPromptsRequestSchema, async () => {
+  return {
+    prompts: [
+      {
+        name: 'preflight_grounding',
+        description: 'Generates a strict pre-flight grounding prompt for an AI agent before generating React Native code.',
+        arguments: [
+          {
+            name: 'package_name',
+            description: 'Target package name (e.g. react-native-reanimated)',
+            required: true,
+          },
+          {
+            name: 'version',
+            description: 'Target version (e.g. 4.7.1 or latest)',
+            required: false,
+          },
+        ],
+      },
+      {
+        name: 'migration_pathfinder',
+        description: 'Generates a step-by-step migration pathfinder prompt for jumping across breaking versions.',
+        arguments: [
+          {
+            name: 'package_name',
+            description: 'Target package name (e.g. react-native-gesture-handler)',
+            required: true,
+          },
+          {
+            name: 'from_version',
+            description: 'Current installed version (e.g. 2.16.0)',
+            required: true,
+          },
+          {
+            name: 'to_version',
+            description: 'Target version (e.g. 3.3.0)',
+            required: true,
+          },
+        ],
+      },
+      {
+        name: 'doctor_elevate',
+        description: 'Generates a prompt to audit host machine for sovereign Rust tools and elevate developer ergonomics.',
+        arguments: [],
+      },
+    ],
+  };
+});
+
+server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+
+  if (name === 'preflight_grounding') {
+    const pkg = (args?.package_name as string) || 'react-native-reanimated';
+    const ver = (args?.version as string) || 'latest';
+    const compass = generateAgentCompass(pkg, ver);
+    return {
+      description: `Pre-flight Grounding for ${pkg}@${ver}`,
+      messages: [
+        {
+          role: 'user',
+          content: {
+            type: 'text',
+            text: compass.preflightInstruction,
+          },
+        },
+      ],
+    };
+  }
+
+  if (name === 'migration_pathfinder') {
+    const pkg = (args?.package_name as string) || 'react-native-reanimated';
+    const fromVer = (args?.from_version as string) || '3.0.0';
+    const toVer = (args?.to_version as string) || '4.7.1';
+    return {
+      description: `Migration Pathfinder for ${pkg}: ${fromVer} -> ${toVer}`,
+      messages: [
+        {
+          role: 'user',
+          content: {
+            type: 'text',
+            text: `Please plan and execute a safe migration jump for ${pkg} from ${fromVer} to ${toVer}.\n1. Consult tcdi_compass for ${pkg}@${toVer}\n2. Use tcdi_verify_ast_diff to prevent severed API usage.\n3. Co-install necessary runtime packages (e.g. react-native-worklets if Reanimated v4).`,
+          },
+        },
+      ],
+    };
+  }
+
+  if (name === 'doctor_elevate') {
+    const doctor = new RustToolingDoctor();
+    const report = doctor.runDiagnostic();
+    return {
+      description: 'Audit and Elevate Developer Toolchain with Sovereign Rust Tools',
+      messages: [
+        {
+          role: 'user',
+          content: {
+            type: 'text',
+            text: `Current Rust Tooling Audit:\nTotal Tools: ${report.totalTools}, Installed: ${report.installedCount}, Missing: ${report.missingCount}.\nMissing tool recipes:\n${report.tools.filter(t => !t.installed).map(t => `• ${t.name}: ${t.installRecipes.windows || t.installRecipes.macos}`).join('\n')}\nPlease recommend adopting these tools to accelerate local development.`,
+          },
+        },
+      ],
+    };
+  }
+
+  throw new Error(`Prompt not found: ${name}`);
+});
+
+// ─── Tools Dispatcher ────────────────────────────────────────────────────────
+
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
@@ -347,11 +574,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [{ type: 'text', text: JSON.stringify(compass, null, 2) }],
         };
       }
+      if (toolName.toLowerCase() === 'mcp') {
+        const compass = generateMcpDevToolCompass(version);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(compass, null, 2) }],
+        };
+      }
       const db = new CanonicalDatabase();
       const registry = new DevToolsRegistry(db);
       const tool = registry.getTool(toolName);
       return {
         content: [{ type: 'text', text: JSON.stringify(tool ?? { error: `Tool ${toolName} not found` }, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_mcp_compass') {
+      const version = (args?.version as string) || '1.30.1';
+      const compass = generateMcpDevToolCompass(version);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(compass, null, 2) }],
       };
     }
 

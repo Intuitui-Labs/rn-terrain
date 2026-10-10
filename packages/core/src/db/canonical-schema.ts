@@ -294,7 +294,7 @@ export interface DecisionActionRecord {
 
 export interface DevToolRecord {
   id: string;
-  category: 'PACKAGE_MANAGER' | 'JS_ENGINE' | 'BUNDLER' | 'BUILD_TOOL' | 'CLI_TOOL' | 'RUST_SHINY_TOOL';
+  category: 'PACKAGE_MANAGER' | 'JS_ENGINE' | 'BUNDLER' | 'BUILD_TOOL' | 'CLI_TOOL' | 'RUST_SHINY_TOOL' | 'AGENT_PROTOCOL';
   status: 'RECOMMENDED' | 'EVALUATING' | 'SPECIALIZED' | 'LEGACY';
   primary_advantage: string | null;
   rn_compatibility_notes: string | null;
