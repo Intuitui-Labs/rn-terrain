@@ -31,4 +31,5 @@ data/packages/DASHBOARD.html
 *.tar.gz
 *.tar
 *.zip
-rn-terrain/
+/rn-terrain/
+
