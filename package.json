@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "The live intelligence layer for the React Native ecosystem.",
-  "packageManager": "pnpm@12.4.2",
+  "packageManager": "pnpm@12.11.2",
   "engines": {
     "node": ">=20"
   },

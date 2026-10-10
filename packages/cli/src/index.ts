@@ -5,7 +5,11 @@ import {
   CanonicalDatabase,
   PolicyGate,
   generateAgentCompass,
-  HexagonalIngestionPipeline
+  HexagonalIngestionPipeline,
+  DevToolsRegistry,
+  CANONICAL_DEV_TOOLS,
+  generatePnpmDevToolCompass,
+  ArchiveDatasetSeeder
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -446,7 +450,119 @@ cli
     }
   });
 
+cli
+  .command('devtool:list', 'List foundational non-RN developer tools and Rust Shiny Tools')
+  .option('--category <category>', 'Filter by category (PACKAGE_MANAGER, JS_ENGINE, BUNDLER, RUST_SHINY_TOOL)')
+  .action((options) => {
+    try {
+      const db = new CanonicalDatabase();
+      const registry = new DevToolsRegistry(db);
+      registry.seedDefaults();
+      const tools = registry.listTools(options.category);
+
+      console.log(`\n${chalk.bold.underline('🛠️  DEVELOPER ECOSYSTEM & SHINY TOOLS DIRECTORY')}`);
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+
+      for (const t of tools) {
+        let statusBadge = chalk.green('[RECOMMENDED]');
+        if (t.status === 'SPECIALIZED') statusBadge = chalk.yellow('[SPECIALIZED]');
+        else if (t.status === 'EVALUATING') statusBadge = chalk.cyan('[EVALUATING]');
+
+        console.log(`  ${chalk.bold(t.id.padEnd(10))} ${statusBadge} ${chalk.dim(`(${t.category})`)}`);
+        console.log(`    ${chalk.dim('Advantage:')} ${t.primary_advantage}`);
+        if (t.rn_compatibility_notes) {
+          console.log(`    ${chalk.dim('RN Interop:')} ${chalk.cyan(t.rn_compatibility_notes)}`);
+        }
+        console.log(`    ${chalk.dim('Install:')}    ${chalk.green(t.installCommand)}`);
+        console.log('');
+      }
+    } catch (e: any) {
+      consola.error('Failed to list dev tools:', e.message);
+    }
+  });
+
+cli
+  .command('devtool:compass <tool> [version]', 'Pre-flight Agent Compass for developer tooling (e.g. pnpm, bun, rg)')
+  .option('--json', 'Output raw JSON for agent injection')
+  .action((tool, version = '12.11.2', options) => {
+    try {
+      const db = new CanonicalDatabase();
+
+      if (tool.toLowerCase() === 'pnpm') {
+        const compass = generatePnpmDevToolCompass(version, db);
+
+        if (options.json) {
+          console.log(JSON.stringify(compass, null, 2));
+          return;
+        }
+
+        console.log(`\n${chalk.bold.underline(`🧭  DEVTOOL COMPASS: pnpm@${compass.activeVersion}`)}`);
+        console.log(`Status: ${chalk.green.bold(compass.status)} | OpenEval Score: ${chalk.cyan.bold(`${compass.openEvalScore}/100 [ADOPT]`)}`);
+        console.log(`RN Compatibility: ${chalk.dim(compass.rnCompatibility)}`);
+        console.log('');
+
+        console.log(chalk.red.bold('🚫 FORBIDDEN COMMANDS & MONOREPO ANTI-PATTERNS:'));
+        for (const b of compass.bannedCommands) {
+          console.log(`  • ${chalk.strikethrough(b.commandOrFlag)} [${chalk.red(b.severity)}]`);
+          console.log(`    ${chalk.dim('Why:')} ${b.whySevered}`);
+          console.log(`    ${chalk.dim('Use Instead:')} ${chalk.green.bold(b.canonicalReplacement)}`);
+        }
+        console.log('');
+
+        console.log(chalk.green.bold('✅ CANONICAL MODERN WORKFLOWS:'));
+        for (const w of compass.canonicalWorkflows) {
+          console.log(`  • ${chalk.green(w)}`);
+        }
+        console.log('');
+
+        console.log(chalk.cyan.bold('📋 PRE-FLIGHT AGENT PROMPT:'));
+        console.log(chalk.dim(compass.preflightInstruction));
+        console.log('');
+      } else {
+        const registry = new DevToolsRegistry(db);
+        const t = registry.getTool(tool);
+        if (!t) {
+          consola.warn(`DevTool '${tool}' not found in canonical registry. Try 'pnpm', 'bun', 'metro', 'rg', 'fd', 'oxlint'.`);
+          return;
+        }
+
+        console.log(`\n${chalk.bold.underline(`🧭  DEVTOOL COMPASS: ${t.id}`)}`);
+        console.log(`Category: ${t.category} | Status: ${chalk.green(t.status)}`);
+        console.log(`Primary Advantage: ${t.primary_advantage}`);
+        console.log(`Install: ${chalk.green(t.installCommand)}`);
+        console.log('');
+      }
+    } catch (e: any) {
+      consola.error('Failed to run devtool compass:', e.message);
+    }
+  });
+
+cli
+  .command('seed:archive [peersDir]', 'Bulk ingest historical peer dependency datasets from archive')
+  .action((peersDir = 'C:\\projects\\rn-terrain-archive-extracted\\rn-terrain\\compat\\peers') => {
+    try {
+      consola.info(`Ingesting historical peer datasets from: ${chalk.cyan(peersDir)}`);
+      const db = new CanonicalDatabase();
+      const seeder = new ArchiveDatasetSeeder(db);
+      const res = seeder.seedFromDirectory(peersDir);
+
+      console.log(`\n${chalk.bold('ARCHIVE DATASET INGESTION SUMMARY')}`);
+      console.log(chalk.dim('────────────────────────────────────────'));
+      console.log(`  Packages Seeded:        ${chalk.green(res.packagesSeeded)}`);
+      console.log(`  Total Versions Tracked: ${chalk.green(res.totalVersionsIngested)}`);
+      console.log('');
+      for (const d of res.details) {
+        console.log(`    • ${chalk.bold(d.packageName.padEnd(30))} : ${chalk.cyan(d.versionsCount)} versions`);
+      }
+      console.log('');
+      consola.success('Historical archive datasets ingested successfully into canonical SQLite DB.');
+    } catch (e: any) {
+      consola.error('Failed to seed archive dataset:', e.message);
+    }
+  });
+
 cli.help();
+
 
 cli.parse();
 

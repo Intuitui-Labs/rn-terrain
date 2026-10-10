@@ -18,7 +18,8 @@ import {
   type CompatibilityComboRecord,
   type CompatibilityMatrixRecord,
   type EvalScoreRecord,
-  type DecisionActionRecord
+  type DecisionActionRecord,
+  type DevToolRecord
 } from './canonical-schema.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -223,4 +224,34 @@ export class CanonicalDatabase {
     `);
     stmt.run(action);
   }
+
+  // ─── Developer Ecosystem & Dev Tools ────────────────────────────────────────
+
+  public upsertDevTool(tool: DevToolRecord): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO dev_tools_ecosystem (
+        id, category, status, primary_advantage, rn_compatibility_notes, docs_url
+      ) VALUES (
+        @id, @category, @status, @primary_advantage, @rn_compatibility_notes, @docs_url
+      )
+      ON CONFLICT(id) DO UPDATE SET
+        category = excluded.category,
+        status = excluded.status,
+        primary_advantage = excluded.primary_advantage,
+        rn_compatibility_notes = excluded.rn_compatibility_notes,
+        docs_url = excluded.docs_url
+    `);
+    stmt.run(tool);
+  }
+
+  public getDevTool(id: string): DevToolRecord | undefined {
+    const stmt = this.db.prepare('SELECT * FROM dev_tools_ecosystem WHERE id = ?');
+    return stmt.get(id) as DevToolRecord | undefined;
+  }
+
+  public getAllDevTools(): DevToolRecord[] {
+    const stmt = this.db.prepare('SELECT * FROM dev_tools_ecosystem ORDER BY category, id');
+    return stmt.all() as DevToolRecord[];
+  }
 }
+

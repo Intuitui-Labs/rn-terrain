@@ -244,3 +244,12 @@ export interface DecisionActionRecord {
   rationale_summary: string | null;
   evaluated_at?: number;
 }
+
+export interface DevToolRecord {
+  id: string;
+  category: 'PACKAGE_MANAGER' | 'JS_ENGINE' | 'BUNDLER' | 'BUILD_TOOL' | 'CLI_TOOL' | 'RUST_SHINY_TOOL';
+  status: 'RECOMMENDED' | 'EVALUATING' | 'SPECIALIZED' | 'LEGACY';
+  primary_advantage: string | null;
+  rn_compatibility_notes: string | null;
+  docs_url: string | null;
+}

@@ -10,7 +10,9 @@ import {
   scanProject,
   CanonicalDatabase,
   PolicyGate,
-  generateAgentCompass
+  generateAgentCompass,
+  generatePnpmDevToolCompass,
+  DevToolsRegistry
 } from '@intuitui-labs/rn-terrain-core';
 import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
@@ -50,6 +52,25 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
           },
           required: ['package_name'],
+        },
+      },
+      {
+        name: 'tcdi_devtool_compass',
+        description:
+          'Pre-flight DevTool Compass: Grounding and policy check for foundational non-RN developer tools (e.g. pnpm, bun, metro, rg, oxlint). Validates monorepo configuration, banned anti-pattern commands, and Metro symlink interop.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tool_name: {
+              type: 'string',
+              description: 'Target developer tool name (e.g. pnpm, bun, metro, rg)',
+            },
+            version: {
+              type: 'string',
+              description: 'Target version (e.g. 12.11.2 or latest)',
+            },
+          },
+          required: ['tool_name'],
         },
       },
       {
@@ -232,6 +253,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const briefing = generateAgentCompass(packageName, version);
       return {
         content: [{ type: 'text', text: JSON.stringify(briefing, null, 2) }],
+      };
+    }
+
+    if (name === 'tcdi_devtool_compass') {
+      const toolName = (args?.tool_name as string) || 'pnpm';
+      const version = (args?.version as string) || '12.11.2';
+      if (toolName.toLowerCase() === 'pnpm') {
+        const compass = generatePnpmDevToolCompass(version);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(compass, null, 2) }],
+        };
+      }
+      const db = new CanonicalDatabase();
+      const registry = new DevToolsRegistry(db);
+      const tool = registry.getTool(toolName);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(tool ?? { error: `Tool ${toolName} not found` }, null, 2) }],
       };
     }
 

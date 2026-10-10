@@ -16,3 +16,6 @@ export * from './scoring/weights.js';
 export * from './sync-daily.js';
 export * from './types/index.js';
 export * from './radar.js';
+export * from './devtools/dev-tools-registry.js';
+export * from './devtools/pnpm-terrain.js';
+export * from './ingestion/archive-seeder.js';
