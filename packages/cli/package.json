@@ -1,6 +1,6 @@
 {
   "name": "@intuitui-labs/rn-terrain-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Terminal Radar CLI tool for real-time React Native vitality intelligence and ecosystem audits.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
