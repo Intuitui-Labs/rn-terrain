@@ -240,9 +240,15 @@ importers:
 
   packages/cli:
     dependencies:
+      '@intuitui-labs/openeval':
+        specifier: workspace:*
+        version: link:../openeval-core
       '@intuitui-labs/rn-terrain-core':
         specifier: workspace:*
         version: link:../core
+      '@intuitui-labs/rn-terrain-scanner':
+        specifier: workspace:*
+        version: link:../scanner
       cac:
         specifier: ^7.0.0
         version: 7.0.0

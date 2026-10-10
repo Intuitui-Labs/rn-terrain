@@ -55,6 +55,8 @@
   "license": "MIT",
   "dependencies": {
     "@intuitui-labs/rn-terrain-core": "workspace:*",
+    "@intuitui-labs/rn-terrain-scanner": "workspace:*",
+    "@intuitui-labs/openeval": "workspace:*",
     "cac": "^7.0.0",
     "chalk": "^6.0.0",
     "consola": "^3.4.2"

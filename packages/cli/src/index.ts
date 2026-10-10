@@ -15,7 +15,10 @@ import {
   NodeModulesAffordanceEngine,
   CuratedKnowledgeBridge
 } from '@intuitui-labs/rn-terrain-core';
-import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
+import fs from 'node:fs';
+import path from 'node:path';
+import { execSync } from 'node:child_process';
+import { AgentGuardrail, TcdiStackDoctor } from '@intuitui-labs/rn-terrain-scanner';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
 import { cac } from 'cac';
 import chalk from 'chalk';
@@ -598,6 +601,115 @@ cli
       console.log('');
     } catch (e: any) {
       consola.error('Failed to run Rust doctor:', e.message);
+    }
+  });
+
+cli
+  .command('doctor:stack [targetPath]', 'TCDI Stack Doctor: Audit React Native code against temporal New Architecture, Worklet, and gesture patterns')
+  .option('--rn <version>', 'Target React Native version (e.g. ^0.88.0, 0.74.2)', { default: '^0.88.0' })
+  .option('--arch <arch>', 'Target architecture: new-arch, paper, or interop', { default: 'new-arch' })
+  .option('--reanimated <version>', 'Target Reanimated version (e.g. ^4.7.1, ^3.16.0)')
+  .action((targetPath = '.', options) => {
+    try {
+      const doctor = new TcdiStackDoctor({
+        targetStack: {
+          reactNative: options.rn,
+          architecture: options.arch as any,
+          reanimated: options.reanimated,
+        },
+      });
+
+      console.log(`\n${chalk.bold.underline('🩺  TCDI REACT NATIVE STACK DOCTOR')}`);
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+      console.log(`  Target RN:     ${chalk.cyan.bold(options.rn)}`);
+      console.log(`  Architecture:  ${chalk.cyan.bold(options.arch)}`);
+      if (options.reanimated) console.log(`  Reanimated:    ${chalk.cyan.bold(options.reanimated)}`);
+      console.log('');
+
+      const resolved = path.resolve(targetPath);
+      const filesToScan: string[] = [];
+
+      function collectFiles(dirOrFile: string) {
+        if (!fs.existsSync(dirOrFile)) return;
+        const stat = fs.statSync(dirOrFile);
+        if (stat.isFile()) {
+          if (/\.(tsx|ts|jsx|js)$/.test(dirOrFile) && !dirOrFile.includes('node_modules') && !dirOrFile.includes('dist')) {
+            filesToScan.push(dirOrFile);
+          }
+        } else if (stat.isDirectory()) {
+          const entries = fs.readdirSync(dirOrFile);
+          for (const entry of entries) {
+            if (entry === 'node_modules' || entry === 'dist' || entry === '.git' || entry === '.turbo') continue;
+            collectFiles(path.join(dirOrFile, entry));
+          }
+        }
+      }
+
+      collectFiles(resolved);
+
+      if (filesToScan.length === 0) {
+        consola.warn(`No source files (.tsx/.ts/.jsx/.js) found in ${resolved}.`);
+        return;
+      }
+
+      let totalErrors = 0;
+      let totalWarnings = 0;
+      const allFindings = [];
+
+      for (const file of filesToScan) {
+        const code = fs.readFileSync(file, 'utf8');
+        const report = doctor.diagnoseSnippet(code, path.relative(process.cwd(), file));
+        if (report.findings.length > 0) {
+          totalErrors += report.errorsCount;
+          totalWarnings += report.warningsCount;
+          allFindings.push(...report.findings);
+        }
+      }
+
+      let healthScore = 100 - (totalErrors * 15) - (totalWarnings * 4);
+      if (healthScore < 0) healthScore = 0;
+
+      let statusBadge = chalk.green.bold('SOLID');
+      if (healthScore < 50) statusBadge = chalk.red.bold('LETHAL_DRIFT');
+      else if (totalErrors > 0) statusBadge = chalk.yellow.bold('DEGRADED');
+      else if (totalWarnings > 0) statusBadge = chalk.blue.bold('HEALTHY');
+
+      console.log(`  Files Audited:    ${chalk.bold(filesToScan.length)}`);
+      console.log(`  RN Health Score:  ${healthScore >= 80 ? chalk.green.bold(healthScore) : chalk.yellow.bold(healthScore)} / 100  [${statusBadge}]`);
+      console.log(`  Violations:       ${totalErrors > 0 ? chalk.red.bold(totalErrors + ' errors') : chalk.green('0 errors')}, ${totalWarnings > 0 ? chalk.yellow.bold(totalWarnings + ' warnings') : chalk.dim('0 warnings')}`);
+      console.log('');
+
+      if (allFindings.length === 0) {
+        consola.success('No React Native substrate or New Architecture violations detected. Clean build!');
+      } else {
+        console.log(chalk.bold('FINDINGS BREAKDOWN:'));
+        for (const f of allFindings.slice(0, 20)) {
+          const icon = f.severity === 'error' ? chalk.red('❌ [ERROR]') : chalk.yellow('⚠️  [WARN]');
+          console.log(`  ${icon} ${chalk.bold(f.ruleId)} at ${chalk.cyan(`${f.filePath}:${f.line}:${f.column}`)}`);
+          console.log(`     ${chalk.dim('Match:')}       ${chalk.bold(f.matchedText)}`);
+          console.log(`     ${chalk.yellow('Temporal:')}    ${f.temporalNote}`);
+          console.log(`     ${chalk.green('Remediation:')} ${f.remediationAdvice}`);
+          console.log('');
+        }
+        if (allFindings.length > 20) {
+          console.log(chalk.dim(`  ... and ${allFindings.length - 20} more findings.`));
+        }
+      }
+      console.log('');
+    } catch (e: any) {
+      consola.error('Failed to run TCDI Stack Doctor:', e.message);
+    }
+  });
+
+cli
+  .command('doctor:react [args...]', 'Run React Doctor for component-level hook, a11y, and web render checks')
+  .action((args = []) => {
+    try {
+      consola.info('Invoking React Doctor (Oxlint + React Rules)...');
+      const passArgs = args.length > 0 ? args.join(' ') : '--verbose --scope changed';
+      execSync(`npx react-doctor@latest ${passArgs}`, { stdio: 'inherit' });
+    } catch (e: any) {
+      consola.error('React Doctor encountered issues or exited with non-zero code.');
     }
   });
 
