@@ -3,7 +3,7 @@
   "private": true,
   "displayName": "RN Terrain",
   "description": "Visual React Native package intelligence, compatibility, and version checks directly inside package.json.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "intuitui-labs",
   "engines": {
     "vscode": "^1.120.0"

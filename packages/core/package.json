@@ -1,6 +1,6 @@
 {
   "name": "@intuitui-labs/rn-terrain-core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Core intelligence, architectural health signals, vitality algorithms, and schema models for the React Native ecosystem.",
   "type": "module",
   "sideEffects": false,
@@ -83,12 +83,14 @@
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
+    "better-sqlite3": "^13.0.3",
     "dotenv": "^17.4.2",
     "semver": "^7.8.3",
     "yaml": "^2.9.1",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
     "@types/node": "catalog:",
     "@types/semver": "^7.7.1",
     "typescript": "catalog:"
