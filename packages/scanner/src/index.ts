@@ -10,6 +10,8 @@ export { walkProject } from './ast-walker.js';
 export { formatReport } from './reporter.js';
 export * from './tree-sitter-matcher.js';
 export * from './agent-guardrail.js';
+export * from './rules/canonical-severed-rules.js';
+export * from './ast-scoped-parser.js';
 export * from './polyglot-bridge.js';
 export * from './tcdi-doctor.js';
 export * from './dependency-doctor.js';

@@ -29,3 +29,4 @@ export * from './compass/node-modules-affordance.js';
 export * from './ingestion/curated-bridge.js';
 export * from './devtools/mcp-terrain.js';
 export * from './state/receipt.js';
+export * from './learning/index.js';

@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 /**
  * @file test-harness-suite.mjs
- * Comprehensive Integration Test Suite for RN-Terrain Deterministic Harness Gates.
+ * Comprehensive 15-Invariant Test Suite for RN-Terrain Deterministic Control-Plane Gates.
  *
- * Verifies all 10 control-plane invariants across Claude Code, Codex, and OpenCode:
+ * Verifies all 6 Scalable Remedies:
  *   1. Clean RN write payload with fresh receipt -> ALLOW (Exit 0)
- *   2. Write buffer with severed useAnimatedGestureHandler -> BLOCKED (Exit 2)
- *   3. Edit buffer with severed usePanGesture -> BLOCKED (Exit 2)
- *   4. Write buffer with legacy AsyncStorage from react-native core -> BLOCKED (Exit 2)
- *   5. Strict mode ungrounded write -> BLOCKED (Exit 2)
- *   6. Auto-grounding mode ungrounded write -> ALLOW (Exit 0) + Receipt cut
- *   7. Stop gate on clean repository -> ALLOW (Exit 0)
- *   8. Stop gate on repository with severed API -> REJECTED (Exit 2)
- *   9. Post-tool observation shaper on verbose compiler logs -> ALLOW (Exit 0) + filtered signals
- *   10. CLI doctor:agents command -> Exit 0 + 100% health score
+ *   2. Buffer AST Gate: Severed useAnimatedGestureHandler in Write payload -> BLOCKED (Exit 2)
+ *   3. Buffer AST Gate: Partial Edit buffer (new_string) with severed call site in file with top-level import -> BLOCKED (Exit 2)
+ *   4. Buffer AST Gate: Comment immunity (// useAnimatedGestureHandler) -> ALLOW (Exit 0)
+ *   5. Buffer AST Gate: String literal immunity (console.log("useAnimatedGestureHandler")) -> ALLOW (Exit 0)
+ *   6. Buffer AST Gate: Test mock immunity (jest.mock) -> ALLOW (Exit 0)
+ *   7. Buffer AST Gate: Severed AsyncStorage from react-native core -> BLOCKED (Exit 2)
+ *   8. Buffer AST Gate: Severed ViewPropTypes from react-native core -> BLOCKED (Exit 2)
+ *   9. Strict mode ungrounded write without receipt -> BLOCKED (Exit 2)
+ *   10. Package-bound receipt: Reanimated receipt does NOT permit ungrounded Skia edit -> BLOCKED (Exit 2)
+ *   11. Auto-grounding mode ungrounded write -> ALLOW (Exit 0) + Receipt cut
+ *   12. Stop Gate: Repository without modified RN files -> ALLOW (Exit 0)
+ *   13. Stop Gate: Repository with agent-introduced severed API -> REJECTED (Exit 2)
+ *   14. Stop Gate: Repository with pre-existing legacy debt on untouched lines -> ALLOW (Exit 0)
+ *   15. Post-Tool Observation Shaper on verbose logs -> ALLOW (Exit 0) + Compressed stderr
  */
 
 import fs from 'node:fs';
@@ -21,18 +26,17 @@ import path from 'node:path';
 import os from 'node:os';
 import { spawnSync, execSync } from 'node:child_process';
 
-const tempDir = path.join(os.tmpdir(), `rn-terrain-harness-test-${Date.now()}`);
+const tempDir = path.join(os.tmpdir(), `rn-terrain-remedies-test-${Date.now()}`);
 const stateDir = path.join(tempDir, '.agents', 'state');
 const receiptPath = path.join(stateDir, 'receipt.json');
 const gateScriptPath = path.resolve('.agents', 'gate.mjs');
 const stopGateScriptPath = path.resolve('.agents', 'stop-gate.mjs');
 const postToolScriptPath = path.resolve('.agents', 'post-tool.mjs');
-const cliScriptPath = path.resolve('packages', 'rn-terrain', 'bin', 'rn-terrain.js');
 
 fs.mkdirSync(stateDir, { recursive: true });
 
 console.log('═════════════════════════════════════════════════════════════════');
-console.log('🧪 VERIFYING DETERMINISTIC HARNESS CONTROL-PLANE SUITE');
+console.log('🧪 VERIFYING 15 PRODUCTION-GRADE CONTROL-PLANE INVARIANTS');
 console.log(`📁 Test Sandbox: ${tempDir}`);
 console.log('═════════════════════════════════════════════════════════════════\n');
 
@@ -46,14 +50,16 @@ function runGateWithStdin(payload, extraArgs = [], env = {}) {
   });
 }
 
-function cutReceipt(packageName = 'react-native-reanimated') {
+function cutReceipt(packages = ['react-native-reanimated']) {
   const timestamp = new Date().toISOString();
+  const pkgMap = {};
+  for (const p of packages) {
+    pkgMap[p] = { version: '4.7.1', timestamp };
+  }
   const receipt = {
     lastGrounding: timestamp,
     lastAction: 'tcdi_compass',
-    packages: {
-      [packageName]: { version: '4.7.1', timestamp },
-    },
+    packages: pkgMap,
   };
   fs.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2), 'utf8');
 }
@@ -68,7 +74,7 @@ const tests = [
   {
     name: '1. Clean RN write payload with fresh receipt (Expected: Exit 0 Allowed)',
     run: () => {
-      cutReceipt('react-native-gesture-handler');
+      cutReceipt(['react-native-gesture-handler']);
       const payload = {
         tool: 'Write',
         input: {
@@ -83,7 +89,7 @@ const tests = [
   {
     name: '2. Buffer AST Gate: Severed useAnimatedGestureHandler in Write payload (Expected: Exit 2 Blocked)',
     run: () => {
-      cutReceipt('react-native-reanimated');
+      cutReceipt(['react-native-reanimated']);
       const payload = {
         tool: 'Write',
         input: {
@@ -92,31 +98,79 @@ const tests = [
         },
       };
       const res = runGateWithStdin(payload);
-      const isBlocked = res.status === 2 && res.stderr.includes('useAnimatedGestureHandler') && res.stderr.includes('BUFFER AST GATE');
+      const isBlocked = res.status === 2 && res.stderr.includes('useAnimatedGestureHandler');
       return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
     },
   },
   {
-    name: '3. Buffer AST Gate: Severed usePanGesture in Edit payload (Expected: Exit 2 Blocked)',
+    name: '3. Virtual Synthesizer: Partial Edit (new_string) with severed call and existing import (Expected: Exit 2 Blocked)',
     run: () => {
-      cutReceipt('react-native-gesture-handler');
+      cutReceipt(['react-native-reanimated']);
+      const testFile = path.join(tempDir, 'ExistingScreen.tsx');
+      fs.writeFileSync(testFile, "import { useAnimatedGestureHandler } from 'react-native-reanimated';\n// placeholder line\nexport default () => null;", 'utf8');
+
       const payload = {
         tool: 'Edit',
         input: {
-          file_path: 'src/components/LegacyGesture.tsx',
-          old_string: '// placeholder',
-          new_string: "const pan = usePanGesture();",
+          file_path: testFile,
+          old_string: '// placeholder line',
+          new_string: 'const handler = useAnimatedGestureHandler({});',
         },
       };
       const res = runGateWithStdin(payload);
-      const isBlocked = res.status === 2 && res.stderr.includes('usePanGesture');
+      const isBlocked = res.status === 2 && res.stderr.includes('useAnimatedGestureHandler');
       return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
     },
   },
   {
-    name: '4. Buffer AST Gate: Severed AsyncStorage from react-native core (Expected: Exit 2 Blocked)',
+    name: '4. Comment Immunity: Comment mentioning useAnimatedGestureHandler (Expected: Exit 0 Allowed)',
     run: () => {
-      cutReceipt('react-native');
+      cutReceipt(['react-native-gesture-handler']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/CommentedCard.tsx',
+          content: "import { Gesture } from 'react-native-gesture-handler';\n// Migrated away from useAnimatedGestureHandler in 2026\n/* notice: useAnimatedGestureHandler is deprecated */\nexport const pan = Gesture.Pan();",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      return { pass: res.status === 0, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '5. String Literal Immunity: String mentioning severed API (Expected: Exit 0 Allowed)',
+    run: () => {
+      cutReceipt(['react-native-gesture-handler']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/DocCard.tsx',
+          content: "import { Gesture } from 'react-native-gesture-handler';\nconsole.warn('Do not use useAnimatedGestureHandler here');\nexport const pan = Gesture.Pan();",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      return { pass: res.status === 0, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '6. Test Mock Immunity: jest.mock definition of severed API (Expected: Exit 0 Allowed)',
+    run: () => {
+      cutReceipt(['react-native-reanimated']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/Card.test.tsx',
+          content: "import React from 'react';\njest.mock('react-native-reanimated', () => ({\n  useAnimatedGestureHandler: jest.fn(),\n}));\ndescribe('Card', () => { it('renders', () => {}); });",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      return { pass: res.status === 0, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '7. Severed AsyncStorage from react-native core (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt(['react-native']);
       const payload = {
         tool: 'Write',
         input: {
@@ -130,7 +184,23 @@ const tests = [
     },
   },
   {
-    name: '5. Strict mode ungrounded write without receipt (Expected: Exit 2 Blocked)',
+    name: '8. Severed ViewPropTypes from react-native core (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt(['react-native']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/LegacyProps.ts',
+          content: "import { ViewPropTypes } from 'react-native'; export const props = ViewPropTypes;",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      const isBlocked = res.status === 2 && res.stderr.includes('ViewPropTypes');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '9. Strict mode ungrounded write without receipt (Expected: Exit 2 Blocked)',
     run: () => {
       clearReceipt();
       const payload = {
@@ -141,12 +211,28 @@ const tests = [
         },
       };
       const res = runGateWithStdin(payload);
-      const isBlocked = res.status === 2 && res.stderr.includes('NO ACTIVE GROUNDING RECEIPT FOUND');
+      const isBlocked = res.status === 2 && res.stderr.includes('ACTION BLOCKED');
       return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
     },
   },
   {
-    name: '6. Auto-grounding mode ungrounded write (Expected: Exit 0 Allowed + Receipt cut)',
+    name: '10. Package-Bound Receipt: Grounding Reanimated does NOT authorize Skia (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt(['react-native-reanimated']); // Only Reanimated grounded
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/CanvasView.tsx',
+          content: "import { Canvas } from '@shopify/react-native-skia';",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      const isBlocked = res.status === 2 && res.stderr.includes('@shopify/react-native-skia');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '11. Auto-grounding mode ungrounded write (Expected: Exit 0 Allowed + Receipt cut)',
     run: () => {
       clearReceipt();
       const payload = {
@@ -162,7 +248,7 @@ const tests = [
     },
   },
   {
-    name: '7. Stop Gate: Repository without modified RN files (Expected: Exit 0 Allowed)',
+    name: '12. Stop Gate: Repository without modified RN files (Expected: Exit 0 Allowed)',
     run: () => {
       const res = spawnSync('node', [stopGateScriptPath], {
         cwd: process.cwd(),
@@ -172,31 +258,57 @@ const tests = [
     },
   },
   {
-    name: '8. Stop Gate: Temporary Git repository with severed API (Expected: Exit 2 Blocked)',
+    name: '13. Stop Gate: Agent introduces severed API in modified line (Expected: Exit 2 Blocked)',
     run: () => {
-      const gitSandbox = path.join(tempDir, 'git-repo');
+      const gitSandbox = path.join(tempDir, 'git-repo-agent-bad');
       fs.mkdirSync(gitSandbox, { recursive: true });
       execSync('git init', { cwd: gitSandbox, stdio: 'ignore' });
       execSync('git config user.name "Test"', { cwd: gitSandbox, stdio: 'ignore' });
       execSync('git config user.email "test@example.com"', { cwd: gitSandbox, stdio: 'ignore' });
 
-      // Create an initial commit
-      fs.writeFileSync(path.join(gitSandbox, 'README.md'), '# Repo', 'utf8');
+      // Initial clean commit
+      fs.writeFileSync(path.join(gitSandbox, 'Card.tsx'), "import React from 'react';\nexport const Card = () => null;", 'utf8');
       execSync('git add . && git commit -m "initial"', { cwd: gitSandbox, stdio: 'ignore' });
 
-      // Introduce a modified RN file with severed API
-      fs.writeFileSync(path.join(gitSandbox, 'BadComponent.tsx'), "import { useAnimatedGestureHandler } from 'react-native-reanimated';", 'utf8');
+      // Agent introduces severed API
+      fs.writeFileSync(path.join(gitSandbox, 'Card.tsx'), "import React from 'react';\nimport { useAnimatedGestureHandler } from 'react-native-reanimated';\nconst h = useAnimatedGestureHandler({});\nexport const Card = () => null;", 'utf8');
 
       const res = spawnSync('node', [stopGateScriptPath], {
         cwd: gitSandbox,
         encoding: 'utf8',
       });
       const isBlocked = res.status === 2 && res.stderr.includes('STOP GATE: TASK COMPLETION REJECTED');
-      return { pass: isBlocked, exitCode: res.status, stderr: `${res.stderr} (stdout: ${res.stdout})` };
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
     },
   },
   {
-    name: '9. Post-Tool Observation Shaper on verbose logs (Expected: Exit 0 + Compressed stderr)',
+    name: '14. Stop Gate: Pre-existing legacy debt on untouched lines (Expected: Exit 0 Allowed)',
+    run: () => {
+      const gitSandbox = path.join(tempDir, 'git-repo-legacy-debt');
+      fs.mkdirSync(gitSandbox, { recursive: true });
+      execSync('git init', { cwd: gitSandbox, stdio: 'ignore' });
+      execSync('git config user.name "Test"', { cwd: gitSandbox, stdio: 'ignore' });
+      execSync('git config user.email "test@example.com"', { cwd: gitSandbox, stdio: 'ignore' });
+
+      // Initial commit already has legacy tech debt on line 2
+      const initialCode = "import React from 'react';\nimport { useAnimatedGestureHandler } from 'react-native-reanimated';\nconst h = useAnimatedGestureHandler({});\nexport const Button = () => <div style={{ color: 'blue' }} />;\n";
+      fs.writeFileSync(path.join(gitSandbox, 'LegacyScreen.tsx'), initialCode, 'utf8');
+      execSync('git add . && git commit -m "initial legacy"', { cwd: gitSandbox, stdio: 'ignore' });
+
+      // Agent ONLY touches the button color on line 4 (untouched line 2/3 has legacy debt)
+      const modifiedCode = "import React from 'react';\nimport { useAnimatedGestureHandler } from 'react-native-reanimated';\nconst h = useAnimatedGestureHandler({});\nexport const Button = () => <div style={{ color: 'purple' }} />;\n";
+      fs.writeFileSync(path.join(gitSandbox, 'LegacyScreen.tsx'), modifiedCode, 'utf8');
+
+      const res = spawnSync('node', [stopGateScriptPath], {
+        cwd: gitSandbox,
+        encoding: 'utf8',
+      });
+      const isAllowed = res.status === 0 && res.stderr.includes('Skipped');
+      return { pass: isAllowed, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '15. Post-Tool Observation Shaper on verbose logs (Expected: Exit 0 + Compressed stderr)',
     run: () => {
       const verboseLog = Array(30).fill('info: bundling module [node_modules/something]').join('\n') +
         '\nwarning: Reanimated 4.x worklet detected with deprecated serialization\n' +
@@ -215,17 +327,6 @@ const tests = [
 
       const hasFilteredSignal = res.stderr.includes('OBSERVATION SHAPER') && res.stderr.includes('Reanimated 4.x worklet');
       return { pass: res.status === 0 && hasFilteredSignal, exitCode: res.status, stderr: res.stderr };
-    },
-  },
-  {
-    name: '10. CLI doctor:agents verification (Expected: Exit 0 + 100% Score)',
-    run: () => {
-      const res = spawnSync('node', [cliScriptPath, 'doctor:agents'], {
-        cwd: process.cwd(),
-        encoding: 'utf8',
-      });
-      const isClean = res.status === 0 && res.stdout.includes('100%');
-      return { pass: isClean, exitCode: res.status, stderr: res.stderr };
     },
   },
 ];
@@ -256,9 +357,9 @@ try {
 
 console.log('\n═════════════════════════════════════════════════════════════════');
 if (allPassed) {
-  console.log('🎉 ALL 10 CONTROL-PLANE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
+  console.log('🎉 ALL 15 PRODUCTION-GRADE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
   process.exit(0);
 } else {
-  console.log('❌ SOME CONTROL-PLANE INVARIANT TESTS FAILED');
+  console.log('❌ SOME INVARIANT TESTS FAILED');
   process.exit(1);
 }

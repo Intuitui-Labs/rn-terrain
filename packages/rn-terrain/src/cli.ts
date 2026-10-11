@@ -15,7 +15,10 @@ import {
   RustToolingDoctor,
   NodeModulesAffordanceEngine,
   CuratedKnowledgeBridge,
-  writeGroundingReceipt
+  writeGroundingReceipt,
+  IncidentCollector,
+  SignalDistiller,
+  DPOExporter
 } from '@intuitui-labs/rn-terrain-core';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -357,6 +360,20 @@ cli
       if (verdict.remediationPrompt) {
         console.log(`\n${chalk.yellow('Agent Remediation Prompt:')}`);
         console.log(chalk.dim(verdict.remediationPrompt));
+      }
+
+      if (verdict.severedViolations && verdict.severedViolations.length > 0) {
+        try {
+          const collector = new IncidentCollector();
+          const inc = await collector.recordRejection({
+            packageName,
+            targetVersion: version,
+            rejectedSnippet: codeSnippet,
+            severedSymbolsDetected: verdict.severedViolations.map((v: any) => v.matchedText),
+            canonicalReplacements: verdict.severedViolations.map((v: any) => v.replacement || v.canonicalReplacement).filter(Boolean) as string[],
+          });
+          console.log(`  ${chalk.dim('⚡ Afferent Telemetry: Incident recorded at')} ${chalk.cyan(inc.id)}`);
+        } catch {}
       }
       console.log('');
     } catch (e: any) {
@@ -1250,6 +1267,112 @@ cli
       consola.success('Empirical Benchmark Complete: 100% deflection of severed symbols proven.');
     } catch (e: any) {
       consola.error('Failed to run benchmark:', e.message);
+    }
+  });
+
+cli
+  .command('incidents:list [status]', 'List recorded telemetry incidents caught by harness gates')
+  .action(async (status) => {
+    try {
+      const collector = new IncidentCollector();
+      const filter = status ? { status: status.toUpperCase() as any } : undefined;
+      const list = await collector.listIncidents(filter);
+      console.log(`\n${chalk.bold('🧠 AFFERENT SENSORY TELEMETRY: INCIDENTS')}`);
+      console.log(chalk.dim('────────────────────────────────────────────────────────'));
+      if (list.length === 0) {
+        console.log(chalk.dim('  No incidents recorded. Nervous system is clean.'));
+      } else {
+        for (const inc of list) {
+          const statusColor =
+            inc.status === 'RESOLVED'
+              ? chalk.green
+              : inc.status === 'DISTILLED'
+              ? chalk.cyan
+              : chalk.yellow;
+          console.log(`  • ${chalk.bold(inc.id)} [${statusColor(inc.status)}]`);
+          console.log(`    Package: ${chalk.cyan(inc.packageName)}@${inc.targetVersion}`);
+          console.log(`    Severed: ${chalk.red(inc.severedSymbolsDetected.join(', ') || 'N/A')}`);
+          if (inc.chosenSnippet) {
+            console.log(`    Fix:     ${chalk.green(inc.chosenSnippet.slice(0, 60))}...`);
+          }
+          console.log('');
+        }
+      }
+    } catch (e: any) {
+      consola.error('Failed to list incidents:', e.message);
+    }
+  });
+
+cli
+  .command('incidents:resolve <id> <fixedSnippetPath>', 'Attach remediated modern code snippet to an incident')
+  .action(async (id, snippetPath) => {
+    try {
+      const collector = new IncidentCollector();
+      let snippet = snippetPath;
+      if (fs.existsSync(snippetPath)) {
+        snippet = fs.readFileSync(snippetPath, 'utf8');
+      }
+      await collector.resolveRemediation(id, snippet);
+      consola.success(`Incident ${chalk.cyan(id)} resolved with verified remediation.`);
+    } catch (e: any) {
+      consola.error('Failed to resolve incident:', e.message);
+    }
+  });
+
+cli
+  .command('distill [id]', 'Distill resolved incidents into candidate Chronos shards')
+  .option('--drafts-dir <dir>', 'Directory to stage draft shards', { default: 'data/packages/drafts' })
+  .action(async (id, options) => {
+    try {
+      const collector = new IncidentCollector();
+      const distiller = new SignalDistiller();
+      const incidents = id
+        ? [await collector.getIncident(id)].filter(Boolean) as any[]
+        : await collector.listIncidents({ status: 'RESOLVED' });
+
+      if (incidents.length === 0) {
+        consola.info('No resolved incidents ready for distillation.');
+        return;
+      }
+
+      console.log(`\n${chalk.bold('⚡ SYNAPTIC DISTILLATION: FORMULATING CHRONOS SIGNALS')}`);
+      console.log(chalk.dim('────────────────────────────────────────────────────────'));
+      for (const inc of incidents) {
+        const signal = distiller.distillIncident(inc);
+        const draftPath = await distiller.stageDraft(signal, { draftsDir: options.draftsDir });
+        await collector.markDistilled(inc.id);
+        console.log(`  ✓ Distilled ${chalk.cyan(inc.id)} -> ${chalk.green(signal.featureKey)}`);
+        console.log(`    Draft Shard: ${chalk.dim(draftPath)}`);
+        console.log(`    Dev Dance:   ${chalk.yellow(signal.rules.dev_dance)}`);
+        console.log('');
+      }
+      consola.success(`Distillation complete. Draft shards staged.`);
+    } catch (e: any) {
+      consola.error('Failed to distill signals:', e.message);
+    }
+  });
+
+cli
+  .command('export:dpo <outputFile>', 'Export resolved incidents into DPO / Apex training dataset')
+  .option('--format <format>', 'Dataset schema: huggingface or apex', { default: 'huggingface' })
+  .action(async (outputFile, options) => {
+    try {
+      const collector = new IncidentCollector();
+      const exporter = new DPOExporter();
+      const incidents = await collector.listIncidents();
+      const resolved = incidents.filter((i) => i.status === 'RESOLVED' || i.status === 'DISTILLED');
+
+      if (resolved.length === 0) {
+        consola.warn('No resolved incidents available to export.');
+        return;
+      }
+
+      const outPath = await exporter.exportToFile(resolved, outputFile, options.format);
+      consola.success(
+        `Exported ${resolved.length} preference pairs in [${options.format}] format to ${chalk.cyan(outPath)}.`
+      );
+    } catch (e: any) {
+      consola.error('Failed to export DPO dataset:', e.message);
     }
   });
 

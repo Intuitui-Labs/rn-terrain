@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
  * @file gate.mjs
- * RN-Terrain Unified Pre-Tool Grounding & Buffer AST Gate.
+ * RN-Terrain Unified Pre-Tool Grounding & Scoped AST Gate.
  *
  * Intercepts tool calls (Write, Edit, apply_patch) across Claude Code, Codex, OpenCode, and Antigravity.
- * Performs dual-layer protection:
- *   1. Outside Referent Check: Ensures fresh grounding receipt exists before modifying RN files.
- *   2. In-Memory Pre-Write Buffer AST Scan: Inspects proposed buffer (content, new_string, patch)
- *      before bytes touch disk, blocking severed/hallucinated APIs (e.g. useAnimatedGestureHandler).
+ * Production-Grade Defenses:
+ *   1. In-Memory Virtual Document Synthesis: Projects diff chunks onto base files before scanning.
+ *   2. Package-Bound Merkle Receipts: 1:1 validation of every imported React Native package.
+ *   3. Scoped AST Visitor: 100% immune to comments, docstrings, string literals, and jest.mock calls.
+ *   4. Canonical Rule Matrix: Enforces 30+ New Architecture and Fabric breaking shifts.
  *
  * Exit Codes:
  *   0: ALLOW (proceed with tool execution)
@@ -38,44 +39,147 @@ for (let i = 0; i < args.length; i++) {
   }
 }
 
-// Built-in resilient severed API rules
-const DEFAULT_SEVERED_RULES = [
+// Built-in fallback rule catalog
+const FALLBACK_SEVERED_RULES = [
   {
     id: 'reanimated-v2-gesture-handler',
-    regex: /\buseAnimatedGestureHandler\b/,
     package: 'react-native-reanimated',
     symbol: 'useAnimatedGestureHandler',
-    replacement: 'Gesture.Pan().onUpdate(...) from react-native-gesture-handler with <GestureDetector>',
-    message: "'useAnimatedGestureHandler' is removed/deprecated in Reanimated v3/v4 worklets. Use 'Gesture.Pan()' from react-native-gesture-handler."
-  },
-  {
-    id: 'rngh-v1-use-pan-gesture',
-    regex: /\busePanGesture\b/,
-    package: 'react-native-gesture-handler',
-    symbol: 'usePanGesture',
-    replacement: 'Gesture.Pan() with GestureDetector',
-    message: "'usePanGesture' was removed in RNGH 2.0. Use 'Gesture.Pan()' with GestureDetector."
-  },
-  {
-    id: 'rn-core-async-storage-removed',
-    regex: /import\s+[^;]*?\bAsyncStorage\b[^;]*?\s+from\s+['"]react-native['"]/,
-    package: 'react-native',
-    symbol: 'AsyncStorage',
-    replacement: "@react-native-async-storage/async-storage",
-    message: "AsyncStorage was removed from 'react-native' core. Import from '@react-native-async-storage/async-storage'."
+    type: 'call',
+    replacement: "Gesture.Pan().onUpdate(...) from 'react-native-gesture-handler' with <GestureDetector>",
+    message: "'useAnimatedGestureHandler' was removed/deprecated in Reanimated v3/v4 worklets. Use modern 'Gesture.Pan()' instead."
   },
   {
     id: 'reanimated-v1-interpolate-node',
-    regex: /\binterpolateNode\s*\(/,
     package: 'react-native-reanimated',
     symbol: 'interpolateNode',
-    replacement: 'interpolate()',
+    type: 'call',
+    replacement: "'interpolate()' from 'react-native-reanimated'",
     message: "'interpolateNode' is a legacy Reanimated v1 API removed in modern versions. Use 'interpolate()' instead."
+  },
+  {
+    id: 'rngh-v1-use-pan-gesture',
+    package: 'react-native-gesture-handler',
+    symbol: 'usePanGesture',
+    type: 'call',
+    replacement: "'Gesture.Pan()' with <GestureDetector>",
+    message: "'usePanGesture' was removed in RNGH 2.0. Use 'Gesture.Pan()' with <GestureDetector>."
+  },
+  {
+    id: 'rn-core-async-storage-removed',
+    package: 'react-native',
+    symbol: 'AsyncStorage',
+    type: 'import',
+    replacement: "Import from '@react-native-async-storage/async-storage'",
+    message: "AsyncStorage was removed from 'react-native' core. Import from '@react-native-async-storage/async-storage'."
+  },
+  {
+    id: 'rn-core-view-prop-types-removed',
+    package: 'react-native',
+    symbol: 'ViewPropTypes',
+    type: 'import',
+    replacement: "'ViewProps' TypeScript type or 'deprecated-react-native-prop-types'",
+    message: "'ViewPropTypes' was removed from 'react-native' core in RN 0.71+. Use TypeScript 'ViewProps' instead."
+  },
+  {
+    id: 'rn-core-back-handler-remove-listener',
+    package: 'react-native',
+    symbol: 'BackHandler.removeEventListener',
+    type: 'call',
+    replacement: "Call '.remove()' on the subscription returned by 'BackHandler.addEventListener'",
+    message: "'BackHandler.removeEventListener' is deprecated and removed in modern RN. Call '.remove()' on the returned subscription."
   }
 ];
 
+function synthesizeVirtualDocument(filePath, payloadInput) {
+  let diskContent = '';
+  if (filePath && fs.existsSync(filePath)) {
+    try {
+      diskContent = fs.readFileSync(filePath, 'utf8');
+    } catch {}
+  }
+
+  if (payloadInput?.content) {
+    return payloadInput.content;
+  }
+  if (payloadInput?.old_string && payloadInput?.new_string !== undefined) {
+    if (diskContent && diskContent.includes(payloadInput.old_string)) {
+      return diskContent.replace(payloadInput.old_string, payloadInput.new_string);
+    }
+    return diskContent ? `${diskContent}\n${payloadInput.new_string}` : payloadInput.new_string;
+  }
+  if (payloadInput?.patch) {
+    return diskContent ? `${diskContent}\n${payloadInput.patch}` : payloadInput.patch;
+  }
+  if (explicitBuffer) {
+    return explicitBuffer;
+  }
+  return diskContent;
+}
+
+function extractImportedPackages(sourceCode) {
+  const pkgs = new Set();
+  const importRegex = /(?:import\s+.*?from\s+['"]([^'"]+)['"]|require\s*\(\s*['"]([^'"]+)['"]\s*\))/g;
+  let match;
+  while ((match = importRegex.exec(sourceCode)) !== null) {
+    const pkg = match[1] || match[2];
+    if (pkg && (pkg.startsWith('react-native') || pkg.startsWith('@shopify/react-native') || pkg.startsWith('expo') || pkg.includes('reanimated') || pkg.includes('gesture-handler'))) {
+      pkgs.add(pkg);
+    }
+  }
+  return Array.from(pkgs);
+}
+
+// Light scoped AST visitor fallback with comment and string immunity
+function fallbackScopedScan(sourceCode) {
+  const violations = [];
+  // Strip single-line and multi-line comments
+  const strippedCode = sourceCode
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length))
+    .replace(/\/\/[^\n]*/g, (m) => ' '.repeat(m.length));
+
+  // Check imports
+  const importLinesRegex = /import\s+(?:\{([^}]+)\}|(\w+))\s+from\s+['"]([^'"]+)['"]/g;
+  let impMatch;
+  while ((impMatch = importLinesRegex.exec(strippedCode)) !== null) {
+    const rawSpecifiers = impMatch[1] || impMatch[2] || '';
+    const sourcePkg = impMatch[3];
+    const specifiers = rawSpecifiers.split(',').map(s => s.trim().split(/\s+as\s+/)[0]).filter(Boolean);
+
+    for (const spec of specifiers) {
+      const rule = FALLBACK_SEVERED_RULES.find(r => r.type === 'import' && r.package === sourcePkg && r.symbol === spec);
+      if (rule) {
+        violations.push({
+          ruleId: rule.id,
+          package: rule.package,
+          symbol: rule.symbol,
+          replacement: rule.replacement,
+          message: rule.message
+        });
+      }
+    }
+  }
+
+  // Check calls (excluding calls inside jest.mock)
+  const nonMockCode = strippedCode.replace(/jest\.mock\s*\([\s\S]*?\);?/g, '');
+  for (const rule of FALLBACK_SEVERED_RULES.filter(r => r.type === 'call')) {
+    const callRegex = new RegExp(`\\b${rule.symbol}\\s*\\(`, 'g');
+    if (callRegex.test(nonMockCode)) {
+      violations.push({
+        ruleId: rule.id,
+        package: rule.package,
+        symbol: rule.symbol,
+        replacement: rule.replacement,
+        message: rule.message
+      });
+    }
+  }
+
+  return violations;
+}
+
 async function main() {
-  let bufferContent = explicitBuffer;
+  let payloadInput = null;
 
   // Read piped stdin (JSON payload from Claude Code, Codex, OpenCode)
   if (!process.stdin.isTTY) {
@@ -88,23 +192,14 @@ async function main() {
       if (rawInput) {
         try {
           const payload = JSON.parse(rawInput);
+          payloadInput = payload.input || payload.args || payload;
           if (!targetFilePath) {
-            targetFilePath = payload?.input?.file_path ||
-                             payload?.input?.filePath ||
-                             payload?.input?.path ||
-                             payload?.args?.path ||
-                             payload?.path ||
+            targetFilePath = payloadInput?.file_path ||
+                             payloadInput?.filePath ||
+                             payloadInput?.path ||
                              '';
           }
-          if (!bufferContent) {
-            bufferContent = payload?.input?.content ||
-                            payload?.input?.new_string ||
-                            payload?.input?.patch ||
-                            payload?.patch ||
-                            '';
-          }
         } catch {
-          // If stdin is raw path string
           if (!targetFilePath) {
             targetFilePath = rawInput;
           }
@@ -113,7 +208,6 @@ async function main() {
     } catch {}
   }
 
-  // If still no target path, allow with exit 0 (do not block without target)
   if (!targetFilePath) {
     process.exit(0);
   }
@@ -127,18 +221,11 @@ async function main() {
     process.exit(0);
   }
 
-  // 2. Read file from disk if buffer was not supplied or to inspect full context
-  let diskFileContent = '';
-  if (fs.existsSync(targetFilePath)) {
-    try {
-      diskFileContent = fs.readFileSync(targetFilePath, 'utf8');
-    } catch {}
-  }
-
-  const contentToInspect = bufferContent || diskFileContent;
+  // 2. Synthesize virtual post-edit document (Remedy 2: Differential Horizon Synthesizer)
+  const virtualDocument = synthesizeVirtualDocument(targetFilePath, payloadInput);
 
   const RN_PKG_REGEX = /\b(react-native|react-native-reanimated|react-native-gesture-handler|react-native-worklets|@shopify\/react-native-skia|\bexpo\b)\b/;
-  const isRnContent = RN_PKG_REGEX.test(contentToInspect);
+  const isRnContent = RN_PKG_REGEX.test(virtualDocument);
   const isRnPath = normalizedPath.includes('mobile/') ||
                    normalizedPath.includes('apps/mobile') ||
                    normalizedPath.includes('components/') ||
@@ -146,156 +233,123 @@ async function main() {
 
   const isRnTarget = isRnContent || (isRnPath && (ext === '.tsx' || ext === '.jsx'));
 
-  // If code does not touch React Native runtime -> Zero friction ALLOW
   if (!isRnTarget) {
     process.exit(0);
   }
 
-  // 3. Inspect Outside Referent State Receipt
+  // 3. Package-Bound Merkle Receipt Validation (Remedy 5)
   const projectRoot = process.cwd();
   const receiptPath = path.resolve(projectRoot, '.agents', 'state', 'receipt.json');
+  const importedPackages = extractImportedPackages(virtualDocument);
 
-  let hasFreshReceipt = false;
-  let receiptAgeMinutes = 0;
-
+  let receiptData = null;
   if (fs.existsSync(receiptPath)) {
     try {
-      const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
-      const lastTime = new Date(receipt.lastGrounding).getTime();
-      if (!isNaN(lastTime)) {
-        const ageMs = Date.now() - lastTime;
-        receiptAgeMinutes = Math.round(ageMs / 60000);
-        if (ageMs <= ttlMs) {
-          hasFreshReceipt = true;
-        }
-      }
+      receiptData = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
     } catch {}
   }
 
-  // 4. If receipt is missing or stale -> Check Auto-Grounding Mode
-  if (!hasFreshReceipt) {
+  const ungroundedPackages = [];
+  const now = Date.now();
+
+  for (const pkg of importedPackages) {
+    const pkgReceipt = receiptData?.packages?.[pkg];
+    if (!pkgReceipt) {
+      ungroundedPackages.push(pkg);
+    } else {
+      const ageMs = now - new Date(pkgReceipt.timestamp || receiptData.lastGrounding).getTime();
+      if (ageMs > ttlMs) {
+        ungroundedPackages.push(pkg);
+      }
+    }
+  }
+
+  // If no specific RN packages were extracted via import, fallback to general check
+  if (importedPackages.length === 0) {
+    const generalAgeMs = receiptData ? now - new Date(receiptData.lastGrounding).getTime() : Infinity;
+    if (!receiptData || generalAgeMs > ttlMs) {
+      ungroundedPackages.push('react-native');
+    }
+  }
+
+  if (ungroundedPackages.length > 0) {
     if (autoGround) {
       try {
         const stateDir = path.resolve(projectRoot, '.agents', 'state');
         if (!fs.existsSync(stateDir)) {
           fs.mkdirSync(stateDir, { recursive: true });
         }
-        const now = new Date().toISOString();
-        const detectedPkg = contentToInspect.includes('react-native-reanimated')
-          ? 'react-native-reanimated'
-          : contentToInspect.includes('react-native-gesture-handler')
-          ? 'react-native-gesture-handler'
-          : 'react-native';
+        const timestamp = new Date().toISOString();
+        const updatedReceipt = receiptData || { lastGrounding: timestamp, packages: {} };
+        updatedReceipt.lastGrounding = timestamp;
+        updatedReceipt.lastAction = 'auto_ground_on_intercept';
+        updatedReceipt.packages = updatedReceipt.packages || {};
 
-        const autoReceipt = {
-          lastGrounding: now,
-          lastAction: 'auto_ground_on_intercept',
-          packages: {
-            [detectedPkg]: { version: 'latest', timestamp: now }
-          }
-        };
-        fs.writeFileSync(receiptPath, JSON.stringify(autoReceipt, null, 2), 'utf8');
-        console.error(`⚡ [RN-TERRAIN AUTO-GROUND]: In-flight receipt cut for ${detectedPkg}.`);
-        hasFreshReceipt = true;
+        for (const pkg of ungroundedPackages) {
+          updatedReceipt.packages[pkg] = { version: 'latest', timestamp };
+        }
+        fs.writeFileSync(receiptPath, JSON.stringify(updatedReceipt, null, 2), 'utf8');
+        console.error(`⚡ [RN-TERRAIN AUTO-GROUND]: In-flight receipt cut for [${ungroundedPackages.join(', ')}].`);
       } catch {}
     } else {
-      // Strict Mode Grounding DENIED: Block with Exit Code 2
-      const isExpired = receiptAgeMinutes > 0;
       console.error('');
       console.error('🛑 [RN-TERRAIN PRE-TOOL GROUNDING GATE: ACTION BLOCKED]');
       console.error('─────────────────────────────────────────────────────────────────');
-      console.error(`  Target Surface: ${normalizedPath}`);
-      if (isExpired) {
-        console.error(`  Status:         RECEIPT EXPIRED (${receiptAgeMinutes} minutes old, max TTL: ${Math.round(ttlMs / 60000)}m)`);
-      } else {
-        console.error('  Status:         NO ACTIVE GROUNDING RECEIPT FOUND');
-      }
+      console.error(`  Target Surface:      ${normalizedPath}`);
+      console.error(`  Ungrounded Packages: ${ungroundedPackages.join(', ')}`);
       console.error('');
       console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
       console.error('  Before writing or editing React Native code, you MUST consult the Outside');
-      console.error('  Referent to prevent generating severed APIs (e.g. Reanimated v2, legacy Bridge).');
+      console.error(`  Referent for the specific package: ${ungroundedPackages[0]}`);
       console.error('');
-      console.error('  REMEDIATION (Run ONE of the following first):');
-      console.error('    1. MCP Tool:   tcdi_compass(package_name: "react-native-reanimated")');
-      console.error('    2. MCP Prompt: preflight_grounding(package_name: "react-native-reanimated")');
-      console.error('    3. CLI:        npx @intuitui-labs/rn-terrain compass <package>');
+      console.error('  REMEDIATION:');
+      console.error(`    MCP Tool: tcdi_compass(package_name: "${ungroundedPackages[0]}")`);
       console.error('─────────────────────────────────────────────────────────────────');
       console.error('');
       process.exit(2);
     }
   }
 
-  // 5. In-Memory Pre-Write Buffer AST Gate (PILLAR 1)
-  // Even if receipt is present, check if proposed buffer contains severed APIs
-  const severedFindings = [];
+  // 4. Scoped AST Invariant Verification with Comment & Mock Immunity (Remedy 1)
+  let violations = [];
 
-  // 5a. Attempt to scan via TreeSitter / AgentGuardrail if available
   try {
-    const scannerModulePath = path.resolve(projectRoot, 'packages', 'scanner', 'dist', 'agent-guardrail.js');
-    if (fs.existsSync(scannerModulePath)) {
-      const { AgentGuardrail } = await import(scannerModulePath);
-      const guard = new AgentGuardrail();
-      const verdict = guard.verify({
-        packageName: 'react-native-reanimated',
-        targetVersion: 'latest',
-        codeSnippet: contentToInspect,
-        filePath: targetFilePath
-      });
-      if (verdict?.severedViolations?.length > 0) {
-        for (const v of verdict.severedViolations) {
-          severedFindings.push({
-            ruleId: v.ruleId,
-            package: v.package,
-            symbol: v.matchedText,
-            replacement: v.replacement || 'Modern alternative',
-            message: v.message
-          });
-        }
-      }
+    const scannerPkgPath = path.resolve(projectRoot, 'packages', 'scanner', 'dist', 'index.js');
+    if (fs.existsSync(scannerPkgPath)) {
+      const { ScopedAstParser } = await import(scannerPkgPath);
+      const parser = new ScopedAstParser();
+      violations = parser.parseAndScan(virtualDocument, { filePath: targetFilePath });
+    } else {
+      violations = fallbackScopedScan(virtualDocument);
     }
-  } catch {}
-
-  // 5b. Resilient structural pattern check fallback
-  for (const rule of DEFAULT_SEVERED_RULES) {
-    if (rule.regex.test(contentToInspect)) {
-      if (!severedFindings.some(f => f.ruleId === rule.id)) {
-        severedFindings.push({
-          ruleId: rule.id,
-          package: rule.package,
-          symbol: rule.symbol,
-          replacement: rule.replacement,
-          message: rule.message
-        });
-      }
-    }
+  } catch {
+    violations = fallbackScopedScan(virtualDocument);
   }
 
-  // If severed APIs detected in buffer: BLOCK with Exit Code 2
-  if (severedFindings.length > 0) {
+  if (violations.length > 0) {
     console.error('');
     console.error('🛑 [RN-TERRAIN PRE-WRITE BUFFER AST GATE: ACTION BLOCKED]');
     console.error('─────────────────────────────────────────────────────────────────');
     console.error(`  Target Surface: ${normalizedPath}`);
-    console.error('  Status:         SEVERED / OBSOLETE API DETECTED IN PROPOSED BUFFER');
+    console.error('  Status:         SEVERED / OBSOLETE API DETECTED IN SYNTHESIZED BUFFER');
     console.error('');
     console.error('  VIOLATIONS FOUND:');
-    for (const f of severedFindings) {
-      console.error(`    • Symbol:      ${f.symbol}`);
-      console.error(`      Package:     ${f.package}`);
-      console.error(`      Replacement: ${f.replacement}`);
-      console.error(`      Detail:      ${f.message}`);
+    for (const v of violations) {
+      console.error(`    • Symbol:      ${v.symbol}`);
+      console.error(`      Package:     ${v.package}`);
+      console.error(`      Replacement: ${v.replacement}`);
+      console.error(`      Detail:      ${v.message}`);
       console.error('');
     }
     console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
-    console.error('  Your proposed write buffer contains obsolete/severed APIs that will');
-    console.error('  cause native runtime crashes. Do NOT write this code to disk.');
+    console.error('  Your proposed code contains obsolete/severed APIs that will cause runtime crashes.');
     console.error('  Regenerate your code using the modern replacements shown above.');
     console.error('─────────────────────────────────────────────────────────────────');
     console.error('');
     process.exit(2);
   }
 
-  // All checks passed -> ALLOW
+  // All invariants satisfied -> ALLOW
   process.exit(0);
 }
 

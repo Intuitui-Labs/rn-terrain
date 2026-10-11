@@ -35,4 +35,6 @@ data/packages/DASHBOARD.html
 
 # Agent Session State & Receipts
 .agents/state/
+.terrain/
+data/packages/drafts/
 
