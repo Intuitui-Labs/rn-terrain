@@ -27,12 +27,14 @@ export interface IngestionStats {
 }
 
 export class CuratedKnowledgeBridge {
-  private readonly defaultXPath = 'C:\\x';
+  private readonly defaultXPath: string;
 
   constructor(
     private readonly db: TerrainCatalogPort,
-    private readonly xRoot: string = 'C:\\x'
-  ) {}
+    private readonly xRoot: string = process.env.TERRAIN_VAULT_PATH || 'docs/vault'
+  ) {
+    this.defaultXPath = this.xRoot;
+  }
 
   /**
    * Resolves a file or directory path within the C:\x repository vault
@@ -239,7 +241,7 @@ export class CuratedKnowledgeBridge {
 
     // ─── 1. DANGER-ZONES.md ──────────────────────────────────────────────────
     const dangerZonesContent = `# 🚨 AGENT DANGER ZONES: Severed APIs & Banned Patterns
-*Auto-synthesized by rn-terrain CuratedKnowledgeBridge from C:\\x knowledge vault*
+*Auto-synthesized by rn-terrain CuratedKnowledgeBridge from curated architectural knowledge vault*
 *Last updated: ${new Date().toISOString()}*
 
 > **CRITICAL FOR AI CODING AGENTS**:
@@ -290,7 +292,7 @@ export class CuratedKnowledgeBridge {
     const tools = this.db.getAllDevTools ? this.db.getAllDevTools() : (this.db.listDevTools ? this.db.listDevTools() : []);
 
     const currentStateContent = `# 🧭 CURRENT STATE: Sacred Platform Pins & Grounded APIs
-*Auto-synthesized by rn-terrain CuratedKnowledgeBridge from C:\\x knowledge vault*
+*Auto-synthesized by rn-terrain CuratedKnowledgeBridge from curated architectural knowledge vault*
 *Last updated: ${new Date().toISOString()}*
 
 > **AUTHORITATIVE DIRECTIVE**:

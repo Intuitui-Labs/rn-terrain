@@ -111,10 +111,33 @@ export function generateAgentCompass(
       severity: m.collision_severity
     }));
 
-  const architecture =
-    versionRecord?.supports_new_arch === 1
-      ? 'NEW_ARCHITECTURE_FABRIC_READY'
-      : 'LEGACY_INTEROP';
+  let architecture: 'NEW_ARCHITECTURE_FABRIC_READY' | 'LEGACY_INTEROP' | 'UNKNOWN' = 'UNKNOWN';
+  if (versionRecord) {
+    architecture =
+      versionRecord.supports_new_arch === 1
+        ? 'NEW_ARCHITECTURE_FABRIC_READY'
+        : versionRecord.supports_new_arch === 0
+          ? 'LEGACY_INTEROP'
+          : 'UNKNOWN';
+  } else {
+    // Grounded fallbacks for foundational tier-1 ecosystem packages when local database is unseeded
+    if (packageName === 'react-native-reanimated') {
+      // Reanimated 3+ supports New Architecture; Reanimated 4 drops Paper entirely and mandates Fabric
+      architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
+    } else if (
+      packageName === 'react-native-gesture-handler' ||
+      packageName === 'react-native-screens' ||
+      packageName === 'react-native-nitro-modules' ||
+      packageName === 'react-native-worklets' ||
+      packageName === 'react-native-mmkv' ||
+      packageName === '@shopify/react-native-skia' ||
+      packageName === '@shopify/flash-list'
+    ) {
+      architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
+    } else {
+      architecture = 'UNKNOWN';
+    }
+  }
 
   let preflightInstruction = `[PRE-FLIGHT AGENT GROUNDING for ${packageName}@${activeVersion}]\n`;
   if (bannedSeveredSymbols.length > 0) {

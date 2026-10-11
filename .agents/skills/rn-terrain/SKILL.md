@@ -105,6 +105,6 @@ rn-eval jump react-native-reanimated 3.16.0 4.7.1
 rn-eval affordance react-native-reanimated
 
 # 4. Ingest vault updates and refresh agent views
-rn-eval seed:curated C:\x
-rn-eval agent:views
+rn-terrain seed:curated [vaultDir]
+rn-terrain agent:views
 ```

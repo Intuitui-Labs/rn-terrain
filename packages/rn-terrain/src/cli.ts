@@ -1017,13 +1017,13 @@ cli
 // ─── Curated Vault & Agent Views ─────────────────────────────────────────────
 
 cli
-  .command('seed:curated [xDir]', 'Ingest curated annotations, technology radar, and 50-vendor ecosystem from C:\\x vault')
+  .command('seed:curated [vaultDir]', 'Ingest curated annotations, technology radar, and ecosystem catalog from local knowledge directory')
   .option('--views-out <dir>', 'Output directory for synthesized agent views', { default: 'docs/agent-views' })
-  .action((xDir = 'C:\\x', options: { viewsOut: string }) => {
+  .action((vaultDir = process.env.TERRAIN_VAULT_PATH || 'docs/vault', options: { viewsOut: string }) => {
     try {
-      consola.info(`Ingesting curated architectural knowledge from vault: ${chalk.cyan(xDir)}`);
+      consola.info(`Ingesting curated architectural knowledge from directory: ${chalk.cyan(vaultDir)}`);
       const db = new CanonicalDatabase();
-      const bridge = new CuratedKnowledgeBridge(db, xDir);
+      const bridge = new CuratedKnowledgeBridge(db, vaultDir);
       const stats = bridge.runFullIngestion(options.viewsOut);
 
       console.log(`\n${chalk.bold('CURATED KNOWLEDGE VAULT INGESTION SUMMARY')}`);

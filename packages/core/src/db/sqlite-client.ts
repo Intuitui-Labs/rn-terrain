@@ -63,6 +63,39 @@ export class CanonicalDatabase implements TerrainCatalogPort {
 
   private initializeSchema(): void {
     this.db.exec(MASTER_DDL);
+    this.seedDefaultsIfEmpty();
+  }
+
+  private seedDefaultsIfEmpty(): void {
+    try {
+      const countRow = this.db.prepare('SELECT COUNT(*) as count FROM packages').get() as { count: number };
+      if (countRow && countRow.count === 0) {
+        const embedded = new EmbeddedCatalogAdapter();
+        // Seed packages
+        for (const pkg of embedded.getAllPackages()) {
+          this.upsertPackage(pkg);
+        }
+        // Seed versions & symbols
+        for (const pkg of embedded.getAllPackages()) {
+          for (const ver of embedded.getVersions(pkg.id)) {
+            this.upsertVersion(ver);
+          }
+          for (const sym of embedded.getSymbols(pkg.id)) {
+            this.upsertSymbol(sym);
+          }
+        }
+        // Seed radar
+        for (const rad of embedded.getAllRadarRecords()) {
+          this.upsertRadarRecord(rad);
+        }
+        // Seed dev tools
+        for (const tool of embedded.getAllDevTools()) {
+          this.upsertDevTool(tool);
+        }
+      }
+    } catch {
+      // Best-effort bootstrap; ignore if in restricted/read-only environment
+    }
   }
 
   public close(): void {

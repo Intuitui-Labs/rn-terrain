@@ -127,6 +127,64 @@ export class EmbeddedCatalogAdapter implements TerrainCatalogPort {
       this.upsertPackage(pkg);
     }
 
+    // 1b. Foundational Package Versions (Bitemporal epochs & New Architecture flags)
+    const initialVersions: PackageVersionRecord[] = [
+      {
+        package_id: 'react-native-reanimated',
+        version: '4.7.1',
+        valid_from_epoch: now,
+        valid_to_epoch: null,
+        react_native_min: '0.76.0',
+        react_native_max: null,
+        supports_new_arch: 1,
+        tarball_url: null,
+      },
+      {
+        package_id: 'react-native-reanimated',
+        version: '3.16.0',
+        valid_from_epoch: now - 5000000,
+        valid_to_epoch: null,
+        react_native_min: '0.74.0',
+        react_native_max: null,
+        supports_new_arch: 1,
+        tarball_url: null,
+      },
+      {
+        package_id: 'react-native-gesture-handler',
+        version: '2.16.0',
+        valid_from_epoch: now,
+        valid_to_epoch: null,
+        react_native_min: '0.74.0',
+        react_native_max: null,
+        supports_new_arch: 1,
+        tarball_url: null,
+      },
+      {
+        package_id: 'react-native-screens',
+        version: '3.34.0',
+        valid_from_epoch: now,
+        valid_to_epoch: null,
+        react_native_min: '0.74.0',
+        react_native_max: null,
+        supports_new_arch: 1,
+        tarball_url: null,
+      },
+      {
+        package_id: 'react-native',
+        version: '0.76.0',
+        valid_from_epoch: now,
+        valid_to_epoch: null,
+        react_native_min: '0.76.0',
+        react_native_max: null,
+        supports_new_arch: 1,
+        tarball_url: null,
+      },
+    ];
+
+    for (const ver of initialVersions) {
+      this.upsertPackageVersion(ver);
+    }
+
     // 2. Severed & Critical API Symbols
     const initialSymbols: ApiSymbolRecord[] = [
       {
