@@ -15,7 +15,7 @@
  *   - CommonJS namespaces: const RN = require('react-native') / RN.AsyncStorage
  */
 
-import { parse, type ParserOptions } from '@babel/parser';
+import { parse, type ParserPlugin } from '@babel/parser';
 import _traverse from '@babel/traverse';
 import { CANONICAL_SEVERED_RULES, type SeveredRule } from './rules/canonical-severed-rules.js';
 
@@ -30,12 +30,69 @@ export interface AstViolation {
   message: string;
   line: number;
   column: number;
+  template?: string;
 }
 
 export interface ParseOptions {
   rules?: SeveredRule[];
   filePath?: string;
   ignoreTestMocks?: boolean;
+}
+
+/**
+ * Checks whether an inline comment matches an ignore directive.
+ * Supports:
+ *   // @rn-terrain-ignore
+ *   // @rn-terrain-ignore-next-line
+ *   // @rn-terrain-ignore: reason
+ *   // @rn-terrain-ignore <ruleId|symbol>
+ *   /* @rn-terrain-ignore * /
+ */
+function matchesIgnoreDirective(lineText: string, ruleId: string, symbol: string): boolean {
+  if (!lineText) return false;
+  const match = lineText.match(/(?:\/\/|\/\*)\s*@rn-terrain-ignore(?:-next-line)?(?:\s*:?\s*(.*?))?(?:\*\/)?$/i);
+  if (!match) return false;
+
+  const directiveArg = (match[1] || '').trim();
+  // If no arguments or a plain reason string (e.g. ": legacy code", "(ticket-123)"), ignore all violations on target line
+  if (!directiveArg || directiveArg.startsWith(':') || directiveArg.startsWith('-') || directiveArg.startsWith('(')) {
+    return true;
+  }
+
+  // If specific tokens are specified (e.g. "reanimated-v2-gesture-handler" or "useAnimatedGestureHandler")
+  const tokens = directiveArg.split(/[\s,:]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
+  const targetTokens = [
+    ruleId.toLowerCase(),
+    symbol.toLowerCase(),
+    (symbol.split('.').pop() || '').toLowerCase()
+  ].filter(Boolean);
+
+  return targetTokens.some(t => tokens.includes(t));
+}
+
+function isViolationIgnored(
+  sourceLines: string[],
+  v: AstViolation
+): boolean {
+  const lineIdx = v.line - 1; // 0-indexed line
+
+  // Check 1: Trailing comment on the exact same line
+  if (lineIdx >= 0 && lineIdx < sourceLines.length) {
+    const line = sourceLines[lineIdx];
+    if (line && matchesIgnoreDirective(line, v.ruleId, v.symbol)) {
+      return true;
+    }
+  }
+
+  // Check 2: Comment on the immediately preceding line
+  if (lineIdx - 1 >= 0 && lineIdx - 1 < sourceLines.length) {
+    const prevLine = sourceLines[lineIdx - 1];
+    if (prevLine && matchesIgnoreDirective(prevLine, v.ruleId, v.symbol)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export class ScopedAstParser {
@@ -54,26 +111,50 @@ export class ScopedAstParser {
       return violations;
     }
 
-    const parserOptions: ParserOptions = {
-      sourceType: 'module',
-      plugins: [
-        'jsx',
-        'typescript',
-        'classProperties',
-        'asyncGenerators',
-        'dynamicImport',
-        'objectRestSpread',
-        'exportDefaultFrom',
-        'exportNamespaceFrom'
-      ],
-      errorRecovery: true
-    };
+    // 1. File-level escape hatch check
+    if (/(?:\/\/|\/\*)\s*@rn-terrain-ignore-file\b/i.test(sourceCode)) {
+      return [];
+    }
+
+    // 2. Lenient AST parsing with Flow / TypeScript auto-detection
+    const isFlow = /^\s*(?:\/\/|\/\*)\s*@flow\b/m.test(sourceCode);
+    const sharedPlugins: ParserPlugin[] = [
+      'jsx',
+      'classProperties',
+      'asyncGenerators',
+      'dynamicImport',
+      'objectRestSpread',
+      'exportDefaultFrom',
+      'exportNamespaceFrom'
+    ];
+
+    const primaryPlugins: ParserPlugin[] = [
+      isFlow ? 'flow' : 'typescript',
+      ...sharedPlugins
+    ];
+
+    const fallbackPlugins: ParserPlugin[] = [
+      isFlow ? 'typescript' : 'flow',
+      ...sharedPlugins
+    ];
 
     let ast: any;
     try {
-      ast = parse(sourceCode, parserOptions);
+      ast = parse(sourceCode, {
+        sourceType: 'module',
+        plugins: primaryPlugins,
+        errorRecovery: true
+      });
     } catch {
-      return violations;
+      try {
+        ast = parse(sourceCode, {
+          sourceType: 'module',
+          plugins: fallbackPlugins,
+          errorRecovery: true
+        });
+      } catch {
+        return violations;
+      }
     }
 
     const importRules = activeRules.filter(r => r.type === 'import');
@@ -114,7 +195,8 @@ export class ScopedAstParser {
                 replacement: rule.replacement,
                 message: rule.message,
                 line: specifier.loc?.start.line ?? path.node.loc?.start.line ?? 1,
-                column: specifier.loc?.start.column ?? path.node.loc?.start.column ?? 0
+                column: specifier.loc?.start.column ?? path.node.loc?.start.column ?? 0,
+                template: rule.template
               });
             }
           }
@@ -149,7 +231,8 @@ export class ScopedAstParser {
                       replacement: rule.replacement,
                       message: rule.message,
                       line: prop.loc?.start.line ?? path.node.loc?.start.line ?? 1,
-                      column: prop.loc?.start.column ?? path.node.loc?.start.column ?? 0
+                      column: prop.loc?.start.column ?? path.node.loc?.start.column ?? 0,
+                      template: rule.template
                     });
                   }
                 }
@@ -196,7 +279,8 @@ export class ScopedAstParser {
                 replacement: rule.replacement,
                 message: rule.message,
                 line: callee.loc?.start.line ?? path.node.loc?.start.line ?? 1,
-                column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0
+                column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0,
+                template: rule.template
               });
             }
           }
@@ -222,7 +306,8 @@ export class ScopedAstParser {
                   replacement: rule.replacement,
                   message: rule.message,
                   line: callee.loc?.start.line ?? path.node.loc?.start.line ?? 1,
-                  column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0
+                  column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0,
+                  template: rule.template
                 });
               }
             }
@@ -237,7 +322,8 @@ export class ScopedAstParser {
                 replacement: memberRule.replacement,
                 message: memberRule.message,
                 line: callee.loc?.start.line ?? path.node.loc?.start.line ?? 1,
-                column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0
+                column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0,
+                template: memberRule.template
               });
             }
           }
@@ -268,7 +354,8 @@ export class ScopedAstParser {
                 replacement: rule.replacement,
                 message: rule.message,
                 line: path.node.loc?.start.line ?? 1,
-                column: path.node.loc?.start.column ?? 0
+                column: path.node.loc?.start.column ?? 0,
+                template: rule.template
               });
             }
           }
@@ -276,6 +363,7 @@ export class ScopedAstParser {
       });
     } catch {}
 
-    return violations;
+    const sourceLines = sourceCode.split('\n');
+    return violations.filter(v => !isViolationIgnored(sourceLines, v));
   }
 }

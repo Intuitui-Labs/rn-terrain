@@ -113,7 +113,9 @@ export class ReactNativeDirectoryAdapter implements IRnDirectoryPort {
               githubUrl: lib.githubUrl || `https://www.npmjs.com/package/${lib.npmPkg}`,
               supportsNewArchitecture: Boolean(lib.newArchitecture ?? (lib as any).github?.newArchitecture),
               isExpoCompatible: Boolean((lib as any).github?.configPlugin),
-              category: 'community-directory'
+              category: 'community-directory',
+              unmaintained: Boolean((lib as any).unmaintained),
+              score: (lib as any).score ?? 0
             }));
 
           if (mapped.length > 0) {
@@ -153,7 +155,9 @@ export class ReactNativeDirectoryAdapter implements IRnDirectoryPort {
             githubUrl: match.githubUrl || `https://www.npmjs.com/package/${match.npmPkg}`,
             supportsNewArchitecture: Boolean(match.newArchitecture ?? match.github?.newArchitecture),
             isExpoCompatible: Boolean(match.github?.configPlugin),
-            category: 'community-directory'
+            category: 'community-directory',
+            unmaintained: Boolean(match.unmaintained),
+            score: match.score ?? 0
           };
         }
       }

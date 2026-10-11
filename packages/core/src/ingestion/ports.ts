@@ -12,6 +12,8 @@ export interface RnDirectoryPackageInfo {
   supportsNewArchitecture: boolean;
   isExpoCompatible: boolean;
   category: string;
+  unmaintained?: boolean;
+  score?: number;
 }
 
 export interface GitHubRepoTelemetry {

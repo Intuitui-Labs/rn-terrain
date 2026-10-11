@@ -10,6 +10,8 @@
  *   - Strict Instruction for Context Injection
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
 import semver from 'semver';
 import type { TerrainCatalogPort } from '../db/catalog-port.js';
 import { createCatalog } from '../db/sqlite-client.js';
@@ -37,6 +39,8 @@ export interface AgentCompassBriefing {
   allowedModernSymbols: string[];
   knownPeerConflicts: PeerConflict[];
   preflightInstruction: string;
+  unmaintained?: boolean;
+  isExpoCompatible?: boolean;
 }
 
 export function generateAgentCompass(
@@ -188,7 +192,27 @@ export function generateAgentCompass(
       severity: m.collision_severity
     }));
 
+  // Ingest cached React Native Directory community metadata if available
+  let directoryInfo: any = null;
+  try {
+    const dirCachePath = path.resolve(process.cwd(), '.agents', 'state', 'directory-cache.json');
+    if (fs.existsSync(dirCachePath)) {
+      const cache = JSON.parse(fs.readFileSync(dirCachePath, 'utf8'));
+      directoryInfo = cache.packages?.[packageName];
+      if (directoryInfo) {
+        if (directoryInfo.supportsNewArchitecture) {
+          architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
+        } else if (directoryInfo.supportsNewArchitecture === false) {
+          architecture = 'LEGACY_INTEROP';
+        }
+      }
+    }
+  } catch {}
+
   let preflightInstruction = `[PRE-FLIGHT AGENT GROUNDING for ${packageName}@${activeVersion}]\n`;
+  if (directoryInfo?.unmaintained) {
+    preflightInstruction += `CRITICAL WARNING: Package is flagged UNMAINTAINED in React Native Directory. Avoid adoption or verify fork.\n`;
+  }
   if (bannedSeveredSymbols.length > 0) {
     preflightInstruction += `CRITICAL: The following APIs are REMOVED/SEVERED and will crash at runtime:\n`;
     for (const b of bannedSeveredSymbols) {
@@ -211,6 +235,8 @@ export function generateAgentCompass(
     bannedSeveredSymbols,
     allowedModernSymbols,
     knownPeerConflicts,
-    preflightInstruction
+    preflightInstruction,
+    unmaintained: directoryInfo?.unmaintained ?? false,
+    isExpoCompatible: directoryInfo?.isExpoCompatible ?? false
   };
 }

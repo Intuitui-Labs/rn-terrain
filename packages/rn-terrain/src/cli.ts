@@ -19,7 +19,9 @@ import {
   IncidentCollector,
   SignalDistiller,
   DPOExporter,
-  isTelemetryOptedIn
+  isTelemetryOptedIn,
+  RepoDirectorySyncer,
+  JsdocReplacementExtractor
 } from '@intuitui-labs/rn-terrain-core';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -247,6 +249,43 @@ cli
       console.log('');
     } catch (e: any) {
       consola.error('Failed to audit project:', e.message);
+    }
+  });
+
+cli
+  .command('sync:directory', 'Sync React Native Directory metadata strictly for repo dependencies')
+  .alias('sync')
+  .option('--cwd <dir>', 'Target repository root', { default: '.' })
+  .option('--json', 'Output results as JSON')
+  .action(async (options) => {
+    try {
+      const targetDir = path.resolve(process.cwd(), options.cwd);
+      consola.info(`Discovering repository React Native dependencies at: ${chalk.cyan(targetDir)}`);
+
+      const syncer = new RepoDirectorySyncer();
+      const records = await syncer.syncRepo(targetDir);
+
+      if (options.json) {
+        console.log(JSON.stringify(records, null, 2));
+        return;
+      }
+
+      console.log(`\n${chalk.bold('REACT NATIVE DIRECTORY REPO-SCOPED COMPATIBILITY')}`);
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+      console.log(
+        `${chalk.bold('Package'.padEnd(36))} ${chalk.bold('Version'.padEnd(12))} ${chalk.bold('New Arch'.padEnd(14))} ${chalk.bold('Status')}`
+      );
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+
+      for (const r of records) {
+        const archStr = r.supportsNewArchitecture ? chalk.green('✓ Fabric') : chalk.yellow('⚠ Interop');
+        const statusStr = r.unmaintained ? chalk.red('🛑 UNMAINTAINED') : chalk.green('✓ Active');
+        console.log(`${r.packageName.padEnd(36)} ${r.version.padEnd(12)} ${archStr.padEnd(22)} ${statusStr}`);
+      }
+      console.log(chalk.dim('─────────────────────────────────────────────────────────────────'));
+      consola.success(`Synced ${records.length} repo package(s) to .agents/state/directory-cache.json\n`);
+    } catch (e: any) {
+      consola.error('Failed to sync React Native Directory:', e.message);
     }
   });
 
@@ -1422,7 +1461,14 @@ cli
       fs.mkdirSync(claudeDir, { recursive: true });
 
       // 1. Copy or link gate scripts
-      const sourceAgentsDir = path.resolve(process.cwd(), '.agents');
+      const candidate1 = path.resolve(process.cwd(), '.agents');
+      const candidate2 = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../.agents');
+      const candidate3 = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../.agents');
+      const sourceAgentsDir = fs.existsSync(path.join(candidate1, 'gate.mjs'))
+        ? candidate1
+        : fs.existsSync(path.join(candidate2, 'gate.mjs'))
+          ? candidate2
+          : candidate3;
       const gateScripts = ['gate.mjs', 'stop-gate.mjs', 'post-tool.mjs'];
 
       for (const script of gateScripts) {

@@ -17,6 +17,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 
 // Parse arguments
@@ -48,7 +49,20 @@ const FALLBACK_SEVERED_RULES = [
     symbol: 'useAnimatedGestureHandler',
     type: 'call',
     replacement: "Gesture.Pan().onUpdate(...) from 'react-native-gesture-handler' with <GestureDetector>",
-    message: "'useAnimatedGestureHandler' was removed/deprecated in Reanimated v3/v4 worklets. Use modern 'Gesture.Pan()' instead."
+    message: "'useAnimatedGestureHandler' was removed/deprecated in Reanimated v3/v4 worklets. Use modern 'Gesture.Pan()' instead.",
+    template: `import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+
+const panGesture = Gesture.Pan()
+  .onStart(() => {
+    'worklet';
+  })
+  .onUpdate((event) => {
+    'worklet';
+  });
+
+<GestureDetector gesture={panGesture}>
+  <Animated.View style={animatedStyle} />
+</GestureDetector>`
   },
   {
     id: 'reanimated-v1-interpolate-node',
@@ -56,7 +70,10 @@ const FALLBACK_SEVERED_RULES = [
     symbol: 'interpolateNode',
     type: 'call',
     replacement: "'interpolate()' from 'react-native-reanimated'",
-    message: "'interpolateNode' is a legacy Reanimated v1 API removed in modern versions. Use 'interpolate()' instead."
+    message: "'interpolateNode' is a legacy Reanimated v1 API removed in modern versions. Use 'interpolate()' instead.",
+    template: `import { interpolate, Extrapolation } from 'react-native-reanimated';
+
+const output = interpolate(progress.value, [0, 1], [0, 100], Extrapolation.CLAMP);`
   },
   {
     id: 'rngh-v1-use-pan-gesture',
@@ -64,7 +81,11 @@ const FALLBACK_SEVERED_RULES = [
     symbol: 'usePanGesture',
     type: 'call',
     replacement: "'Gesture.Pan()' with <GestureDetector>",
-    message: "'usePanGesture' was removed in RNGH 2.0. Use 'Gesture.Pan()' with <GestureDetector>."
+    message: "'usePanGesture' was removed in RNGH 2.0. Use 'Gesture.Pan()' with <GestureDetector>.",
+    template: `import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+
+const panGesture = Gesture.Pan().onUpdate(() => { 'worklet'; });
+<GestureDetector gesture={panGesture}><Animated.View style={animatedStyle} /></GestureDetector>`
   },
   {
     id: 'rn-core-async-storage-removed',
@@ -72,7 +93,17 @@ const FALLBACK_SEVERED_RULES = [
     symbol: 'AsyncStorage',
     type: 'import',
     replacement: "Import from '@react-native-async-storage/async-storage'",
-    message: "AsyncStorage was removed from 'react-native' core. Import from '@react-native-async-storage/async-storage'."
+    message: "AsyncStorage was removed from 'react-native' core. Import from '@react-native-async-storage/async-storage'.",
+    template: `// Option A: Community AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+await AsyncStorage.setItem('key', value);
+const item = await AsyncStorage.getItem('key');
+
+// Option B: High-Performance MMKV (Recommended for New Architecture)
+import { MMKV } from 'react-native-mmkv';
+const storage = new MMKV();
+storage.set('key', value);
+const item = storage.getString('key');`
   },
   {
     id: 'rn-core-view-prop-types-removed',
@@ -80,7 +111,12 @@ const FALLBACK_SEVERED_RULES = [
     symbol: 'ViewPropTypes',
     type: 'import',
     replacement: "'ViewProps' TypeScript type or 'deprecated-react-native-prop-types'",
-    message: "'ViewPropTypes' was removed from 'react-native' core in RN 0.71+. Use TypeScript 'ViewProps' instead."
+    message: "'ViewPropTypes' was removed from 'react-native' core in RN 0.71+. Use TypeScript 'ViewProps' instead.",
+    template: `import type { ViewProps } from 'react-native';
+
+interface ComponentProps extends ViewProps {
+  customProperty?: string;
+}`
   },
   {
     id: 'rn-core-back-handler-remove-listener',
@@ -88,9 +124,51 @@ const FALLBACK_SEVERED_RULES = [
     symbol: 'BackHandler.removeEventListener',
     type: 'call',
     replacement: "Call '.remove()' on the subscription returned by 'BackHandler.addEventListener'",
-    message: "'BackHandler.removeEventListener' is deprecated and removed in modern RN. Call '.remove()' on the returned subscription."
+    message: "'BackHandler.removeEventListener' is deprecated and removed in modern RN. Call '.remove()' on the returned subscription.",
+    template: `import { useEffect } from 'react';
+import { BackHandler } from 'react-native';
+
+useEffect(() => {
+  const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
+  return () => subscription.remove();
+}, []);`
   }
 ];
+
+function matchesIgnoreDirective(lineText, ruleId, symbol) {
+  if (!lineText) return false;
+  const match = lineText.match(/(?:\/\/|\/\*)\s*@rn-terrain-ignore(?:-next-line)?(?:\s*:?\s*(.*?))?(?:\*\/)?$/i);
+  if (!match) return false;
+
+  const directiveArg = (match[1] || '').trim();
+  if (!directiveArg || directiveArg.startsWith(':') || directiveArg.startsWith('-') || directiveArg.startsWith('(')) {
+    return true;
+  }
+
+  const tokens = directiveArg.split(/[\s,:]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
+  const targetTokens = [
+    (ruleId || '').toLowerCase(),
+    (symbol || '').toLowerCase(),
+    ((symbol || '').split('.').pop() || '').toLowerCase()
+  ].filter(Boolean);
+
+  return targetTokens.some(t => tokens.includes(t));
+}
+
+function isViolationIgnored(sourceLines, v) {
+  const lineIdx = (v.line || 1) - 1;
+  if (lineIdx >= 0 && lineIdx < sourceLines.length) {
+    if (matchesIgnoreDirective(sourceLines[lineIdx], v.ruleId, v.symbol)) {
+      return true;
+    }
+  }
+  if (lineIdx - 1 >= 0 && lineIdx - 1 < sourceLines.length) {
+    if (matchesIgnoreDirective(sourceLines[lineIdx - 1], v.ruleId, v.symbol)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 function synthesizeVirtualDocument(filePath, payloadInput) {
   let diskContent = '';
@@ -142,11 +220,17 @@ function extractImportedPackages(sourceCode) {
 
 // Light scoped AST visitor fallback with comment and string immunity
 function fallbackScopedScan(sourceCode) {
+  if (/(?:\/\/|\/\*)\s*@rn-terrain-ignore-file\b/i.test(sourceCode)) {
+    return [];
+  }
+
   const violations = [];
   // Strip single-line and multi-line comments
   const strippedCode = sourceCode
     .replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length))
     .replace(/\/\/[^\n]*/g, (m) => ' '.repeat(m.length));
+
+  const getLineNumber = (idx) => sourceCode.substring(0, idx).split('\n').length;
 
   // Check imports
   const importLinesRegex = /import\s+(?:\{([^}]+)\}|(\w+))\s+from\s+['"]([^'"]+)['"]/g;
@@ -164,7 +248,9 @@ function fallbackScopedScan(sourceCode) {
           package: rule.package,
           symbol: rule.symbol,
           replacement: rule.replacement,
-          message: rule.message
+          message: rule.message,
+          template: rule.template,
+          line: getLineNumber(impMatch.index)
         });
       }
     }
@@ -186,28 +272,34 @@ function fallbackScopedScan(sourceCode) {
           package: rule.package,
           symbol: rule.symbol,
           replacement: rule.replacement,
-          message: rule.message
+          message: rule.message,
+          template: rule.template,
+          line: getLineNumber(reqMatch.index)
         });
       }
     }
   }
 
   // Check calls (excluding calls inside jest.mock)
-  const nonMockCode = strippedCode.replace(/jest\.mock\s*\([\s\S]*?\);?/g, '');
+  const nonMockCode = strippedCode.replace(/jest\.mock\s*\([\s\S]*?\);?/g, (m) => ' '.repeat(m.length));
   for (const rule of FALLBACK_SEVERED_RULES.filter(r => r.type === 'call')) {
     const callRegex = new RegExp(`\\b${rule.symbol}\\s*\\(`, 'g');
-    if (callRegex.test(nonMockCode)) {
+    let callMatch;
+    while ((callMatch = callRegex.exec(nonMockCode)) !== null) {
       violations.push({
         ruleId: rule.id,
         package: rule.package,
         symbol: rule.symbol,
         replacement: rule.replacement,
-        message: rule.message
+        message: rule.message,
+        template: rule.template,
+        line: getLineNumber(callMatch.index)
       });
     }
   }
 
-  return violations;
+  const sourceLines = sourceCode.split('\n');
+  return violations.filter(v => !isViolationIgnored(sourceLines, v));
 }
 
 async function main() {
@@ -344,6 +436,39 @@ async function main() {
       console.error('');
       process.exit(2);
     }
+  }
+
+  // 3b. React Native Directory Afferent Grounding: Zombie / Abandonware Veto
+  const dirCachePath = path.resolve(projectRoot, '.agents', 'state', 'directory-cache.json');
+  let dirCache = null;
+  if (fs.existsSync(dirCachePath)) {
+    try {
+      dirCache = JSON.parse(fs.readFileSync(dirCachePath, 'utf8'));
+    } catch {}
+  }
+
+  const zombiePackages = [];
+  for (const pkg of importedPackages) {
+    const pkgInfo = dirCache?.packages?.[pkg];
+    if (pkgInfo?.unmaintained) {
+      zombiePackages.push(pkg);
+    }
+  }
+
+  if (zombiePackages.length > 0) {
+    console.error('');
+    console.error('🛑 [RN-TERRAIN ZOMBIE PACKAGE VETO: ACTION BLOCKED]');
+    console.error('─────────────────────────────────────────────────────────────────');
+    console.error(`  Target Surface:   ${normalizedPath}`);
+    console.error(`  Zombie Libraries: ${zombiePackages.join(', ')}`);
+    console.error('');
+    console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
+    console.error('  These packages are flagged as UNMAINTAINED/ABANDONED in React Native Directory.');
+    console.error('  They will cause crashes or build failures on modern platforms.');
+    console.error('  Replace them with active community alternatives.');
+    console.error('─────────────────────────────────────────────────────────────────');
+    console.error('');
+    process.exit(2);
   }
 
   // 4. Scoped AST Invariant Verification with Comment & Mock Immunity (Remedy 1)

@@ -30,3 +30,5 @@ export * from './ingestion/curated-bridge.js';
 export * from './devtools/mcp-terrain.js';
 export * from './state/receipt.js';
 export * from './learning/index.js';
+export * from './ingestion/repo-directory-syncer.js';
+export * from './compass/jsdoc-replacement-extractor.js';

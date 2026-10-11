@@ -180,7 +180,7 @@ export class TcdiDependencyDoctor {
           activeConfig.rules?.enforcePeerMatrixAlignment !== 'off'
         ) {
           const peerSeverity = activeConfig.rules?.enforcePeerMatrixAlignment === 'error' ? 'error' : 'warn';
-          if (!semver.satisfies(hostRnClean, peerRnRange)) {
+          if (!semver.satisfies(hostRnClean, peerRnRange, { includePrerelease: true })) {
             issues.push({
               packageName: depName,
               currentVersion: versionRange,
@@ -197,8 +197,8 @@ export class TcdiDependencyDoctor {
     // ──────────────────────────────────────────────────────────────────────────
     // 2. Framework Dialect Deprecations (React 19 vs RN 0.76)
     // ──────────────────────────────────────────────────────────────────────────
-    if (hostReactClean && semver.satisfies(hostReactClean, '>=19.0.0')) {
-      if (hostRnClean && semver.satisfies(hostRnClean, '<0.76.0')) {
+    if (hostReactClean && semver.satisfies(hostReactClean, '>=19.0.0', { includePrerelease: true })) {
+      if (hostRnClean && semver.satisfies(hostRnClean, '<0.76.0', { includePrerelease: true })) {
         issues.push({
           packageName: 'react',
           currentVersion: hostReactRaw!,
@@ -220,7 +220,7 @@ export class TcdiDependencyDoctor {
         if (!current) continue;
 
         const cleanCurrent = current.replace(/^[~^>=<]+/, '');
-        if (!semver.satisfies(cleanCurrent, pinRule.recommendedRange)) {
+        if (!semver.satisfies(cleanCurrent, pinRule.recommendedRange, { includePrerelease: true })) {
           issues.push({
             packageName: pinPkg,
             currentVersion: current,
