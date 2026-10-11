@@ -1,0 +1,59 @@
+name: Daily Ecosystem Telemetry & Sync
+
+on:
+  schedule:
+    # Run every day at 02:00 UTC (defeats Lehman's decay)
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: Sync Ecosystem Signals
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.11.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm run build
+
+      - name: Run Daily Hexagonal Sync
+        run: pnpm run sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Quality Gate & Benchmark
+        run: |
+          pnpm run check-types
+          pnpm run test
+          pnpm run benchmark
+
+      - name: Check for Catalog Updates
+        id: git-check
+        run: |
+          git status --porcelain
+          echo "has_changes=$(git status --porcelain | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request on Changes
+        if: steps.git-check.outputs.has_changes != '0'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore(catalog): automated daily ecosystem telemetry update'
+          title: '🤖 Ecosystem Telemetry Update'
+          body: |
+            Automated daily sync from React Native Directory, GitHub releases, and npm telemetry.
+            Guarantees catalog freshness and New Architecture compatibility records.
+          branch: 'bot/daily-ecosystem-sync'

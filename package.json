@@ -20,7 +20,9 @@
     "deps:upgrade:major": "pnpm dlx taze major -r -w && pnpm install",
     "atlas:dev": "pnpm --filter github-atlas dev",
     "atlas:build": "pnpm --filter github-atlas build",
-    "atlas:collect": "pnpm --filter github-atlas collect"
+    "atlas:collect": "pnpm --filter github-atlas collect",
+    "sync": "node packages/core/dist/sync-daily.js",
+    "benchmark": "node packages/rn-terrain/bin/rn-terrain.js benchmark:stream"
   },
   "devDependencies": {
     "@types/node": "catalog:",

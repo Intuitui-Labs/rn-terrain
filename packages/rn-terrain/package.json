@@ -48,6 +48,11 @@
       "import": "./dist/cli.js",
       "default": "./dist/cli.js"
     },
+    "./benchmark": {
+      "types": "./dist/benchmark/change-stream-runner.d.ts",
+      "import": "./dist/benchmark/change-stream-runner.js",
+      "default": "./dist/benchmark/change-stream-runner.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

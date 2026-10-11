@@ -2,9 +2,22 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit",
         "type": "command",
         "command": "node .agents/gate.mjs"
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node .agents/stop-gate.mjs"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "type": "command",
+        "command": "node .agents/post-tool.mjs"
       }
     ]
   }

@@ -131,7 +131,8 @@ export function generateAgentCompass(
       packageName === 'react-native-worklets' ||
       packageName === 'react-native-mmkv' ||
       packageName === '@shopify/react-native-skia' ||
-      packageName === '@shopify/flash-list'
+      packageName === '@shopify/flash-list' ||
+      (packageName === 'react-native' && (activeVersion === 'latest' || activeVersion >= '0.76.0'))
     ) {
       architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
     } else {
