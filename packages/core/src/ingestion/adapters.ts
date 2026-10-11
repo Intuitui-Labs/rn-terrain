@@ -111,8 +111,8 @@ export class ReactNativeDirectoryAdapter implements IRnDirectoryPort {
               name: lib.npmPkg!,
               npmPkg: lib.npmPkg!,
               githubUrl: lib.githubUrl || `https://www.npmjs.com/package/${lib.npmPkg}`,
-              supportsNewArchitecture: Boolean(lib.newArchitecture),
-              isExpoCompatible: Boolean(lib.github?.configPlugin),
+              supportsNewArchitecture: Boolean(lib.newArchitecture ?? (lib as any).github?.newArchitecture),
+              isExpoCompatible: Boolean((lib as any).github?.configPlugin),
               category: 'community-directory'
             }));
 
@@ -127,6 +127,41 @@ export class ReactNativeDirectoryAdapter implements IRnDirectoryPort {
     }
 
     return this.fallbackCatalog;
+  }
+
+  async fetchPackageInfo(packageName: string): Promise<RnDirectoryPackageInfo | null> {
+    const fromFallback = this.fallbackCatalog.find((d) => d.npmPkg === packageName);
+    if (fromFallback) return fromFallback;
+
+    const catalog = await this.fetchDirectoryCatalog();
+    const fromCatalog = catalog.find((d) => d.npmPkg === packageName);
+    if (fromCatalog) return fromCatalog;
+
+    try {
+      const searchUrl = `${this.apiUrl}?search=${encodeURIComponent(packageName)}`;
+      const res = await fetch(searchUrl, {
+        headers: { 'User-Agent': 'rn-terrain-hexagonal-ingestion' },
+        signal: AbortSignal.timeout(6000)
+      });
+      if (res.ok) {
+        const json = (await res.json()) as any;
+        const match = json.libraries?.find((lib: any) => lib.npmPkg === packageName);
+        if (match) {
+          return {
+            name: match.npmPkg,
+            npmPkg: match.npmPkg,
+            githubUrl: match.githubUrl || `https://www.npmjs.com/package/${match.npmPkg}`,
+            supportsNewArchitecture: Boolean(match.newArchitecture ?? match.github?.newArchitecture),
+            isExpoCompatible: Boolean(match.github?.configPlugin),
+            category: 'community-directory'
+          };
+        }
+      }
+    } catch {
+      // Offline or network error: return null
+    }
+
+    return null;
   }
 }
 

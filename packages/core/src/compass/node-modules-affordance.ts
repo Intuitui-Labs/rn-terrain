@@ -274,8 +274,9 @@ export class NodeModulesAffordanceEngine {
   /**
    * Inspects physical package.json to determine if the package is New Architecture (Fabric / TurboModules) ready.
    */
-  public checkNewArchSupport(packageName: string): boolean {
-    const pkgDir = this.resolvePackageDir(packageName);
+  public static checkNewArchSupport(packageName: string, projectRoot: string = process.cwd()): boolean {
+    const engine = new NodeModulesAffordanceEngine(projectRoot);
+    const pkgDir = engine.resolvePackageDir(packageName);
     if (!pkgDir) return false;
     const pkgJsonPath = path.join(pkgDir, 'package.json');
     if (!fs.existsSync(pkgJsonPath)) return false;
@@ -290,6 +291,10 @@ export class NodeModulesAffordanceEngine {
     } catch {
       return false;
     }
+  }
+
+  public checkNewArchSupport(packageName: string): boolean {
+    return NodeModulesAffordanceEngine.checkNewArchSupport(packageName, this.projectRoot);
   }
 }
 

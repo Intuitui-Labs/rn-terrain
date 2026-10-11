@@ -46,6 +46,7 @@ export interface BundlephobiaSizeMetrics {
 
 export interface IRnDirectoryPort {
   fetchDirectoryCatalog(): Promise<RnDirectoryPackageInfo[]>;
+  fetchPackageInfo?(packageName: string): Promise<RnDirectoryPackageInfo | null>;
 }
 
 export interface IGitHubPort {

@@ -21,6 +21,7 @@ import {
   DatabaseSinkAdapter
 } from './adapters.js';
 import { CanonicalDatabase } from '../db/sqlite-client.js';
+import { NodeModulesAffordanceEngine } from '../compass/node-modules-affordance.js';
 
 export interface IngestionResult {
   packageName: string;
@@ -47,8 +48,13 @@ export class HexagonalIngestionPipeline {
     const npmMeta = await this.npmRegistryPort.fetchMetadata(packageName);
 
     // 2. Fetch Directory info if available
-    const directoryList = await this.rnDirectoryPort.fetchDirectoryCatalog();
-    const dirInfo = directoryList.find((d) => d.npmPkg === packageName);
+    let dirInfo = typeof this.rnDirectoryPort.fetchPackageInfo === 'function'
+      ? await this.rnDirectoryPort.fetchPackageInfo(packageName)
+      : null;
+    if (!dirInfo) {
+      const directoryList = await this.rnDirectoryPort.fetchDirectoryCatalog();
+      dirInfo = directoryList.find((d) => d.npmPkg === packageName) ?? null;
+    }
 
     // 3. Fetch GitHub telemetry
     let ghStars = 1000;
@@ -74,7 +80,21 @@ export class HexagonalIngestionPipeline {
       created_at: Math.floor(Date.now() / 1000)
     });
 
-    // 6. Persist Latest Version Epoch
+    // 6. Determine New Architecture support reliably
+    const affordsNewArch = NodeModulesAffordanceEngine.checkNewArchSupport(packageName);
+    const isKnownNewArch =
+      dirInfo?.supportsNewArchitecture ??
+      (affordsNewArch ||
+        (packageName === 'react-native-reanimated' && (npmMeta.latestVersion.startsWith('4.') || npmMeta.latestVersion.startsWith('3.'))) ||
+        (packageName === 'react-native-gesture-handler' && !npmMeta.latestVersion.startsWith('1.')) ||
+        packageName === 'react-native-screens' ||
+        packageName === 'react-native-nitro-modules' ||
+        packageName === '@shopify/react-native-skia' ||
+        packageName === 'react-native-worklets');
+
+    const supportsNewArch = isKnownNewArch ? 1 : 0;
+
+    // 7. Persist Latest Version Epoch
     sink.saveVersion({
       package_id: packageName,
       version: npmMeta.latestVersion,
@@ -82,7 +102,7 @@ export class HexagonalIngestionPipeline {
       valid_to_epoch: null,
       react_native_min: '0.74.0',
       react_native_max: null,
-      supports_new_arch: dirInfo?.supportsNewArchitecture ? 1 : 0,
+      supports_new_arch: supportsNewArch,
       tarball_url: npmMeta.tarballUrl ?? null
     });
 
@@ -90,7 +110,7 @@ export class HexagonalIngestionPipeline {
       packageName,
       versionsIngested: npmMeta.versions.length,
       latestVersion: npmMeta.latestVersion,
-      supportsNewArchitecture: dirInfo?.supportsNewArchitecture ?? true,
+      supportsNewArchitecture: Boolean(supportsNewArch),
       bundleGzipBytes: bundleSize.gzipSize,
       githubStars: ghStars
     };

@@ -68,23 +68,30 @@ export function generateAgentCompass(
     .map((s) => s.symbol_identifier);
 
   let architecture: 'NEW_ARCHITECTURE_FABRIC_READY' | 'LEGACY_INTEROP' | 'UNKNOWN' = 'UNKNOWN';
-  if (versionRecord) {
+  if (versionRecord && versionRecord.supports_new_arch !== null) {
     architecture =
       versionRecord.supports_new_arch === 1
         ? 'NEW_ARCHITECTURE_FABRIC_READY'
-        : versionRecord.supports_new_arch === 0
-          ? 'LEGACY_INTEROP'
-          : 'UNKNOWN';
-  } else {
+        : 'LEGACY_INTEROP';
+  }
+
+  // Cross-verify with known ecosystem grounding & physical affordances:
+  // Reanimated 4 requires New Architecture Fabric; it cannot be LEGACY_INTEROP
+  if (
+    packageName === 'react-native-reanimated' &&
+    (activeVersion === 'latest' || activeVersion.startsWith('4.') || activeVersion.startsWith('3.'))
+  ) {
+    architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
+  } else if (NodeModulesAffordanceEngine.checkNewArchSupport(packageName)) {
+    architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
+  } else if (architecture === 'UNKNOWN') {
     // Grounded fallbacks for foundational tier-1 ecosystem packages when local database is unseeded
     const isModernRN =
       packageName === 'react-native' &&
       (activeVersion === 'latest' ||
         Boolean(semver.valid(semver.clean(activeVersion) ?? '') && semver.gte(semver.clean(activeVersion)!, '0.76.0')));
 
-    if (packageName === 'react-native-reanimated') {
-      architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
-    } else if (
+    if (
       packageName === 'react-native-gesture-handler' ||
       packageName === 'react-native-screens' ||
       packageName === 'react-native-nitro-modules' ||
@@ -95,8 +102,6 @@ export function generateAgentCompass(
       isModernRN
     ) {
       architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
-    } else {
-      architecture = 'UNKNOWN';
     }
   }
 
