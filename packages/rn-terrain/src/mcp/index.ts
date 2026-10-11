@@ -27,7 +27,8 @@ import {
   CapabilityResolver,
   RustToolingDoctor,
   NodeModulesAffordanceEngine,
-  CuratedKnowledgeBridge
+  CuratedKnowledgeBridge,
+  writeGroundingReceipt
 } from '@intuitui-labs/rn-terrain-core';
 import {
   AgentGuardrail,
@@ -528,6 +529,7 @@ export function createMcpServer(): Server {
       const pkg = args?.package_name as string;
       const ver = (args?.version as string) || 'latest';
       const briefing = generateAgentCompass(pkg, ver);
+      writeGroundingReceipt(pkg, ver, 'preflight_grounding');
       return {
         description: `Pre-flight grounding for ${pkg}@${ver}`,
         messages: [
@@ -590,6 +592,7 @@ export function createMcpServer(): Server {
         const packageName = args?.package_name as string;
         const targetVersion = (args?.target_version as string) || 'latest';
         const briefing = generateAgentCompass(packageName, targetVersion);
+        writeGroundingReceipt(packageName, targetVersion, 'tcdi_compass');
         return {
           content: [{ type: 'text', text: JSON.stringify(briefing, null, 2) }],
         };

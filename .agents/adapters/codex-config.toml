@@ -1,0 +1,15 @@
+# Codex Adapter Configuration
+# Compatible with Codex v0.124+
+# Place or include in your project config.toml or ~/.codex/config.toml
+
+[project]
+name = "rn-terrain"
+
+# Pre-tool hook on patch application
+# Note: Codex prompts for confirmation to trust external hooks on first execution.
+[[hooks.pre_tool_use]]
+matcher = "apply_patch"
+command = "node .agents/gate.mjs {path}"
+
+[skills]
+path = ".agents/skills"

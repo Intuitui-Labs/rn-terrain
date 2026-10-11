@@ -14,7 +14,8 @@ import {
   CapabilityResolver,
   RustToolingDoctor,
   NodeModulesAffordanceEngine,
-  CuratedKnowledgeBridge
+  CuratedKnowledgeBridge,
+  writeGroundingReceipt
 } from '@intuitui-labs/rn-terrain-core';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -403,6 +404,7 @@ cli
   .action((packageName, version = 'latest', options) => {
     try {
       const briefing = generateAgentCompass(packageName, version);
+      writeGroundingReceipt(packageName, version, 'cli:compass');
 
       if (options.json) {
         console.log(JSON.stringify(briefing, null, 2));

@@ -1,0 +1,14 @@
+{
+  "name": "rn-terrain-grounding-gate",
+  "version": "0.4.0",
+  "description": "Antigravity Hook configuration for pre-tool React Native grounding gate",
+  "hooks": {
+    "PreToolUse": {
+      "matchers": [
+        "write_to_file",
+        "replace_file_content"
+      ],
+      "command": "node .agents/gate.mjs {targetFile}"
+    }
+  }
+}

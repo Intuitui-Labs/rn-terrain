@@ -33,3 +33,6 @@ data/packages/DASHBOARD.html
 *.zip
 /rn-terrain/
 
+# Agent Session State & Receipts
+.agents/state/
+
