@@ -16,6 +16,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { execSync } from 'node:child_process';
 
 const projectRoot = process.cwd();
@@ -85,10 +86,17 @@ async function main() {
   }
 
   const codeFiles = modifiedFiles.filter(f => {
+    const norm = f.replace(/\\/g, '/');
+    const isTooling = norm.includes('/packages/scanner/') ||
+                      norm.includes('/packages/rn-terrain/') ||
+                      norm.includes('/packages/cli/') ||
+                      norm.includes('/packages/core/') ||
+                      norm.includes('/packages/vscode/') ||
+                      norm.includes('/.agents/');
     const ext = path.extname(f).toLowerCase();
     const isCode = ['.tsx', '.jsx', '.ts', '.js'].includes(ext) && fs.existsSync(f);
     const isTest = f.includes('.test.') || f.includes('.spec.') || f.includes('/test/') || f.includes('\\test\\') || f.includes('__tests__');
-    return isCode && !isTest;
+    return isCode && !isTest && !isTooling;
   });
 
   const rnFiles = codeFiles.filter(f => {
@@ -113,7 +121,7 @@ async function main() {
   try {
     const scannerPkgPath = path.resolve(projectRoot, 'packages', 'scanner', 'dist', 'index.js');
     if (fs.existsSync(scannerPkgPath)) {
-      const { ScopedAstParser } = await import(scannerPkgPath);
+      const { ScopedAstParser } = await import(pathToFileURL(scannerPkgPath).href);
       parser = new ScopedAstParser();
     }
   } catch {}

@@ -26,9 +26,12 @@ function resolveCorpusPath(explicit?: string): string {
   const envPath = process.env['RN_TERRAIN_CORPUS'];
   if (envPath) return resolve(envPath);
 
-  // When installed as a package, look for corpus relative to this file
+  // Look for bundled corpus within package or in monorepo docs
   const here = fileURLToPath(new URL('.', import.meta.url));
   const candidates = [
+    resolve(here, '../corpus/INDEX.json'),
+    resolve(here, '../../corpus/INDEX.json'),
+    resolve(here, './corpus/INDEX.json'),
     resolve(here, '../../docs/changelog-intelligence/graph/INDEX.json'),
     resolve(here, '../../../docs/changelog-intelligence/graph/INDEX.json'),
   ];

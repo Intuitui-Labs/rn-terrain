@@ -13,8 +13,20 @@ import type { DevToolRecord } from '../db/canonical-schema.js';
 export interface DevToolMetadata extends DevToolRecord {
   binaryName: string;
   installCommand: string;
+  installRecipes?: {
+    macos: string;
+    linux: string;
+    windows: string;
+  };
   recommendedFlags?: string[];
   bannedFlagsOrCommands?: string[];
+}
+
+function resolvePlatformRecipe(recipes: { macos: string; linux: string; windows: string }): string {
+  const p = process.platform;
+  if (p === 'darwin') return recipes.macos;
+  if (p === 'win32') return recipes.windows;
+  return recipes.linux;
 }
 
 export const CANONICAL_DEV_TOOLS: DevToolMetadata[] = [
@@ -28,7 +40,7 @@ export const CANONICAL_DEV_TOOLS: DevToolMetadata[] = [
     docs_url: 'https://pnpm.io',
     installCommand: 'npm install -g pnpm@12.11.2',
     recommendedFlags: ['--filter', 'catalog:', '--recursive', 'dlx'],
-    bannedFlagsOrCommands: ['npm install', 'yarn add', '--shamefully-hoist (without Metro config)']
+    bannedFlagsOrCommands: ['mixing yarn.lock / package-lock.json in pnpm workspaces', '--shamefully-hoist (without Metro config)']
   },
   {
     id: 'bun',
@@ -72,7 +84,16 @@ export const CANONICAL_DEV_TOOLS: DevToolMetadata[] = [
     primary_advantage: 'Hyper-fast Rust-based regex search respecting .gitignore (ripgrep).',
     rn_compatibility_notes: 'Sub-50ms search across million-line mobile monorepos.',
     docs_url: 'https://github.com/BurntSushi/ripgrep',
-    installCommand: 'winget install BurntSushi.ripgrep.MSVC',
+    installRecipes: {
+      macos: 'brew install ripgrep',
+      linux: 'apt install -y ripgrep || cargo install ripgrep',
+      windows: 'winget install BurntSushi.ripgrep.MSVC'
+    },
+    installCommand: resolvePlatformRecipe({
+      macos: 'brew install ripgrep',
+      linux: 'apt install -y ripgrep || cargo install ripgrep',
+      windows: 'winget install BurntSushi.ripgrep.MSVC'
+    }),
     recommendedFlags: ['-n', '-C 2', '--type ts', '--type rust']
   },
   {
@@ -83,7 +104,16 @@ export const CANONICAL_DEV_TOOLS: DevToolMetadata[] = [
     primary_advantage: 'Instant directory tree navigation and filename pattern matching in Rust.',
     rn_compatibility_notes: '10x faster than native find/dir in deeply nested node_modules / android build directories.',
     docs_url: 'https://github.com/sharkdp/fd',
-    installCommand: 'winget install sharkdp.fd',
+    installRecipes: {
+      macos: 'brew install fd',
+      linux: 'apt install -y fd-find || cargo install fd-find',
+      windows: 'winget install sharkdp.fd'
+    },
+    installCommand: resolvePlatformRecipe({
+      macos: 'brew install fd',
+      linux: 'apt install -y fd-find || cargo install fd-find',
+      windows: 'winget install sharkdp.fd'
+    }),
     recommendedFlags: ['-e ts', '-e tsx', '-e json']
   },
   {
@@ -94,6 +124,11 @@ export const CANONICAL_DEV_TOOLS: DevToolMetadata[] = [
     primary_advantage: '50-100x faster than ESLint; written in Rust (Oxc toolchain).',
     rn_compatibility_notes: 'Ideal for pre-commit hooks and agent guardrails in React Native codebases.',
     docs_url: 'https://oxc.rs',
+    installRecipes: {
+      macos: 'pnpm add -D oxlint || brew install oxlint',
+      linux: 'pnpm add -D oxlint || cargo install oxlint',
+      windows: 'pnpm add -D oxlint'
+    },
     installCommand: 'pnpm add -D oxlint',
     recommendedFlags: ['--deny-warnings']
   },
@@ -105,7 +140,16 @@ export const CANONICAL_DEV_TOOLS: DevToolMetadata[] = [
     primary_advantage: 'Syntax-highlighted git diff pager with inline word-level diffing in Rust.',
     rn_compatibility_notes: 'Critical for human review of multi-package agent codemods and migrations.',
     docs_url: 'https://github.com/dandavison/delta',
-    installCommand: 'winget install dandavison.delta',
+    installRecipes: {
+      macos: 'brew install git-delta',
+      linux: 'cargo install git-delta',
+      windows: 'winget install dandavison.delta'
+    },
+    installCommand: resolvePlatformRecipe({
+      macos: 'brew install git-delta',
+      linux: 'cargo install git-delta',
+      windows: 'winget install dandavison.delta'
+    }),
     recommendedFlags: ['--side-by-side', '--line-numbers']
   },
   {

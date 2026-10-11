@@ -186,6 +186,13 @@ function runFenceOnFile(
               if (matcher.type === 'Regex') continue;
               const loc = matchNode(path.node, matcher, src);
               if (loc) {
+                // Prevent false positives: if matching a bare CallExpression or JSXIdentifier, verify that the file actually imports or references the package
+                if ((matcher.type === 'CallExpression' || matcher.type === 'JSXIdentifier') && signal.package) {
+                  const importsPkg = fileImportsPackage(src, signal.package) || src.includes(signal.package);
+                  if (!importsPkg && signal.package !== 'react-native') {
+                    continue;
+                  }
+                }
                 findings.push({ signal, file: filePath, ...loc });
               }
             }

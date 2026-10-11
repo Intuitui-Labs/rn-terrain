@@ -1,4 +1,6 @@
-import { supabase } from './db.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { supabase, isSupabaseConfigured } from './db.js';
 import { calculateVitalityScore } from './scoring/index.js';
 
 // Parse GitHub URL into owner and repo name
@@ -131,6 +133,12 @@ async function fetchNpmStats(packageName: string) {
 export async function syncAllPackages() {
   console.log('Starting daily sync for RN Terrain packages...');
 
+  if (!isSupabaseConfigured()) {
+    console.log('Notice: Supabase cloud sync credentials not configured (SUPABASE_URL / SUPABASE_ANON_KEY).');
+    console.log('Hexagonal ingestion and local SQLite catalog operate independently. Use `rn-terrain sync <pkg>` for local updates.');
+    return;
+  }
+
   // Fetch all packages currently tracked
   const { data: packages, error } = await supabase
     .from('packages')
@@ -232,7 +240,7 @@ export async function syncAllPackages() {
 }
 
 // Auto-run if executed directly
-if (import.meta.url === `file:///${process.argv[1]?.replace(/\\/g, '/')}`) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   syncAllPackages()
     .then(() => process.exit(0))
     .catch((err: unknown) => {

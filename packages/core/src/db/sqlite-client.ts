@@ -6,11 +6,12 @@
  * API symbol lifecycles, and compatibility slices.
  */
 
-import Database from 'better-sqlite3';
+import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type DatabaseType from 'better-sqlite3';
 import type { TerrainCatalogPort, PackageFilter } from './catalog-port.js';
 import { EmbeddedCatalogAdapter } from './embedded-catalog.js';
 import {
@@ -28,6 +29,14 @@ import {
   type TechnologyRadarRecord
 } from './canonical-schema.js';
 
+let BetterSqlite3Constructor: typeof DatabaseType | null = null;
+try {
+  const require = createRequire(import.meta.url);
+  BetterSqlite3Constructor = require('better-sqlite3');
+} catch {
+  BetterSqlite3Constructor = null;
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const LOCAL_DEV_DB_PATH = path.resolve(__dirname, '../../data/rn-terrain-canonical.db');
@@ -44,9 +53,15 @@ export function resolveDefaultDatabasePath(): string {
 }
 
 export class CanonicalDatabase implements TerrainCatalogPort {
-  public readonly db: InstanceType<typeof Database>;
+  public readonly db: InstanceType<typeof DatabaseType>;
 
   constructor(dbPath: string = resolveDefaultDatabasePath()) {
+    if (!BetterSqlite3Constructor) {
+      throw new Error(
+        'better-sqlite3 native driver is not available in this environment. ' +
+        'Use createCatalog({ inMemoryOnly: true }) or EmbeddedCatalogAdapter instead.'
+      );
+    }
     const dir = path.dirname(dbPath);
     if (!fs.existsSync(dir)) {
       try {
@@ -55,7 +70,7 @@ export class CanonicalDatabase implements TerrainCatalogPort {
         // Handled if restricted
       }
     }
-    this.db = new Database(dbPath);
+    this.db = new BetterSqlite3Constructor(dbPath);
     this.db.pragma('foreign_keys = ON');
     this.db.pragma('journal_mode = WAL');
     this.initializeSchema();

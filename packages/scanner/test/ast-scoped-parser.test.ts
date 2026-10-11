@@ -66,4 +66,35 @@ describe('ScopedAstParser Immunity & Semantic Detection', () => {
     const violations = parser.parseAndScan(code);
     expect(violations.length).toBe(0);
   });
+
+  it('detects star/namespace import calls (import * as Reanimated)', () => {
+    const code = `
+      import * as Reanimated from 'react-native-reanimated';
+      const handler = Reanimated.useAnimatedGestureHandler({});
+    `;
+    const violations = parser.parseAndScan(code);
+    expect(violations.length).toBe(1);
+    expect(violations[0].symbol).toBe('Reanimated.useAnimatedGestureHandler');
+    expect(violations[0].package).toBe('react-native-reanimated');
+  });
+
+  it('detects CommonJS require destructuring of severed APIs', () => {
+    const code = `
+      const { useAnimatedGestureHandler } = require('react-native-reanimated');
+    `;
+    const violations = parser.parseAndScan(code);
+    expect(violations.length).toBe(1);
+    expect(violations[0].symbol).toBe('useAnimatedGestureHandler');
+  });
+
+  it('detects CommonJS namespace property access (const RN = require("react-native"))', () => {
+    const code = `
+      const RN = require('react-native');
+      const storage = RN.AsyncStorage;
+    `;
+    const violations = parser.parseAndScan(code);
+    expect(violations.length).toBe(1);
+    expect(violations[0].symbol).toBe('RN.AsyncStorage');
+    expect(violations[0].package).toBe('react-native');
+  });
 });

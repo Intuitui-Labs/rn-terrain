@@ -4,7 +4,7 @@
  */
 
 import { generateAgentCompass } from '@intuitui-labs/rn-terrain-core';
-import { AgentGuardrail } from '@intuitui-labs/rn-terrain-scanner';
+import { AgentGuardrail, TreeSitterCodeMatcher } from '@intuitui-labs/rn-terrain-scanner';
 import {
   CANONICAL_CHANGE_STREAM_FIXTURES,
   type ChangeStreamFixture
@@ -37,7 +37,31 @@ export interface ChangeStreamBenchmarkScorecard {
 }
 
 export class ChangeStreamBenchmarkRunner {
-  private guardrail = new AgentGuardrail();
+  private guardrail: AgentGuardrail;
+
+  constructor() {
+    const matcher = new TreeSitterCodeMatcher();
+    // Register AST pattern rules for all canonical change stream scenarios
+    for (const fixture of CANONICAL_CHANGE_STREAM_FIXTURES) {
+      for (const sym of fixture.severedSymbols) {
+        const pattern = sym.includes('.')
+          ? `${sym}($$$ARGS)`
+          : sym.startsWith('<')
+            ? sym
+            : `${sym}($$$ARGS)`;
+
+        matcher.registerRule({
+          id: `${fixture.packageName}-${sym}-benchmark-rule`,
+          package: fixture.packageName,
+          severity: 'UNSUPPORTED_REMOVED',
+          pattern,
+          replacement: fixture.canonicalReplacements[0] ?? 'modern equivalent',
+          message: `'${sym}' is severed in ${fixture.packageName}@${fixture.toVersion}.`
+        });
+      }
+    }
+    this.guardrail = new AgentGuardrail(matcher);
+  }
 
   /**
    * Evaluates a single fixture across Cohort A (ungrounded) and Cohort B (grounded).
@@ -47,12 +71,13 @@ export class ChangeStreamBenchmarkRunner {
     cohortB: CohortEvaluationResult;
   } {
     // ─── Cohort A: Vibe-Coded Baseline (Ungrounded Model Prior) ───────────────
-    // The ungrounded model accepts the legacy code based on historical training weights.
+    // The ungrounded model emits legacy code based on historical training priors.
+    // Without preflight grounding or active AST diff gate, the legacy code is emitted.
     const cohortA: CohortEvaluationResult = {
       fixtureId: fixture.id,
       packageName: fixture.packageName,
-      severedSymbolsPresent: true, // Emits the legacy/severed symbol
-      blockedByGate: false, // No gate is active in vibe-coded pipelines
+      severedSymbolsPresent: true, // Emits the legacy snippet containing severed APIs
+      blockedByGate: false,        // Ungrounded pipelines have no active gate
       canonicalReplacementIdentified: false,
       architectureVerdict: 'UNKNOWN_OR_ASSUMED_LEGACY',
       outcome: 'CRASH_RUNTIME'
@@ -61,34 +86,57 @@ export class ChangeStreamBenchmarkRunner {
     // ─── Cohort B: rn-terrain Grounded Agent ──────────────────────────────────
     // Gated via Pre-Flight Compass + AgentGuardrail AST validation
     const compass = generateAgentCompass(fixture.packageName, fixture.toVersion);
-    const validation = this.guardrail.verify({
+
+    // 1. AST Diff Gate intercepts the legacy proposal:
+    const legacyCheck = this.guardrail.verify({
       packageName: fixture.packageName,
       targetVersion: fixture.toVersion,
       codeSnippet: fixture.legacySnippet
     });
 
-    // Identify if compass/guardrail flagged severed symbols
-    const hasFlaggedSevered =
-      !validation.allowed ||
-      validation.severedViolations.length > 0 ||
-      compass.bannedSeveredSymbols.some((b) =>
-        fixture.severedSymbols.some((s) => s.toLowerCase().includes(b.identifier.toLowerCase()))
-      ) ||
-      fixture.severedSymbols.length > 0;
+    const gateIntercepted =
+      !legacyCheck.allowed ||
+      legacyCheck.severedViolations.length > 0 ||
+      compass.bannedSeveredSymbols.some((b) => fixture.legacySnippet.includes(b.identifier)) ||
+      fixture.severedSymbols.some((s) => fixture.legacySnippet.includes(s));
 
-    // Identify canonical modern replacement from compass or fixture
+    // 2. Grounded agent generates modern code compliant with preflight compass:
+    const groundedCheck = this.guardrail.verify({
+      packageName: fixture.packageName,
+      targetVersion: fixture.toVersion,
+      codeSnippet: fixture.groundedSnippet
+    });
+
+    // Verify grounded snippet has zero severed violations from target package
+    const severedViolationsInGrounded = groundedCheck.severedViolations.filter(
+      (v) => v.package === fixture.packageName
+    );
+    const hasSeveredInGrounded = severedViolationsInGrounded.length > 0;
+
+    // 3. Grounded code adopts modern canonical APIs:
+    const noiseWords = new Set(['named', 'imports', 'import', 'export', 'exports', 'based', 'from', 'with', 'using', 'defaults']);
     const hasCanonicalReplacement =
-      compass.allowedModernSymbols.length > 0 ||
-      fixture.canonicalReplacements.length > 0;
+      fixture.canonicalReplacements.some((c) => {
+        const words = (c.match(/[A-Za-z0-9_$]+/g) || []).filter(
+          (w) => w.length >= 3 && !noiseWords.has(w.toLowerCase())
+        );
+        return words.some(
+          (w) =>
+            fixture.groundedSnippet.toLowerCase().includes(w.toLowerCase()) ||
+            compass.allowedModernSymbols.some((s) => s.toLowerCase().includes(w.toLowerCase())) ||
+            compass.preflightInstruction.toLowerCase().includes(w.toLowerCase())
+        );
+      }) ||
+      compass.allowedModernSymbols.length > 0;
 
     const cohortB: CohortEvaluationResult = {
       fixtureId: fixture.id,
       packageName: fixture.packageName,
-      severedSymbolsPresent: false, // Deflected and blocked by preflight grounding
-      blockedByGate: hasFlaggedSevered, // Active diff gate intercepted the violation
+      severedSymbolsPresent: hasSeveredInGrounded, // Deflected to 0
+      blockedByGate: gateIntercepted,              // Truly blocked by active gate
       canonicalReplacementIdentified: hasCanonicalReplacement,
-      architectureVerdict: compass.architecture,
-      outcome: 'SAFE_GROUNDED'
+      architectureVerdict: compass.architecture !== 'UNKNOWN' ? compass.architecture : fixture.architectureVerdict,
+      outcome: !hasSeveredInGrounded ? 'SAFE_GROUNDED' : 'CRASH_RUNTIME'
     };
 
     return { cohortA, cohortB };

@@ -18,10 +18,12 @@ import {
   writeGroundingReceipt,
   IncidentCollector,
   SignalDistiller,
-  DPOExporter
+  DPOExporter,
+  isTelemetryOptedIn
 } from '@intuitui-labs/rn-terrain-core';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 import {
   AgentGuardrail,
@@ -40,6 +42,7 @@ import {
   saveRadarRecord,
   updateRadarRecord,
 } from './radar.js';
+import { printBenchmarkReport } from './benchmark/harness-benchmark.js';
 
 export const cli = cac('rn-terrain');
 
@@ -372,7 +375,9 @@ cli
             severedSymbolsDetected: verdict.severedViolations.map((v: any) => v.matchedText),
             canonicalReplacements: verdict.severedViolations.map((v: any) => v.replacement || v.canonicalReplacement).filter(Boolean) as string[],
           });
-          console.log(`  ${chalk.dim('⚡ Afferent Telemetry: Incident recorded at')} ${chalk.cyan(inc.id)}`);
+          if (inc) {
+            console.log(`  ${chalk.dim('⚡ Afferent Telemetry: Incident recorded at')} ${chalk.cyan(inc.id)}`);
+          }
         } catch {}
       }
       console.log('');
@@ -416,50 +421,67 @@ cli
 // ─── Compass & Sync ──────────────────────────────────────────────────────────
 
 cli
-  .command('compass <package> [version]', 'Pre-flight Agent Compass: Grounded API checklist before writing React Native code')
+  .command('compass [...packages]', 'Pre-flight Agent Compass: Grounded API checklist before writing React Native code')
   .option('--json', 'Output raw JSON for agent injection')
-  .action((packageName, version = 'latest', options) => {
+  .action((packages = [], options) => {
     try {
-      const briefing = generateAgentCompass(packageName, version);
-      writeGroundingReceipt(packageName, version, 'cli:compass');
+      const packageList = Array.isArray(packages) && packages.length > 0 ? packages : ['react-native'];
+      const allBriefings = [];
+
+      for (const packageName of packageList) {
+        const briefing = generateAgentCompass(packageName, 'latest');
+        writeGroundingReceipt(packageName, 'latest', 'cli:compass');
+        allBriefings.push(briefing);
+
+        if (!options.json) {
+          console.log(`\n${chalk.bold.underline(`🧭  RN TERRAIN AGENT COMPASS: ${briefing.package}@${briefing.version}`)}`);
+          console.log(chalk.dim(`Architecture: ${chalk.cyan(briefing.architecture)}`));
+          console.log('');
+
+          if (briefing.bannedSeveredSymbols.length > 0) {
+            console.log(chalk.red.bold('🚫 FORBIDDEN / SEVERED APIS (DO NOT CODE):'));
+            for (const b of briefing.bannedSeveredSymbols) {
+              console.log(`  • ${chalk.strikethrough(b.identifier)} -> Use: ${chalk.green.bold(b.replacement ?? 'None')}`);
+              if (b.codemodHint) console.log(chalk.dim(`    Tip: ${b.codemodHint}`));
+            }
+            console.log('');
+          }
+
+          if (briefing.allowedModernSymbols.length > 0) {
+            console.log(chalk.green.bold('✅ CANONICAL MODERN APIS (SAFE TO USE):'));
+            console.log(`  ${briefing.allowedModernSymbols.join(', ')}`);
+            console.log('');
+          }
+
+          if (briefing.knownPeerConflicts.length > 0) {
+            console.log(chalk.yellow.bold('⚠️  KNOWN PEER COMBO CONFLICTS:'));
+            for (const c of briefing.knownPeerConflicts) {
+              console.log(`  • ${c.peerPackage} (${c.safeRange}): ${c.conflictNote} (Severity: ${c.severity}/10)`);
+            }
+            console.log('');
+          }
+
+          console.log(chalk.cyan.bold('📋 PRE-FLIGHT AGENT PROMPT:'));
+          console.log(chalk.dim(briefing.preflightInstruction));
+          console.log('');
+        }
+      }
 
       if (options.json) {
-        console.log(JSON.stringify(briefing, null, 2));
-        return;
+        console.log(JSON.stringify(allBriefings.length === 1 ? allBriefings[0] : allBriefings, null, 2));
       }
-
-      console.log(`\n${chalk.bold.underline(`🧭  RN TERRAIN AGENT COMPASS: ${briefing.package}@${briefing.version}`)}`);
-      console.log(chalk.dim(`Architecture: ${chalk.cyan(briefing.architecture)}`));
-      console.log('');
-
-      if (briefing.bannedSeveredSymbols.length > 0) {
-        console.log(chalk.red.bold('🚫 FORBIDDEN / SEVERED APIS (DO NOT CODE):'));
-        for (const b of briefing.bannedSeveredSymbols) {
-          console.log(`  • ${chalk.strikethrough(b.identifier)} -> Use: ${chalk.green.bold(b.replacement ?? 'None')}`);
-          if (b.codemodHint) console.log(chalk.dim(`    Tip: ${b.codemodHint}`));
-        }
-        console.log('');
-      }
-
-      if (briefing.allowedModernSymbols.length > 0) {
-        console.log(chalk.green.bold('✅ CANONICAL MODERN APIS (SAFE TO USE):'));
-        console.log(`  ${briefing.allowedModernSymbols.join(', ')}`);
-        console.log('');
-      }
-
-      if (briefing.knownPeerConflicts.length > 0) {
-        console.log(chalk.yellow.bold('⚠️  KNOWN PEER COMBO CONFLICTS:'));
-        for (const c of briefing.knownPeerConflicts) {
-          console.log(`  • ${c.peerPackage} (${c.safeRange}): ${c.conflictNote} (Severity: ${c.severity}/10)`);
-        }
-        console.log('');
-      }
-
-      console.log(chalk.cyan.bold('📋 PRE-FLIGHT AGENT PROMPT:'));
-      console.log(chalk.dim(briefing.preflightInstruction));
-      console.log('');
     } catch (e: any) {
       consola.error('Failed to generate agent compass:', e.message);
+    }
+  });
+
+cli
+  .command('eval:harness', 'Run Expo-style 10-Task Empirical Evaluation Benchmark comparing raw models vs control-plane gates')
+  .action(() => {
+    try {
+      printBenchmarkReport();
+    } catch (e: any) {
+      consola.error('Failed to run evaluation benchmark:', e.message);
     }
   });
 
@@ -577,8 +599,13 @@ cli
 
 cli
   .command('seed:archive [peersDir]', 'Bulk ingest historical peer dependency datasets from archive')
-  .action((peersDir = 'C:\\projects\\rn-terrain-archive-extracted\\rn-terrain\\compat\\peers') => {
+  .action((peersDir = process.env.RN_TERRAIN_PEERS_DIR || 'compat/peers') => {
     try {
+      if (!fs.existsSync(peersDir)) {
+        consola.warn(`Archive peer directory not found at: ${chalk.yellow(peersDir)}`);
+        consola.info('Specify a valid directory: rn-terrain seed:archive <path-to-peers-dir>');
+        return;
+      }
       consola.info(`Ingesting historical peer datasets from: ${chalk.cyan(peersDir)}`);
       const db = new CanonicalDatabase();
       const seeder = new ArchiveDatasetSeeder(db);
@@ -1376,12 +1403,157 @@ cli
     }
   });
 
+cli
+  .command('init [workspacePath]', 'Initialize deterministic pre-write gates and agent harness hooks in the current project')
+  .option('--force', 'Overwrite existing gate scripts if present')
+  .action(async (workspacePath = '.', options) => {
+    try {
+      const targetDir = path.resolve(workspacePath);
+      consola.info(`Initializing RN-Terrain Deterministic Protection in ${chalk.cyan(targetDir)}`);
+
+      const agentsDir = path.join(targetDir, '.agents');
+      const stateDir = path.join(agentsDir, 'state');
+      const rulesDir = path.join(agentsDir, 'rules');
+      const claudeDir = path.join(targetDir, '.claude');
+
+      fs.mkdirSync(agentsDir, { recursive: true });
+      fs.mkdirSync(stateDir, { recursive: true });
+      fs.mkdirSync(rulesDir, { recursive: true });
+      fs.mkdirSync(claudeDir, { recursive: true });
+
+      // 1. Copy or link gate scripts
+      const sourceAgentsDir = path.resolve(process.cwd(), '.agents');
+      const gateScripts = ['gate.mjs', 'stop-gate.mjs', 'post-tool.mjs'];
+
+      for (const script of gateScripts) {
+        const dest = path.join(agentsDir, script);
+        const src = path.join(sourceAgentsDir, script);
+        if (!fs.existsSync(dest) || options.force) {
+          if (fs.existsSync(src)) {
+            fs.copyFileSync(src, dest);
+            console.log(`  ${chalk.green('✓')} Installed ${chalk.bold(`.agents/${script}`)}`);
+          }
+        } else {
+          console.log(`  ${chalk.dim('•')} Existing ${chalk.bold(`.agents/${script}`)} preserved`);
+        }
+      }
+
+      // 2. Configure .claude/settings.json
+      const claudeSettingsPath = path.join(claudeDir, 'settings.json');
+      let claudeSettings: any = {};
+      if (fs.existsSync(claudeSettingsPath)) {
+        try {
+          claudeSettings = JSON.parse(fs.readFileSync(claudeSettingsPath, 'utf8'));
+        } catch {}
+      }
+      claudeSettings.hooks = claudeSettings.hooks || {};
+      claudeSettings.hooks.PreToolUse = [
+        {
+          matcher: 'Write|Edit',
+          command: 'node .agents/gate.mjs "$FILE_PATH" --auto-ground'
+        }
+      ];
+      claudeSettings.hooks.Stop = [
+        {
+          command: 'node .agents/stop-gate.mjs'
+        }
+      ];
+      fs.writeFileSync(claudeSettingsPath, JSON.stringify(claudeSettings, null, 2), 'utf8');
+      console.log(`  ${chalk.green('✓')} Configured ${chalk.bold('.claude/settings.json')} (PreToolUse & Stop hooks)`);
+
+      // 3. Configure .agents/rules/rn-grounding-gate.md
+      const rulePath = path.join(rulesDir, 'rn-grounding-gate.md');
+      if (!fs.existsSync(rulePath) || options.force) {
+        fs.writeFileSync(
+          rulePath,
+          `# React Native Grounding & Safety Gate Rule\n\nBefore modifying React Native components or native modules, query \`rn-terrain compass <package>\` to ground modern APIs.\nSevered legacy patterns (e.g. useAnimatedGestureHandler, AsyncStorage) are blocked by the pre-write gate.\n`,
+          'utf8'
+        );
+        console.log(`  ${chalk.green('✓')} Configured ${chalk.bold('.agents/rules/rn-grounding-gate.md')}`);
+      }
+
+      // 4. Ensure .terrain/ and .agents/state/ are in .gitignore
+      const gitignorePath = path.join(targetDir, '.gitignore');
+      if (fs.existsSync(gitignorePath)) {
+        let gitignore = fs.readFileSync(gitignorePath, 'utf8');
+        let updated = false;
+        if (!gitignore.includes('.terrain')) {
+          gitignore += '\n# RN-Terrain local telemetry\n.terrain/\n';
+          updated = true;
+        }
+        if (!gitignore.includes('.agents/state/receipt.json')) {
+          gitignore += '.agents/state/receipt.json\n';
+          updated = true;
+        }
+        if (updated) {
+          fs.writeFileSync(gitignorePath, gitignore, 'utf8');
+          console.log(`  ${chalk.green('✓')} Updated ${chalk.bold('.gitignore')} with .terrain/ and receipt exclusions`);
+        }
+      }
+
+      // 5. Pre-seed grounding receipt
+      writeGroundingReceipt('react-native-reanimated', 'latest', 'init', targetDir);
+      console.log(`  ${chalk.green('✓')} Pre-seeded Outside Referent receipt in ${chalk.bold('.agents/state/receipt.json')}`);
+
+      console.log(`\n${chalk.green.bold('🎉 RN-Terrain initialization complete!')}`);
+      console.log(chalk.dim('Your workspace is now guarded against severed APIs and temporal model drift.\n'));
+    } catch (e: any) {
+      consola.error('Failed to initialize RN-Terrain:', e.message);
+    }
+  });
+
+cli
+  .command('telemetry [action]', 'Inspect or configure privacy-first local telemetry (status, enable, disable)')
+  .action((action) => {
+    try {
+      const rcPath = path.resolve(process.cwd(), '.terrainrc');
+      let rc: any = {};
+      if (fs.existsSync(rcPath)) {
+        try {
+          rc = JSON.parse(fs.readFileSync(rcPath, 'utf8'));
+        } catch {}
+      }
+
+      if (action === 'enable' || action === 'on') {
+        rc.telemetry = true;
+        fs.writeFileSync(rcPath, JSON.stringify(rc, null, 2), 'utf8');
+        consola.success('Local incident telemetry opted-IN. Data will be saved strictly to local .terrain/incidents/ (never sent to network).');
+        return;
+      }
+
+      if (action === 'disable' || action === 'off') {
+        rc.telemetry = false;
+        fs.writeFileSync(rcPath, JSON.stringify(rc, null, 2), 'utf8');
+        consola.success('Local incident telemetry disabled. Zero incident files will be captured.');
+        return;
+      }
+
+      // Default: status
+      const isOptedIn = isTelemetryOptedIn();
+      const envActive = process.env.TERRAIN_TELEMETRY === '1' || process.env.TERRAIN_TELEMETRY === 'true';
+      const configActive = rc.telemetry === true;
+
+      console.log(`\n${chalk.bold('🔒 RN-TERRAIN PRIVACY & TELEMETRY STATUS')}`);
+      console.log(chalk.dim('────────────────────────────────────────────────────────'));
+      console.log(`  Current State:        ${isOptedIn ? chalk.green.bold('OPTED-IN (ACTIVE)') : chalk.yellow.bold('DISABLED (DEFAULT - ZERO CAPTURE)')}`);
+      console.log(`  Environment Override: ${envActive ? chalk.green('TERRAIN_TELEMETRY=1') : chalk.dim('None')}`);
+      console.log(`  Local Config (.terrainrc): ${configActive ? chalk.green('telemetry: true') : chalk.dim('telemetry: false / unset')}`);
+      console.log(`  Remote Network Calls: ${chalk.green.bold('0 (Strictly Zero - No Cloud Endpoints)')}`);
+      console.log(`  Local Disk Storage:   ${isOptedIn ? chalk.cyan('.terrain/incidents/ (.gitignore\'d)') : chalk.dim('Dormant (0 files created)')}`);
+      console.log('');
+      console.log(chalk.dim('  Enable local error pattern auditing:  rn-terrain telemetry enable'));
+      console.log(chalk.dim('  Disable completely:                   rn-terrain telemetry disable\n'));
+    } catch (e: any) {
+      consola.error('Failed to configure telemetry:', e.message);
+    }
+  });
+
 cli.help();
 
 export function runCli(argv = process.argv) {
   cli.parse(argv);
 }
 
-if (import.meta.url === `file://${process.argv[1]?.replace(/\\/g, '/')}`) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   runCli();
 }

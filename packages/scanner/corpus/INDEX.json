@@ -1,0 +1,4043 @@
+{
+  "version": "1.1.0",
+  "generated_at": "2026-09-26T12:20:00Z",
+  "packages": {
+    "react-native": {
+      "role": "RUNTIME_SUBSTRATE",
+      "vendor": "meta",
+      "current_version": "0.86.2",
+      "latest_version": "0.87.1",
+      "migration_stage": "MODERN_NEW_ARCH",
+      "entries": [
+        "rn_0_71_0_new_capa_major-epoch-release",
+        "rn_0_71_1_build_pi_patch-1",
+        "rn_0_71_2_build_pi_patch-2",
+        "rn_0_71_3_build_pi_patch-3",
+        "rn_0_71_4_bug_fix_patch-4",
+        "rn_0_71_5_bug_fix_patch-5",
+        "rn_0_71_6_build_pi_patch-6",
+        "rn_0_71_7_bug_fix_patch-7",
+        "rn_0_71_8_build_pi_patch-8",
+        "rn_0_71_10_bug_fix_patch-10",
+        "rn_0_71_9_bug_fix_patch-9",
+        "rn_0_71_11_build_pi_patch-11",
+        "rn_0_72_0_new_capa_major-epoch-release",
+        "rn_0_72_1_build_pi_patch-1",
+        "rn_0_71_12_bug_fix_patch-12",
+        "rn_0_72_2_bug_fix_patch-2",
+        "rn_0_72_3_build_pi_patch-3",
+        "rn_0_72_4_bug_fix_patch-4",
+        "rn_0_71_13_bug_fix_patch-13",
+        "rn_0_72_5_build_pi_patch-5",
+        "rn_0_71_14_build_pi_patch-14",
+        "rn_0_72_6_bug_fix_patch-6",
+        "rn_0_72_7_bug_fix_patch-7",
+        "rn_0_73_0_new_capa_major-epoch-release",
+        "rn_0_73_1_bug_fix_patch-1",
+        "rn_0_72_8_bug_fix_patch-8",
+        "rn_0_71_15_bug_fix_patch-15",
+        "rn_0_72_9_bug_fix_patch-9",
+        "rn_0_73_2_bug_fix_patch-2",
+        "rn_0_72_10_bug_fix_patch-10",
+        "rn_0_73_3_build_pi_patch-3",
+        "rn_0_71_16_bug_fix_patch-16",
+        "rn_0_73_4_bug_fix_patch-4",
+        "rn_0_73_5_bug_fix_patch-5",
+        "rn_0_71_17_bug_fix_patch-17",
+        "rn_0_72_11_build_pi_patch-11",
+        "rn_0_72_12_build_pi_patch-12",
+        "rn_0_73_6_build_pi_patch-6",
+        "rn_0_71_18_build_pi_patch-18",
+        "rn_0_72_13_bug_fix_patch-13",
+        "rn_0_73_7_bug_fix_patch-7",
+        "rn_0_74_0_breaking_major-epoch-release",
+        "rn_0_71_19_bug_fix_patch-19",
+        "rn_0_72_14_bug_fix_patch-14",
+        "rn_0_73_8_bug_fix_patch-8",
+        "rn_0_74_1_bug_fix_patch-1",
+        "rn_0_74_2_bug_fix_patch-2",
+        "rn_0_72_15_bug_fix_patch-15",
+        "rn_0_74_3_bug_fix_patch-3",
+        "rn_0_73_9_bug_fix_patch-9",
+        "rn_0_74_4_build_pi_patch-4",
+        "rn_0_74_5_bug_fix_patch-5",
+        "rn_0_75_0_build_pi_major-epoch-release",
+        "rn_0_75_1_bug_fix_patch-1",
+        "rn_0_72_17_bug_fix_patch-17",
+        "rn_0_75_2_bug_fix_patch-2",
+        "rn_0_75_3_build_pi_patch-3",
+        "rn_0_74_6_bug_fix_patch-6",
+        "rn_0_75_4_bug_fix_patch-4",
+        "rn_0_73_10_build_pi_patch-10",
+        "rn_0_76_0_breaking_major-epoch-release",
+        "rn_0_76_1_build_pi_patch-1",
+        "rn_0_73_11_build_pi_patch-11",
+        "rn_0_76_2_bug_fix_patch-2",
+        "rn_0_76_3_build_pi_patch-3",
+        "rn_0_76_4_bug_fix_patch-4",
+        "rn_0_76_5_bug_fix_patch-5",
+        "rn_0_76_6_bug_fix_patch-6",
+        "rn_0_77_0_build_pi_major-epoch-release",
+        "rn_0_74_7_build_pi_patch-7",
+        "rn_0_76_7_bug_fix_patch-7",
+        "rn_0_75_5_build_pi_patch-5",
+        "rn_0_77_1_bug_fix_patch-1",
+        "rn_0_78_0_new_capa_major-epoch-release",
+        "rn_0_78_1_bug_fix_patch-1",
+        "rn_0_77_2_bug_fix_patch-2",
+        "rn_0_76_8_bug_fix_patch-8",
+        "rn_0_78_2_bug_fix_patch-2",
+        "rn_0_76_9_build_pi_patch-9",
+        "rn_0_79_0_performa_major-epoch-release",
+        "rn_0_79_1_bug_fix_patch-1",
+        "rn_0_79_2_bug_fix_patch-2",
+        "rn_0_79_3_build_pi_patch-3",
+        "rn_0_80_0_build_pi_major-epoch-release",
+        "rn_0_79_4_bug_fix_patch-4",
+        "rn_0_80_1_bug_fix_patch-1",
+        "rn_0_79_5_bug_fix_patch-5",
+        "rn_0_78_3_build_pi_patch-3",
+        "rn_0_77_3_build_pi_patch-3",
+        "rn_0_80_2_build_pi_patch-2",
+        "rn_0_81_0_performa_major-epoch-release",
+        "rn_0_79_6_build_pi_patch-6",
+        "rn_0_81_1_build_pi_patch-1",
+        "rn_0_81_2_build_pi_patch-2",
+        "rn_0_81_3_build_pi_patch-3",
+        "rn_0_81_4_build_pi_patch-4",
+        "rn_0_82_0_removal_major-epoch-release",
+        "rn_0_82_1_bug_fix_patch-1",
+        "rn_0_79_7_bug_fix_patch-7",
+        "rn_0_81_5_bug_fix_patch-5",
+        "rn_0_83_0_removal_major-epoch-release",
+        "rn_0_83_1_bug_fix_patch-1",
+        "rn_0_80_3_bug_fix_patch-3",
+        "rn_0_81_6_build_pi_patch-6",
+        "rn_0_83_2_build_pi_patch-2",
+        "rn_0_84_0_build_pi_major-epoch-release",
+        "rn_0_84_1_bug_fix_patch-1",
+        "rn_0_83_3_build_pi_patch-3",
+        "rn_0_83_4_bug_fix_patch-4",
+        "rn_0_85_0_performa_major-epoch-release",
+        "rn_0_85_1_bug_fix_patch-1",
+        "rn_0_83_5_build_pi_patch-5",
+        "rn_0_83_6_bug_fix_patch-6",
+        "rn_0_85_2_bug_fix_patch-2",
+        "rn_0_83_7_bug_fix_patch-7",
+        "rn_0_83_8_bug_fix_patch-8",
+        "rn_0_83_9_bug_fix_patch-9",
+        "rn_0_85_3_bug_fix_patch-3",
+        "rn_0_86_0_new_capa_major-epoch-release",
+        "rn_0_83_10_build_pi_patch-10",
+        "rn_0_86_2_bug_fix_patch-2",
+        "rn_0_87_0_type_sys_major-epoch-release",
+        "rn_0_86_3_build_pi_patch-3",
+        "rn_0_87_1_build_pi_patch-1",
+        "rn_0_88_0_rc_2_horizon_preview"
+      ]
+    },
+    "expo": {
+      "role": "PLATFORM_SERVICES",
+      "vendor": "expo",
+      "current_version": "57.0.24",
+      "latest_version": "57.0.24",
+      "migration_stage": "STABLE",
+      "entries": []
+    },
+    "expo-router": {
+      "role": "NAVIGATION",
+      "vendor": "expo",
+      "current_version": "57.0.22",
+      "latest_version": "57.0.22",
+      "migration_stage": "PREPARING_SDK58",
+      "entries": [
+        "expo-router_57.0.0_breaking_react-navigation-import-elimination",
+        "expo-router_58.0.0-beta_deprecation_integrate-with-router-and-native-tabs"
+      ]
+    },
+    "react-native-reanimated": {
+      "role": "ANIMATION",
+      "vendor": "software-mansion",
+      "current_version": "4.6.0",
+      "latest_version": "4.6.0",
+      "migration_stage": "MODERN_V4",
+      "entries": [
+        "reanimated_4.0.0_breaking_worklets-package-and-babel-plugin",
+        "reanimated_4.5.0_breaking_plain-style-removal-and-shared-boundary",
+        "reanimated_4.6.0_newcap_css-animation-callbacks"
+      ]
+    },
+    "react-native-gesture-handler": {
+      "role": "GESTURE",
+      "vendor": "software-mansion",
+      "current_version": "3.3.0",
+      "latest_version": "3.3.0",
+      "migration_stage": "MODERN_V3_HOOKS",
+      "entries": [
+        "rngh_3.2.1_auto_generated-patch",
+        "rngh_3.1.0_auto_generated-patch",
+        "rngh_3.0.2_auto_generated-patch",
+        "rngh_2.32.0_auto_generated-patch",
+        "rngh_3.0.1_auto_generated-patch",
+        "rngh_2.31.2_auto_generated-patch",
+        "rngh_2.31.1_auto_generated-patch",
+        "rngh_2.30.1_auto_generated-patch",
+        "rngh_2.30.0_auto_generated-patch",
+        "rngh_2.29.1_auto_generated-patch",
+        "rngh_2.29.0_auto_generated-patch",
+        "rngh_2.28.0_auto_generated-patch",
+        "rngh_2.27.2_auto_generated-patch",
+        "rngh_2.27.1_auto_generated-patch",
+        "rngh_2.26.0_auto_generated-patch",
+        "rngh_2.24.0_auto_generated-patch",
+        "rngh_2.23.1_auto_generated-patch",
+        "rngh_2.22.1_auto_generated-patch",
+        "rngh_2.22.0_auto_generated-patch",
+        "rngh_2.21.2_auto_generated-patch",
+        "rngh_2.21.1_auto_generated-patch",
+        "rngh_2.21.0_auto_generated-patch",
+        "rngh_2.20.2_auto_generated-patch",
+        "rngh_2.20.1_auto_generated-patch",
+        "rngh_2.20.0_auto_generated-patch",
+        "rngh_2.19.0_auto_generated-patch",
+        "rngh_2.18.1_auto_generated-patch",
+        "rngh_2.17.1_auto_generated-patch",
+        "rngh_2.17.0_auto_generated-patch",
+        "rngh_2.16.2_auto_generated-patch",
+        "rngh_2.16.1_auto_generated-patch",
+        "rngh_2.16.0_auto_generated-patch",
+        "rngh_2.15.0_auto_generated-patch",
+        "rngh_2.14.1_auto_generated-patch",
+        "rngh_2.14.0_auto_generated-patch",
+        "rngh_2.13.4_auto_generated-patch",
+        "rngh_2.13.3_auto_generated-patch",
+        "rngh_2.13.2_auto_generated-patch",
+        "rngh_2.13.1_auto_generated-patch",
+        "rngh_2.12.1_auto_generated-patch",
+        "rngh_2.12.0_auto_generated-patch",
+        "rngh_2.11.0_auto_generated-patch",
+        "rngh_2.10.2_auto_generated-patch",
+        "rngh_2.10.1_auto_generated-patch",
+        "rngh_2.10.0_auto_generated-patch",
+        "rngh_2.9.0_auto_generated-patch",
+        "rngh_2.8.0_auto_generated-patch",
+        "rngh_2.7.1_auto_generated-patch",
+        "rngh_2.7.0_auto_generated-patch",
+        "rngh_2.6.2_auto_generated-patch",
+        "rngh_2.6.1_auto_generated-patch",
+        "rngh_2.6.0_auto_generated-patch",
+        "rngh_2.2.1_auto_generated-patch",
+        "rngh_2.4.2_auto_generated-patch",
+        "rngh_2.4.1_auto_generated-patch",
+        "rngh_2.4.0_auto_generated-patch",
+        "rngh_2.3.2_auto_generated-patch",
+        "rngh_2.3.1_auto_generated-patch",
+        "rngh_2.1.3_auto_generated-patch",
+        "rngh_2.1.2_auto_generated-patch",
+        "rngh_2.2.0_auto_generated-patch",
+        "rngh_2.1.1_auto_generated-patch",
+        "rngh_2.1.0_auto_generated-patch",
+        "rngh_2.0.0_breaking_gesturedetector-api-and-gesturehandlerrootview",
+        "rngh_2.3.0_newcap_gesture-handler-for-fabric",
+        "rngh_2.5.0_newcap_gesture-native-and-scrollview-coordination",
+        "rngh_2.13.0_newcap_hover-gesture-and-pointer-events",
+        "rngh_2.18.0_newcap_reanimated-swipeable-and-gesturized-pressable",
+        "rngh_2.23.0_deprecation_old-api-drawerlayout-touchables",
+        "rngh_2.25.0_silbreak_pressable-touch-propagation-regression",
+        "rngh_2.27.0_fix_pressable-refactor-and-forcetouch-deprecation",
+        "rngh_2.31.0_newcap_android-pointer-fix-and-pre-v3-stable-anchor",
+        "rngh_2.33.0_setup_legacy-branch-rn087-alignment",
+        "rngh_3.0.0_breaking_legacy-component-removal-and-fabric-mandate",
+        "rngh_3.2.0_build_agp9-and-touchable-pressable",
+        "rngh_3.3.0_breaking_button-behavior-and-hooks-api",
+        "rngh_2.16.0-rc.0_auto_generated-granular",
+        "rngh_2.22.0-rc.1_auto_generated-granular",
+        "rngh_2.30.0-20251030-c99169d35_auto_generated-granular",
+        "rngh_2.30.0-20251030-7cfe2fc9b_auto_generated-granular",
+        "rngh_2.30.0-20251103-3ad1fcc27_auto_generated-granular",
+        "rngh_2.30.0-20251106-b53b8ef67_auto_generated-granular",
+        "rngh_2.30.0-20251112-cbd97db52_auto_generated-granular",
+        "rngh_2.30.0-20251117-6c7481b7a_auto_generated-granular",
+        "rngh_2.30.0-20251117-3f13c2a52_auto_generated-granular",
+        "rngh_2.30.0-20251124-9f0a5215a_auto_generated-granular",
+        "rngh_2.30.0-20251127-78c9ed7d6_auto_generated-granular",
+        "rngh_2.30.0-20251201-235746986_auto_generated-granular",
+        "rngh_2.30.0-20251201-924e38fcb_auto_generated-granular",
+        "rngh_2.30.0-20251204-14b690ec8_auto_generated-granular",
+        "rngh_2.30.0-nightly-20251211-1427aae26_auto_generated-granular",
+        "rngh_2.30.0-nightly-20251217-6e8646aea_auto_generated-granular",
+        "rngh_2.30.0-nightly-20251217-6dddda826_auto_generated-granular",
+        "rngh_2.30.0-nightly-20251219-fb98bcd06_auto_generated-granular",
+        "rngh_2.31.0-nightly-20260121-59a5311e3_auto_generated-granular",
+        "rngh_2.31.0-nightly-20260122-b776a8137_auto_generated-granular",
+        "rngh_2.31.0-nightly-20260202-9f573ef7b_auto_generated-granular",
+        "rngh_3.0.0-beta.1_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260206-e99cf63a0_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260210-746564b1e_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260211-3c7c28741_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260212-18af65aa7_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260213-bdf353db2_auto_generated-granular",
+        "rngh_3.0.0-beta.2_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260217-0e74233db_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260218-81c5b0659_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260219-1f40473b5_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260220-495db7834_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260223-554e66821_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260224-1b135f7fa_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260225-2e34b85ec_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260226-957eed3ed_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260227-13c05f27e_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260302-41fbd374a_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260303-5429e5ec0_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260304-23c6413b7_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260305-af8b1216d_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260306-ee266bb8f_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260311-0ec1cd2ab_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260313-3918d8ae5_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260318-9e8c54cdf_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260319-0e91d9066_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260320-1a7aea1ba_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260323-b33f704b6_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260324-558743567_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260327-6c06cc45a_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260331-9d671cb78_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260401-1e8766889_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260402-df333c7fb_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260403-d21f1dd91_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260407-8baabdf2a_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260408-47680801b_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260409-b606c5eda_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260410-9a6c6096e_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260413-7c3426859_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260414-090e82262_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260415-0d7a377c4_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260416-59983a53c_auto_generated-granular",
+        "rngh_3.0.0-beta.3_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260417-2e984576d_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260420-2154bfd56_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260421-c6b424f7d_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260422-48d674b99_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260423-ddf9ffa61_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260427-67cdbb0a8_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260428-181a6f675_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260429-3d994d320_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260430-c415c99a5_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260504-9d256aeca_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260506-312f27748_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260507-5505329ef_auto_generated-granular",
+        "rngh_3.0.0-beta.4_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260508-cb49403d0_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260511-ea5f23f3b_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260513-9ce3db3d5_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260515-e316be2a8_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260518-f2159b8ae_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260520-38025e73f_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260520-bdd9696eb_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260521-d236b0fc9_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260521-46ae912e8_auto_generated-granular",
+        "rngh_2.32.0-nightly-20260521-3846335df_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260521-3846335df_auto_generated-granular",
+        "rngh_3.0.0-beta.5_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260522-46a2bde7f_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260526-117087e3d_auto_generated-granular",
+        "rngh_3.0.0-nightly-20260527-5a9551ab7_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260528-548f2c8c3_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260601-4f4f63e1a_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260603-45e6ac8a0_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260604-183f348f8_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260608-9a9f8b41e_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260609-6ba9d63d4_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260610-96dfc0099_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260611-a70c6e349_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260616-1473f3906_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260616-74532809b_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260617-cd952bff4_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260619-061789130_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260619-78397271f_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260622-b852ff4a4_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260623-571e3cc9f_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260629-d2bd181fd_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260630-1a713d0cc_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260701-a37344266_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260702-52e082f8e_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260703-e36d8d35f_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260706-ee147abf3_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260708-c8d66b460_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260709-8b5d4a062_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260710-201493f0f_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260713-4363f481a_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260714-af04cd4f3_auto_generated-granular",
+        "rngh_3.1.0-nightly-20260715-fb1089bb3_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260717-fb1089bb3_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260720-9c6135950_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260721-f922b3b23_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260722-bbb49c31f_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260723-f7394a54f_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260724-6b0ca7bd7_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260727-804956735_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260728-89588614e_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260729-1506f6aa4_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260730-caf03a380_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260731-edcd60c2c_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260803-f0c98c75f_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260804-35a0aea4e_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260805-e58c43a57_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260807-73c51c7af_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260807-41d83926c_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260810-a3377f050_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260811-cc704f09a_auto_generated-granular",
+        "rngh_3.2.0-nightly-20260812-bd853311a_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260813-44046a694_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260814-3e4497eb0_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260817-b2d23f14b_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260818-d29545ab3_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260819-5f12fbccf_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260820-d064b6620_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260821-439ded45d_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260824-5de6d2358_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260825-8e8e6c1aa_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260827-0d25288c7_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260828-b6ff24309_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260902-6f4589524_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260904-ebc923b2b_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260908-4768ffe73_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260909-c5db1fcff_auto_generated-granular",
+        "rngh_3.3.0-nightly-20260910-bcd4b522e_auto_generated-granular",
+        "rngh_3.4.0-nightly-20260911-ebcf8f47b_auto_generated-granular",
+        "rngh_3.4.0-nightly-20260914-a2e043092_auto_generated-granular",
+        "rngh_3.4.0-nightly-20260915-2f688d841_auto_generated-granular",
+        "rngh_3.4.0-nightly-20260916-5d1c171f8_auto_generated-granular",
+        "rngh_3.4.0-nightly-20260917-4c001cb7a_auto_generated-granular",
+        "rngh_3.4.0-nightly-20260921-e26231e9d_auto_generated-granular"
+      ]
+    },
+    "react-native-mmkv": {
+      "role": "STORAGE",
+      "vendor": "mrousavy",
+      "current_version": "4.3.2",
+      "latest_version": "4.3.2",
+      "migration_stage": "MODERN_NITRO",
+      "entries": [
+        "mmkv_4.0.0_breaking_nitro-modules-and-factory-function",
+        "mmkv_4.3.2_newcap_check-content-changed-and-recovery"
+      ]
+    },
+    "react-native-worklets": {
+      "role": "ANIMATION",
+      "vendor": "software-mansion",
+      "current_version": "0.12.2",
+      "latest_version": "0.12.2",
+      "migration_stage": "STANDALONE_RUNTIME",
+      "entries": [
+        "worklets_0.12.2_fix_proto-serialization-and-teardown-crash"
+      ]
+    },
+    "nativewind": {
+      "role": "STYLING",
+      "vendor": "nativewind",
+      "current_version": "5.0.0-rc.0",
+      "latest_version": "5.0.0-rc.0",
+      "migration_stage": "TRANSITIONAL_HYBRID_BRIDGE",
+      "entries": [
+        "nativewind_5.0.0-rc.0_breaking_tailwind-v4-css-first-rewrite"
+      ]
+    }
+  },
+  "entries": {
+    "reanimated_4.6.0_newcap_css-animation-callbacks": {
+      "package": "react-native-reanimated",
+      "version_to": "4.6.0",
+      "date_released": "2026-08-20",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [
+        "transform: \\[.*\\] as any",
+        "setTimeout\\(.*performHide"
+      ],
+      "capabilities_unlocked": [
+        "onCSSTransitionEnd / onCSSAnimationEnd",
+        "contrastColor() worklet"
+      ],
+      "file": "entries/react-native-reanimated/2026-08-20-css-animation-callbacks-and-contrast-color.md"
+    },
+    "reanimated_4.5.0_breaking_plain-style-removal-and-shared-boundary": {
+      "package": "react-native-reanimated",
+      "version_to": "4.5.0",
+      "date_released": "2026-06-22",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "HIGH",
+      "file": "entries/react-native-reanimated/2026-06-22-shared-transition-boundary-and-pseudo-selectors.md"
+    },
+    "reanimated_4.0.0_breaking_worklets-package-and-babel-plugin": {
+      "package": "react-native-reanimated",
+      "version_to": "4.0.0",
+      "date_released": "2025-10-15",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "file": "entries/react-native-reanimated/2025-10-15-worklets-package-extraction-and-babel-plugin.md"
+    },
+    "expo-router_58.0.0-beta_deprecation_integrate-with-router-and-native-tabs": {
+      "package": "expo-router",
+      "version_to": "58.0.0-beta",
+      "date_released": "2026-09-15",
+      "impact_type": "DEPRECATION_WARNING",
+      "severity": "HIGH",
+      "code_smell_signatures": [
+        "<Tabs[\\s\\S]*?initialRouteName="
+      ],
+      "capabilities_unlocked": [
+        "integrateWithRouter",
+        "expo-router/native-tabs"
+      ],
+      "file": "entries/expo-router/2026-09-15-sdk58-beta-integrate-with-router-and-native-tabs.md"
+    },
+    "expo-router_57.0.0_breaking_react-navigation-import-elimination": {
+      "package": "expo-router",
+      "version_to": "57.0.0",
+      "date_released": "2026-06-30",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "file": "entries/expo-router/2026-06-30-sdk57-react-navigation-import-elimination.md"
+    },
+    "nativewind_5.0.0-rc.0_breaking_tailwind-v4-css-first-rewrite": {
+      "package": "nativewind",
+      "version_to": "5.0.0-rc.0",
+      "date_released": "2026-08-15",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [
+        "@config.*tailwind\\.config\\.js"
+      ],
+      "transitional_debt": {
+        "is_hybrid_state": true,
+        "bridge_mechanism": "@config directive linking legacy tailwind.config.js into global.css"
+      },
+      "capabilities_unlocked": [
+        "@theme Directives",
+        "@utility Directives"
+      ],
+      "file": "entries/nativewind/2026-08-15-v5-tailwind-v4-css-first-rewrite.md"
+    },
+    "rngh_3.3.0_breaking_button-behavior-and-hooks-api": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0",
+      "date_released": "2026-09-10",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [
+        {
+          "type": "ImportSpecifier",
+          "name": "usePanGesture",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "useTapGesture",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "useLongPressGesture",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "usePinchGesture",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "useRotationGesture",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "useFlingGesture",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "useSimultaneousGestures",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "useExclusiveGestures",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "PanGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "TapGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "HIGH"
+        }
+      ],
+      "capabilities_unlocked": [
+        "Gesture.Pan",
+        "Gesture.Tap",
+        "Gesture.LongPress",
+        "Gesture.Simultaneous",
+        "Gesture.Exclusive"
+      ],
+      "file": "entries/react-native-gesture-handler/2026-09-10-v3-3-0-button-behavior-and-v3-hooks-model.md"
+    },
+    "rngh_3.0.0_breaking_legacy-component-removal-and-fabric-mandate": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0",
+      "date_released": "2025-11-20",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [
+        {
+          "type": "JSXIdentifier",
+          "name": "PanGestureHandler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "TapGestureHandler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "LongPressGestureHandler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "PinchGestureHandler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "RotationGestureHandler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "FlingGestureHandler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "ForceTouchGestureHandler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "DrawerLayout",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "RawButton",
+          "severity": "HIGH"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "BaseButton",
+          "severity": "HIGH"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "RectButton",
+          "severity": "HIGH"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "BorderlessButton",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "PanGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "TapGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "LongPressGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "PinchGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "RotationGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "FlingGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "ForceTouchGestureHandler",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "DrawerLayout",
+          "from": "react-native-gesture-handler",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "RawButton",
+          "from": "react-native-gesture-handler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "BaseButton",
+          "from": "react-native-gesture-handler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "RectButton",
+          "from": "react-native-gesture-handler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "BorderlessButton",
+          "from": "react-native-gesture-handler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "JSXAttribute",
+          "name": "onGestureEvent",
+          "severity": "CRITICAL"
+        },
+        {
+          "type": "JSXAttribute",
+          "name": "onHandlerStateChange",
+          "severity": "CRITICAL"
+        }
+      ],
+      "capabilities_unlocked": [
+        "GestureDetector",
+        "Gesture.Pan",
+        "Gesture.Tap",
+        "Gesture.LongPress",
+        "Gesture.Pinch",
+        "Gesture.Rotation"
+      ],
+      "file": "entries/react-native-gesture-handler/2025-11-20-v3-0-0-legacy-component-removal-and-fabric-mandate.md"
+    },
+    "rngh_3.2.0_build_agp9-and-touchable-pressable": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0",
+      "date_released": "2026-08-13",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "MEDIUM",
+      "file": "entries/react-native-gesture-handler/2026-08-13-v3-2-0-agp9-and-touchable-pressable.md"
+    },
+    "rngh_2.33.0_setup_legacy-branch-rn087-alignment": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.33.0",
+      "date_released": "2026-09-14",
+      "impact_type": "SETUP_CHANGE",
+      "severity": "MEDIUM",
+      "file": "entries/react-native-gesture-handler/2026-09-14-v2-33-0-legacy-branch-rn087-alignment.md"
+    },
+    "rngh_2.31.0_newcap_android-pointer-fix-and-pre-v3-stable-anchor": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.31.0",
+      "date_released": "2026-04-02",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "HIGH",
+      "file": "entries/react-native-gesture-handler/2026-04-02-v2-31-0-android-pointer-fix-and-pre-v3-stable-anchor.md"
+    },
+    "rngh_2.27.0_fix_pressable-refactor-and-forcetouch-deprecation": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.27.0",
+      "date_released": "2025-07-01",
+      "impact_type": "BUG_FIX",
+      "severity": "HIGH",
+      "file": "entries/react-native-gesture-handler/2025-07-01-v2-27-0-pressable-rewrite-and-forcetouch-deprecation.md"
+    },
+    "rngh_2.25.0_silbreak_pressable-touch-propagation-regression": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.25.0",
+      "date_released": "2025-03-31",
+      "impact_type": "SILENT_BEHAVIORAL_BREAK",
+      "severity": "HIGH",
+      "code_smell_signatures": [
+        "import.*Pressable.*from 'react-native-gesture-handler'"
+      ],
+      "file": "entries/react-native-gesture-handler/2025-03-31-v2-25-0-pressable-touch-propagation-regression.md"
+    },
+    "rngh_2.23.0_deprecation_old-api-drawerlayout-touchables": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.23.0",
+      "date_released": "2025-02-05",
+      "impact_type": "DEPRECATION_WARNING",
+      "severity": "HIGH",
+      "code_smell_signatures": [
+        {
+          "type": "JSXIdentifier",
+          "name": "PanGestureHandler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "TapGestureHandler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "JSXIdentifier",
+          "name": "DrawerLayout",
+          "from": "react-native-gesture-handler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "DrawerLayout",
+          "from": "react-native-gesture-handler",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "TouchableHighlight",
+          "from": "react-native-gesture-handler",
+          "severity": "MEDIUM"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "TouchableOpacity",
+          "from": "react-native-gesture-handler",
+          "severity": "MEDIUM"
+        },
+        {
+          "type": "ImportSpecifier",
+          "name": "TouchableWithoutFeedback",
+          "from": "react-native-gesture-handler",
+          "severity": "MEDIUM"
+        }
+      ],
+      "file": "entries/react-native-gesture-handler/2025-02-05-v2-23-0-hard-deprecation-of-legacy-components.md"
+    },
+    "rngh_2.18.0_newcap_reanimated-swipeable-and-gesturized-pressable": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.18.0",
+      "date_released": "2024-07-30",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "HIGH",
+      "capabilities_unlocked": [
+        "ReanimatedSwipeable",
+        "Swipeable"
+      ],
+      "file": "entries/react-native-gesture-handler/2024-07-30-v2-18-0-reanimated-swipeable-and-gesturized-pressable.md"
+    },
+    "rngh_2.13.0_newcap_hover-gesture-and-pointer-events": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.13.0",
+      "date_released": "2023-09-18",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "MEDIUM",
+      "capabilities_unlocked": [
+        "Gesture.Hover"
+      ],
+      "file": "entries/react-native-gesture-handler/2023-09-18-v2-13-0-hover-gesture-and-pointer-events.md"
+    },
+    "rngh_2.5.0_newcap_gesture-native-and-scrollview-coordination": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.5.0",
+      "date_released": "2022-06-23",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "MEDIUM",
+      "capabilities_unlocked": [
+        "Gesture.Native"
+      ],
+      "file": "entries/react-native-gesture-handler/2022-06-23-v2-5-0-gesture-native-and-scrollview-coordination.md"
+    },
+    "rngh_2.3.0_newcap_gesture-handler-for-fabric": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.3.0",
+      "date_released": "2022-03-01",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "HIGH",
+      "file": "entries/react-native-gesture-handler/2022-03-01-v2-3-0-fabric-new-architecture-initial-support.md"
+    },
+    "rngh_2.0.0_breaking_gesturedetector-api-and-gesturehandlerrootview": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.0.0",
+      "date_released": "2021-12-01",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [
+        "<(Pan|Tap|LongPress|Pinch|Rotation)GestureHandler"
+      ],
+      "capabilities_unlocked": [
+        "GestureDetector",
+        "GestureHandlerRootView"
+      ],
+      "file": "entries/react-native-gesture-handler/2021-12-01-v2-0-0-gesturedetector-api-and-gesturehandlerrootview.md"
+    },
+    "mmkv_4.3.2_newcap_check-content-changed-and-recovery": {
+      "package": "react-native-mmkv",
+      "version_to": "4.3.2",
+      "date_released": "2026-06-22",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [
+        "createMMKV\\(\\{(?![^}]*recoveryStrategy)"
+      ],
+      "capabilities_unlocked": [
+        "recoveryStrategy: 'recover-or-recreate'",
+        "checkContentChanged()"
+      ],
+      "file": "entries/react-native-mmkv/2026-06-22-v4-3-2-check-content-changed-and-recovery-strategy.md"
+    },
+    "mmkv_4.0.0_breaking_nitro-modules-and-factory-function": {
+      "package": "react-native-mmkv",
+      "version_to": "4.0.0",
+      "date_released": "2025-09-01",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "file": "entries/react-native-mmkv/2025-09-01-v4-0-0-nitro-modules-and-factory-function.md"
+    },
+    "worklets_0.12.2_fix_proto-serialization-and-teardown-crash": {
+      "package": "react-native-worklets",
+      "version_to": "0.12.2",
+      "date_released": "2026-09-07",
+      "impact_type": "BUG_FIX",
+      "severity": "HIGH",
+      "file": "entries/react-native-worklets/2026-09-07-v0-12-2-proto-serialization-crash-fix.md"
+    },
+    "rngh_2.1.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.1.0",
+      "date_released": "2021-12-07",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2021-12-07-v2-1-0-auto-entry.md"
+    },
+    "rngh_2.1.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.1.1",
+      "date_released": "2022-01-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-01-10-v2-1-1-auto-entry.md"
+    },
+    "rngh_2.2.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.2.0",
+      "date_released": "2022-01-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-01-17-v2-2-0-auto-entry.md"
+    },
+    "rngh_2.1.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.1.2",
+      "date_released": "2022-02-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-02-17-v2-1-2-auto-entry.md"
+    },
+    "rngh_2.1.3_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.1.3",
+      "date_released": "2022-02-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-02-21-v2-1-3-auto-entry.md"
+    },
+    "rngh_2.3.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.3.1",
+      "date_released": "2022-03-09",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-03-09-v2-3-1-auto-entry.md"
+    },
+    "rngh_2.3.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.3.2",
+      "date_released": "2022-03-14",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-03-14-v2-3-2-auto-entry.md"
+    },
+    "rngh_2.4.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.4.0",
+      "date_released": "2022-04-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-04-13-v2-4-0-auto-entry.md"
+    },
+    "rngh_2.4.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.4.1",
+      "date_released": "2022-04-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-04-21-v2-4-1-auto-entry.md"
+    },
+    "rngh_2.4.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.4.2",
+      "date_released": "2022-05-05",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-05-05-v2-4-2-auto-entry.md"
+    },
+    "rngh_2.2.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.2.1",
+      "date_released": "2022-05-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-05-10-v2-2-1-auto-entry.md"
+    },
+    "rngh_2.6.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.6.0",
+      "date_released": "2022-08-25",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-08-25-v2-6-0-auto-entry.md"
+    },
+    "rngh_2.6.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.6.1",
+      "date_released": "2022-09-16",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-09-16-v2-6-1-auto-entry.md"
+    },
+    "rngh_2.6.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.6.2",
+      "date_released": "2022-09-23",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-09-23-v2-6-2-auto-entry.md"
+    },
+    "rngh_2.7.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.7.0",
+      "date_released": "2022-10-03",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-10-03-v2-7-0-auto-entry.md"
+    },
+    "rngh_2.7.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.7.1",
+      "date_released": "2022-10-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-10-11-v2-7-1-auto-entry.md"
+    },
+    "rngh_2.8.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.8.0",
+      "date_released": "2022-10-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2022-10-21-v2-8-0-auto-entry.md"
+    },
+    "rngh_2.9.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.9.0",
+      "date_released": "2023-01-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-01-13-v2-9-0-auto-entry.md"
+    },
+    "rngh_2.10.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.10.0",
+      "date_released": "2023-05-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-05-10-v2-10-0-auto-entry.md"
+    },
+    "rngh_2.10.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.10.1",
+      "date_released": "2023-05-18",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-05-18-v2-10-1-auto-entry.md"
+    },
+    "rngh_2.10.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.10.2",
+      "date_released": "2023-05-31",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-05-31-v2-10-2-auto-entry.md"
+    },
+    "rngh_2.11.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.11.0",
+      "date_released": "2023-06-07",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-06-07-v2-11-0-auto-entry.md"
+    },
+    "rngh_2.12.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.12.0",
+      "date_released": "2023-06-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-06-13-v2-12-0-auto-entry.md"
+    },
+    "rngh_2.12.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.12.1",
+      "date_released": "2023-07-31",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-07-31-v2-12-1-auto-entry.md"
+    },
+    "rngh_2.13.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.13.1",
+      "date_released": "2023-09-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-09-19-v2-13-1-auto-entry.md"
+    },
+    "rngh_2.13.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.13.2",
+      "date_released": "2023-10-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-10-11-v2-13-2-auto-entry.md"
+    },
+    "rngh_2.13.3_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.13.3",
+      "date_released": "2023-10-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-10-17-v2-13-3-auto-entry.md"
+    },
+    "rngh_2.13.4_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.13.4",
+      "date_released": "2023-10-24",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-10-24-v2-13-4-auto-entry.md"
+    },
+    "rngh_2.14.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.14.0",
+      "date_released": "2023-11-23",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2023-11-23-v2-14-0-auto-entry.md"
+    },
+    "rngh_2.14.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.14.1",
+      "date_released": "2024-01-12",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-01-12-v2-14-1-auto-entry.md"
+    },
+    "rngh_2.15.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.15.0",
+      "date_released": "2024-02-05",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-02-05-v2-15-0-auto-entry.md"
+    },
+    "rngh_2.16.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.16.0",
+      "date_released": "2024-03-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-03-27-v2-16-0-auto-entry.md"
+    },
+    "rngh_2.16.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.16.1",
+      "date_released": "2024-04-29",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-04-29-v2-16-1-auto-entry.md"
+    },
+    "rngh_2.16.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.16.2",
+      "date_released": "2024-05-07",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-05-07-v2-16-2-auto-entry.md"
+    },
+    "rngh_2.17.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.17.0",
+      "date_released": "2024-06-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-06-19-v2-17-0-auto-entry.md"
+    },
+    "rngh_2.17.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.17.1",
+      "date_released": "2024-06-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-06-21-v2-17-1-auto-entry.md"
+    },
+    "rngh_2.18.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.18.1",
+      "date_released": "2024-08-01",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-08-01-v2-18-1-auto-entry.md"
+    },
+    "rngh_2.19.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.19.0",
+      "date_released": "2024-09-02",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-09-02-v2-19-0-auto-entry.md"
+    },
+    "rngh_2.20.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.20.0",
+      "date_released": "2024-09-25",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-09-25-v2-20-0-auto-entry.md"
+    },
+    "rngh_2.20.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.20.1",
+      "date_released": "2024-10-22",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-10-22-v2-20-1-auto-entry.md"
+    },
+    "rngh_2.20.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.20.2",
+      "date_released": "2024-10-24",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-10-24-v2-20-2-auto-entry.md"
+    },
+    "rngh_2.21.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.21.0",
+      "date_released": "2024-11-14",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-11-14-v2-21-0-auto-entry.md"
+    },
+    "rngh_2.21.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.21.1",
+      "date_released": "2024-11-18",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-11-18-v2-21-1-auto-entry.md"
+    },
+    "rngh_2.21.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.21.2",
+      "date_released": "2024-11-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-11-19-v2-21-2-auto-entry.md"
+    },
+    "rngh_2.22.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.22.0",
+      "date_released": "2025-01-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-01-10-v2-22-0-auto-entry.md"
+    },
+    "rngh_2.22.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.22.1",
+      "date_released": "2025-01-23",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-01-23-v2-22-1-auto-entry.md"
+    },
+    "rngh_2.23.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.23.1",
+      "date_released": "2025-02-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-02-11-v2-23-1-auto-entry.md"
+    },
+    "rngh_2.24.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.24.0",
+      "date_released": "2025-02-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-02-20-v2-24-0-auto-entry.md"
+    },
+    "rngh_2.26.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.26.0",
+      "date_released": "2025-06-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-06-13-v2-26-0-auto-entry.md"
+    },
+    "rngh_2.27.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.27.1",
+      "date_released": "2025-07-01",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-07-01-v2-27-1-auto-entry.md"
+    },
+    "rngh_2.27.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.27.2",
+      "date_released": "2025-07-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-07-21-v2-27-2-auto-entry.md"
+    },
+    "rngh_2.28.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.28.0",
+      "date_released": "2025-08-06",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-08-06-v2-28-0-auto-entry.md"
+    },
+    "rngh_2.29.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.29.0",
+      "date_released": "2025-10-22",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-10-22-v2-29-0-auto-entry.md"
+    },
+    "rngh_2.29.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.29.1",
+      "date_released": "2025-11-03",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-11-03-v2-29-1-auto-entry.md"
+    },
+    "rngh_2.30.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0",
+      "date_released": "2025-12-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-12-19-v2-30-0-auto-entry.md"
+    },
+    "rngh_2.30.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.1",
+      "date_released": "2026-03-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-27-v2-30-1-auto-entry.md"
+    },
+    "rngh_2.31.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.31.1",
+      "date_released": "2026-04-09",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-09-v2-31-1-auto-entry.md"
+    },
+    "rngh_2.31.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.31.2",
+      "date_released": "2026-05-04",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-04-v2-31-2-auto-entry.md"
+    },
+    "rngh_3.0.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.1",
+      "date_released": "2026-06-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-10-v3-0-1-auto-entry.md"
+    },
+    "rngh_2.32.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.32.0",
+      "date_released": "2026-06-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-11-v2-32-0-auto-entry.md"
+    },
+    "rngh_3.0.2_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.2",
+      "date_released": "2026-06-18",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-18-v3-0-2-auto-entry.md"
+    },
+    "rngh_3.1.0_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0",
+      "date_released": "2026-07-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-17-v3-1-0-auto-entry.md"
+    },
+    "rngh_3.2.1_auto_generated-patch": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.1",
+      "date_released": "2026-08-14",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-14-v3-2-1-auto-entry.md"
+    },
+    "rngh_2.16.0-rc.0_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.16.0-rc.0",
+      "date_released": "2024-03-01",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-03-01-v2-16-0-rc-0-auto-entry.md"
+    },
+    "rngh_2.22.0-rc.1_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.22.0-rc.1",
+      "date_released": "2024-12-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2024-12-20-v2-22-0-rc-1-auto-entry.md"
+    },
+    "rngh_2.30.0-20251030-c99169d35_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251030-c99169d35",
+      "date_released": "2025-10-30",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-10-30-v2-30-0-20251030-c99169d35-auto-entry.md"
+    },
+    "rngh_2.30.0-20251030-7cfe2fc9b_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251030-7cfe2fc9b",
+      "date_released": "2025-10-30",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-10-30-v2-30-0-20251030-7cfe2fc9b-auto-entry.md"
+    },
+    "rngh_2.30.0-20251103-3ad1fcc27_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251103-3ad1fcc27",
+      "date_released": "2025-11-03",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-11-03-v2-30-0-20251103-3ad1fcc27-auto-entry.md"
+    },
+    "rngh_2.30.0-20251106-b53b8ef67_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251106-b53b8ef67",
+      "date_released": "2025-11-06",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-11-06-v2-30-0-20251106-b53b8ef67-auto-entry.md"
+    },
+    "rngh_2.30.0-20251112-cbd97db52_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251112-cbd97db52",
+      "date_released": "2025-11-12",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-11-12-v2-30-0-20251112-cbd97db52-auto-entry.md"
+    },
+    "rngh_2.30.0-20251117-6c7481b7a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251117-6c7481b7a",
+      "date_released": "2025-11-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-11-17-v2-30-0-20251117-6c7481b7a-auto-entry.md"
+    },
+    "rngh_2.30.0-20251117-3f13c2a52_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251117-3f13c2a52",
+      "date_released": "2025-11-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-11-17-v2-30-0-20251117-3f13c2a52-auto-entry.md"
+    },
+    "rngh_2.30.0-20251124-9f0a5215a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251124-9f0a5215a",
+      "date_released": "2025-11-24",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-11-24-v2-30-0-20251124-9f0a5215a-auto-entry.md"
+    },
+    "rngh_2.30.0-20251127-78c9ed7d6_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251127-78c9ed7d6",
+      "date_released": "2025-11-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-11-27-v2-30-0-20251127-78c9ed7d6-auto-entry.md"
+    },
+    "rngh_2.30.0-20251201-235746986_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251201-235746986",
+      "date_released": "2025-12-01",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-12-01-v2-30-0-20251201-235746986-auto-entry.md"
+    },
+    "rngh_2.30.0-20251201-924e38fcb_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251201-924e38fcb",
+      "date_released": "2025-12-01",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-12-01-v2-30-0-20251201-924e38fcb-auto-entry.md"
+    },
+    "rngh_2.30.0-20251204-14b690ec8_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-20251204-14b690ec8",
+      "date_released": "2025-12-04",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-12-04-v2-30-0-20251204-14b690ec8-auto-entry.md"
+    },
+    "rngh_2.30.0-nightly-20251211-1427aae26_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-nightly-20251211-1427aae26",
+      "date_released": "2025-12-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-12-11-v2-30-0-nightly-20251211-1427aae26-auto-entry.md"
+    },
+    "rngh_2.30.0-nightly-20251217-6e8646aea_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-nightly-20251217-6e8646aea",
+      "date_released": "2025-12-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-12-17-v2-30-0-nightly-20251217-6e8646aea-auto-entry.md"
+    },
+    "rngh_2.30.0-nightly-20251217-6dddda826_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-nightly-20251217-6dddda826",
+      "date_released": "2025-12-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-12-17-v2-30-0-nightly-20251217-6dddda826-auto-entry.md"
+    },
+    "rngh_2.30.0-nightly-20251219-fb98bcd06_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.30.0-nightly-20251219-fb98bcd06",
+      "date_released": "2025-12-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2025-12-19-v2-30-0-nightly-20251219-fb98bcd06-auto-entry.md"
+    },
+    "rngh_2.31.0-nightly-20260121-59a5311e3_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.31.0-nightly-20260121-59a5311e3",
+      "date_released": "2026-01-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-01-21-v2-31-0-nightly-20260121-59a5311e3-auto-entry.md"
+    },
+    "rngh_2.31.0-nightly-20260122-b776a8137_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.31.0-nightly-20260122-b776a8137",
+      "date_released": "2026-01-22",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-01-22-v2-31-0-nightly-20260122-b776a8137-auto-entry.md"
+    },
+    "rngh_2.31.0-nightly-20260202-9f573ef7b_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.31.0-nightly-20260202-9f573ef7b",
+      "date_released": "2026-02-02",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-02-v2-31-0-nightly-20260202-9f573ef7b-auto-entry.md"
+    },
+    "rngh_3.0.0-beta.1_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-beta.1",
+      "date_released": "2026-02-05",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-05-v3-0-0-beta-1-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260206-e99cf63a0_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260206-e99cf63a0",
+      "date_released": "2026-02-06",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-06-v3-0-0-nightly-20260206-e99cf63a0-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260210-746564b1e_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260210-746564b1e",
+      "date_released": "2026-02-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-10-v3-0-0-nightly-20260210-746564b1e-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260211-3c7c28741_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260211-3c7c28741",
+      "date_released": "2026-02-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-11-v3-0-0-nightly-20260211-3c7c28741-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260212-18af65aa7_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260212-18af65aa7",
+      "date_released": "2026-02-12",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-12-v3-0-0-nightly-20260212-18af65aa7-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260213-bdf353db2_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260213-bdf353db2",
+      "date_released": "2026-02-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-13-v3-0-0-nightly-20260213-bdf353db2-auto-entry.md"
+    },
+    "rngh_3.0.0-beta.2_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-beta.2",
+      "date_released": "2026-02-16",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-16-v3-0-0-beta-2-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260217-0e74233db_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260217-0e74233db",
+      "date_released": "2026-02-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-17-v3-0-0-nightly-20260217-0e74233db-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260218-81c5b0659_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260218-81c5b0659",
+      "date_released": "2026-02-18",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-18-v3-0-0-nightly-20260218-81c5b0659-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260219-1f40473b5_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260219-1f40473b5",
+      "date_released": "2026-02-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-19-v3-0-0-nightly-20260219-1f40473b5-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260220-495db7834_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260220-495db7834",
+      "date_released": "2026-02-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-20-v3-0-0-nightly-20260220-495db7834-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260223-554e66821_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260223-554e66821",
+      "date_released": "2026-02-23",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-23-v3-0-0-nightly-20260223-554e66821-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260224-1b135f7fa_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260224-1b135f7fa",
+      "date_released": "2026-02-24",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-24-v3-0-0-nightly-20260224-1b135f7fa-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260225-2e34b85ec_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260225-2e34b85ec",
+      "date_released": "2026-02-25",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-25-v3-0-0-nightly-20260225-2e34b85ec-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260226-957eed3ed_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260226-957eed3ed",
+      "date_released": "2026-02-26",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-26-v3-0-0-nightly-20260226-957eed3ed-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260227-13c05f27e_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260227-13c05f27e",
+      "date_released": "2026-02-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-02-27-v3-0-0-nightly-20260227-13c05f27e-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260302-41fbd374a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260302-41fbd374a",
+      "date_released": "2026-03-02",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-02-v3-0-0-nightly-20260302-41fbd374a-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260303-5429e5ec0_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260303-5429e5ec0",
+      "date_released": "2026-03-03",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-03-v3-0-0-nightly-20260303-5429e5ec0-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260304-23c6413b7_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260304-23c6413b7",
+      "date_released": "2026-03-04",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-04-v3-0-0-nightly-20260304-23c6413b7-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260305-af8b1216d_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260305-af8b1216d",
+      "date_released": "2026-03-05",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-05-v3-0-0-nightly-20260305-af8b1216d-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260306-ee266bb8f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260306-ee266bb8f",
+      "date_released": "2026-03-06",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-06-v3-0-0-nightly-20260306-ee266bb8f-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260311-0ec1cd2ab_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260311-0ec1cd2ab",
+      "date_released": "2026-03-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-11-v3-0-0-nightly-20260311-0ec1cd2ab-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260313-3918d8ae5_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260313-3918d8ae5",
+      "date_released": "2026-03-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-13-v3-0-0-nightly-20260313-3918d8ae5-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260318-9e8c54cdf_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260318-9e8c54cdf",
+      "date_released": "2026-03-18",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-18-v3-0-0-nightly-20260318-9e8c54cdf-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260319-0e91d9066_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260319-0e91d9066",
+      "date_released": "2026-03-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-19-v3-0-0-nightly-20260319-0e91d9066-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260320-1a7aea1ba_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260320-1a7aea1ba",
+      "date_released": "2026-03-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-20-v3-0-0-nightly-20260320-1a7aea1ba-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260323-b33f704b6_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260323-b33f704b6",
+      "date_released": "2026-03-23",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-23-v3-0-0-nightly-20260323-b33f704b6-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260324-558743567_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260324-558743567",
+      "date_released": "2026-03-24",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-24-v3-0-0-nightly-20260324-558743567-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260327-6c06cc45a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260327-6c06cc45a",
+      "date_released": "2026-03-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-27-v3-0-0-nightly-20260327-6c06cc45a-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260331-9d671cb78_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260331-9d671cb78",
+      "date_released": "2026-03-31",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-03-31-v3-0-0-nightly-20260331-9d671cb78-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260401-1e8766889_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260401-1e8766889",
+      "date_released": "2026-04-01",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-01-v3-0-0-nightly-20260401-1e8766889-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260402-df333c7fb_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260402-df333c7fb",
+      "date_released": "2026-04-02",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-02-v3-0-0-nightly-20260402-df333c7fb-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260403-d21f1dd91_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260403-d21f1dd91",
+      "date_released": "2026-04-03",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-03-v3-0-0-nightly-20260403-d21f1dd91-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260407-8baabdf2a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260407-8baabdf2a",
+      "date_released": "2026-04-07",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-07-v3-0-0-nightly-20260407-8baabdf2a-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260408-47680801b_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260408-47680801b",
+      "date_released": "2026-04-08",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-08-v3-0-0-nightly-20260408-47680801b-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260409-b606c5eda_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260409-b606c5eda",
+      "date_released": "2026-04-09",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-09-v3-0-0-nightly-20260409-b606c5eda-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260410-9a6c6096e_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260410-9a6c6096e",
+      "date_released": "2026-04-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-10-v3-0-0-nightly-20260410-9a6c6096e-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260413-7c3426859_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260413-7c3426859",
+      "date_released": "2026-04-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-13-v3-0-0-nightly-20260413-7c3426859-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260414-090e82262_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260414-090e82262",
+      "date_released": "2026-04-14",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-14-v3-0-0-nightly-20260414-090e82262-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260415-0d7a377c4_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260415-0d7a377c4",
+      "date_released": "2026-04-15",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-15-v3-0-0-nightly-20260415-0d7a377c4-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260416-59983a53c_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260416-59983a53c",
+      "date_released": "2026-04-16",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-16-v3-0-0-nightly-20260416-59983a53c-auto-entry.md"
+    },
+    "rngh_3.0.0-beta.3_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-beta.3",
+      "date_released": "2026-04-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-17-v3-0-0-beta-3-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260417-2e984576d_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260417-2e984576d",
+      "date_released": "2026-04-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-17-v3-0-0-nightly-20260417-2e984576d-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260420-2154bfd56_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260420-2154bfd56",
+      "date_released": "2026-04-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-20-v3-0-0-nightly-20260420-2154bfd56-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260421-c6b424f7d_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260421-c6b424f7d",
+      "date_released": "2026-04-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-21-v3-0-0-nightly-20260421-c6b424f7d-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260422-48d674b99_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260422-48d674b99",
+      "date_released": "2026-04-22",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-22-v3-0-0-nightly-20260422-48d674b99-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260423-ddf9ffa61_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260423-ddf9ffa61",
+      "date_released": "2026-04-23",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-23-v3-0-0-nightly-20260423-ddf9ffa61-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260427-67cdbb0a8_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260427-67cdbb0a8",
+      "date_released": "2026-04-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-27-v3-0-0-nightly-20260427-67cdbb0a8-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260428-181a6f675_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260428-181a6f675",
+      "date_released": "2026-04-28",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-28-v3-0-0-nightly-20260428-181a6f675-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260429-3d994d320_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260429-3d994d320",
+      "date_released": "2026-04-29",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-29-v3-0-0-nightly-20260429-3d994d320-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260430-c415c99a5_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260430-c415c99a5",
+      "date_released": "2026-04-30",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-04-30-v3-0-0-nightly-20260430-c415c99a5-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260504-9d256aeca_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260504-9d256aeca",
+      "date_released": "2026-05-04",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-04-v3-0-0-nightly-20260504-9d256aeca-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260506-312f27748_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260506-312f27748",
+      "date_released": "2026-05-06",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-06-v3-0-0-nightly-20260506-312f27748-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260507-5505329ef_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260507-5505329ef",
+      "date_released": "2026-05-07",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-07-v3-0-0-nightly-20260507-5505329ef-auto-entry.md"
+    },
+    "rngh_3.0.0-beta.4_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-beta.4",
+      "date_released": "2026-05-08",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-08-v3-0-0-beta-4-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260508-cb49403d0_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260508-cb49403d0",
+      "date_released": "2026-05-08",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-08-v3-0-0-nightly-20260508-cb49403d0-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260511-ea5f23f3b_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260511-ea5f23f3b",
+      "date_released": "2026-05-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-11-v3-0-0-nightly-20260511-ea5f23f3b-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260513-9ce3db3d5_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260513-9ce3db3d5",
+      "date_released": "2026-05-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-13-v3-0-0-nightly-20260513-9ce3db3d5-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260515-e316be2a8_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260515-e316be2a8",
+      "date_released": "2026-05-15",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-15-v3-0-0-nightly-20260515-e316be2a8-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260518-f2159b8ae_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260518-f2159b8ae",
+      "date_released": "2026-05-18",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-18-v3-0-0-nightly-20260518-f2159b8ae-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260520-38025e73f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260520-38025e73f",
+      "date_released": "2026-05-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-20-v3-0-0-nightly-20260520-38025e73f-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260520-bdd9696eb_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260520-bdd9696eb",
+      "date_released": "2026-05-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-20-v3-0-0-nightly-20260520-bdd9696eb-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260521-d236b0fc9_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260521-d236b0fc9",
+      "date_released": "2026-05-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-21-v3-0-0-nightly-20260521-d236b0fc9-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260521-46ae912e8_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260521-46ae912e8",
+      "date_released": "2026-05-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-21-v3-0-0-nightly-20260521-46ae912e8-auto-entry.md"
+    },
+    "rngh_2.32.0-nightly-20260521-3846335df_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "2.32.0-nightly-20260521-3846335df",
+      "date_released": "2026-05-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-21-v2-32-0-nightly-20260521-3846335df-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260521-3846335df_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260521-3846335df",
+      "date_released": "2026-05-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-21-v3-0-0-nightly-20260521-3846335df-auto-entry.md"
+    },
+    "rngh_3.0.0-beta.5_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-beta.5",
+      "date_released": "2026-05-22",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-22-v3-0-0-beta-5-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260522-46a2bde7f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260522-46a2bde7f",
+      "date_released": "2026-05-22",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-22-v3-0-0-nightly-20260522-46a2bde7f-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260526-117087e3d_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260526-117087e3d",
+      "date_released": "2026-05-26",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-26-v3-0-0-nightly-20260526-117087e3d-auto-entry.md"
+    },
+    "rngh_3.0.0-nightly-20260527-5a9551ab7_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.0.0-nightly-20260527-5a9551ab7",
+      "date_released": "2026-05-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-27-v3-0-0-nightly-20260527-5a9551ab7-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260528-548f2c8c3_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260528-548f2c8c3",
+      "date_released": "2026-05-28",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-05-28-v3-1-0-nightly-20260528-548f2c8c3-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260601-4f4f63e1a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260601-4f4f63e1a",
+      "date_released": "2026-06-01",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-01-v3-1-0-nightly-20260601-4f4f63e1a-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260603-45e6ac8a0_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260603-45e6ac8a0",
+      "date_released": "2026-06-03",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-03-v3-1-0-nightly-20260603-45e6ac8a0-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260604-183f348f8_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260604-183f348f8",
+      "date_released": "2026-06-04",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-04-v3-1-0-nightly-20260604-183f348f8-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260608-9a9f8b41e_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260608-9a9f8b41e",
+      "date_released": "2026-06-08",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-08-v3-1-0-nightly-20260608-9a9f8b41e-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260609-6ba9d63d4_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260609-6ba9d63d4",
+      "date_released": "2026-06-09",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-09-v3-1-0-nightly-20260609-6ba9d63d4-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260610-96dfc0099_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260610-96dfc0099",
+      "date_released": "2026-06-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-10-v3-1-0-nightly-20260610-96dfc0099-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260611-a70c6e349_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260611-a70c6e349",
+      "date_released": "2026-06-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-11-v3-1-0-nightly-20260611-a70c6e349-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260616-1473f3906_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260616-1473f3906",
+      "date_released": "2026-06-16",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-16-v3-1-0-nightly-20260616-1473f3906-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260616-74532809b_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260616-74532809b",
+      "date_released": "2026-06-16",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-16-v3-1-0-nightly-20260616-74532809b-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260617-cd952bff4_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260617-cd952bff4",
+      "date_released": "2026-06-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-17-v3-1-0-nightly-20260617-cd952bff4-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260619-061789130_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260619-061789130",
+      "date_released": "2026-06-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-19-v3-1-0-nightly-20260619-061789130-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260619-78397271f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260619-78397271f",
+      "date_released": "2026-06-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-19-v3-1-0-nightly-20260619-78397271f-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260622-b852ff4a4_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260622-b852ff4a4",
+      "date_released": "2026-06-22",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-22-v3-1-0-nightly-20260622-b852ff4a4-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260623-571e3cc9f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260623-571e3cc9f",
+      "date_released": "2026-06-23",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-23-v3-1-0-nightly-20260623-571e3cc9f-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260629-d2bd181fd_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260629-d2bd181fd",
+      "date_released": "2026-06-29",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-29-v3-1-0-nightly-20260629-d2bd181fd-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260630-1a713d0cc_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260630-1a713d0cc",
+      "date_released": "2026-06-30",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-06-30-v3-1-0-nightly-20260630-1a713d0cc-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260701-a37344266_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260701-a37344266",
+      "date_released": "2026-07-01",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-01-v3-1-0-nightly-20260701-a37344266-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260702-52e082f8e_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260702-52e082f8e",
+      "date_released": "2026-07-02",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-02-v3-1-0-nightly-20260702-52e082f8e-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260703-e36d8d35f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260703-e36d8d35f",
+      "date_released": "2026-07-03",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-03-v3-1-0-nightly-20260703-e36d8d35f-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260706-ee147abf3_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260706-ee147abf3",
+      "date_released": "2026-07-06",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-06-v3-1-0-nightly-20260706-ee147abf3-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260708-c8d66b460_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260708-c8d66b460",
+      "date_released": "2026-07-08",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-08-v3-1-0-nightly-20260708-c8d66b460-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260709-8b5d4a062_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260709-8b5d4a062",
+      "date_released": "2026-07-09",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-09-v3-1-0-nightly-20260709-8b5d4a062-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260710-201493f0f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260710-201493f0f",
+      "date_released": "2026-07-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-10-v3-1-0-nightly-20260710-201493f0f-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260713-4363f481a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260713-4363f481a",
+      "date_released": "2026-07-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-13-v3-1-0-nightly-20260713-4363f481a-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260714-af04cd4f3_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260714-af04cd4f3",
+      "date_released": "2026-07-14",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-14-v3-1-0-nightly-20260714-af04cd4f3-auto-entry.md"
+    },
+    "rngh_3.1.0-nightly-20260715-fb1089bb3_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.1.0-nightly-20260715-fb1089bb3",
+      "date_released": "2026-07-15",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-15-v3-1-0-nightly-20260715-fb1089bb3-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260717-fb1089bb3_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260717-fb1089bb3",
+      "date_released": "2026-07-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-17-v3-2-0-nightly-20260717-fb1089bb3-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260720-9c6135950_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260720-9c6135950",
+      "date_released": "2026-07-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-20-v3-2-0-nightly-20260720-9c6135950-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260721-f922b3b23_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260721-f922b3b23",
+      "date_released": "2026-07-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-21-v3-2-0-nightly-20260721-f922b3b23-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260722-bbb49c31f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260722-bbb49c31f",
+      "date_released": "2026-07-22",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-22-v3-2-0-nightly-20260722-bbb49c31f-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260723-f7394a54f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260723-f7394a54f",
+      "date_released": "2026-07-23",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-23-v3-2-0-nightly-20260723-f7394a54f-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260724-6b0ca7bd7_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260724-6b0ca7bd7",
+      "date_released": "2026-07-24",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-24-v3-2-0-nightly-20260724-6b0ca7bd7-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260727-804956735_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260727-804956735",
+      "date_released": "2026-07-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-27-v3-2-0-nightly-20260727-804956735-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260728-89588614e_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260728-89588614e",
+      "date_released": "2026-07-28",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-28-v3-2-0-nightly-20260728-89588614e-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260729-1506f6aa4_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260729-1506f6aa4",
+      "date_released": "2026-07-29",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-29-v3-2-0-nightly-20260729-1506f6aa4-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260730-caf03a380_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260730-caf03a380",
+      "date_released": "2026-07-30",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-30-v3-2-0-nightly-20260730-caf03a380-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260731-edcd60c2c_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260731-edcd60c2c",
+      "date_released": "2026-07-31",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-07-31-v3-2-0-nightly-20260731-edcd60c2c-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260803-f0c98c75f_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260803-f0c98c75f",
+      "date_released": "2026-08-03",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-03-v3-2-0-nightly-20260803-f0c98c75f-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260804-35a0aea4e_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260804-35a0aea4e",
+      "date_released": "2026-08-04",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-04-v3-2-0-nightly-20260804-35a0aea4e-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260805-e58c43a57_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260805-e58c43a57",
+      "date_released": "2026-08-05",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-05-v3-2-0-nightly-20260805-e58c43a57-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260807-73c51c7af_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260807-73c51c7af",
+      "date_released": "2026-08-07",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-07-v3-2-0-nightly-20260807-73c51c7af-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260807-41d83926c_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260807-41d83926c",
+      "date_released": "2026-08-07",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-07-v3-2-0-nightly-20260807-41d83926c-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260810-a3377f050_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260810-a3377f050",
+      "date_released": "2026-08-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-10-v3-2-0-nightly-20260810-a3377f050-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260811-cc704f09a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260811-cc704f09a",
+      "date_released": "2026-08-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-11-v3-2-0-nightly-20260811-cc704f09a-auto-entry.md"
+    },
+    "rngh_3.2.0-nightly-20260812-bd853311a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.2.0-nightly-20260812-bd853311a",
+      "date_released": "2026-08-12",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-12-v3-2-0-nightly-20260812-bd853311a-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260813-44046a694_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260813-44046a694",
+      "date_released": "2026-08-13",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-13-v3-3-0-nightly-20260813-44046a694-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260814-3e4497eb0_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260814-3e4497eb0",
+      "date_released": "2026-08-14",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-14-v3-3-0-nightly-20260814-3e4497eb0-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260817-b2d23f14b_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260817-b2d23f14b",
+      "date_released": "2026-08-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-17-v3-3-0-nightly-20260817-b2d23f14b-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260818-d29545ab3_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260818-d29545ab3",
+      "date_released": "2026-08-18",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-18-v3-3-0-nightly-20260818-d29545ab3-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260819-5f12fbccf_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260819-5f12fbccf",
+      "date_released": "2026-08-19",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-19-v3-3-0-nightly-20260819-5f12fbccf-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260820-d064b6620_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260820-d064b6620",
+      "date_released": "2026-08-20",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-20-v3-3-0-nightly-20260820-d064b6620-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260821-439ded45d_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260821-439ded45d",
+      "date_released": "2026-08-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-21-v3-3-0-nightly-20260821-439ded45d-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260824-5de6d2358_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260824-5de6d2358",
+      "date_released": "2026-08-24",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-24-v3-3-0-nightly-20260824-5de6d2358-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260825-8e8e6c1aa_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260825-8e8e6c1aa",
+      "date_released": "2026-08-25",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-25-v3-3-0-nightly-20260825-8e8e6c1aa-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260827-0d25288c7_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260827-0d25288c7",
+      "date_released": "2026-08-27",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-27-v3-3-0-nightly-20260827-0d25288c7-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260828-b6ff24309_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260828-b6ff24309",
+      "date_released": "2026-08-28",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-08-28-v3-3-0-nightly-20260828-b6ff24309-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260902-6f4589524_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260902-6f4589524",
+      "date_released": "2026-09-02",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-02-v3-3-0-nightly-20260902-6f4589524-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260904-ebc923b2b_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260904-ebc923b2b",
+      "date_released": "2026-09-04",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-04-v3-3-0-nightly-20260904-ebc923b2b-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260908-4768ffe73_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260908-4768ffe73",
+      "date_released": "2026-09-08",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-08-v3-3-0-nightly-20260908-4768ffe73-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260909-c5db1fcff_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260909-c5db1fcff",
+      "date_released": "2026-09-09",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-09-v3-3-0-nightly-20260909-c5db1fcff-auto-entry.md"
+    },
+    "rngh_3.3.0-nightly-20260910-bcd4b522e_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.3.0-nightly-20260910-bcd4b522e",
+      "date_released": "2026-09-10",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-10-v3-3-0-nightly-20260910-bcd4b522e-auto-entry.md"
+    },
+    "rngh_3.4.0-nightly-20260911-ebcf8f47b_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.4.0-nightly-20260911-ebcf8f47b",
+      "date_released": "2026-09-11",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-11-v3-4-0-nightly-20260911-ebcf8f47b-auto-entry.md"
+    },
+    "rngh_3.4.0-nightly-20260914-a2e043092_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.4.0-nightly-20260914-a2e043092",
+      "date_released": "2026-09-14",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-14-v3-4-0-nightly-20260914-a2e043092-auto-entry.md"
+    },
+    "rngh_3.4.0-nightly-20260915-2f688d841_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.4.0-nightly-20260915-2f688d841",
+      "date_released": "2026-09-15",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-15-v3-4-0-nightly-20260915-2f688d841-auto-entry.md"
+    },
+    "rngh_3.4.0-nightly-20260916-5d1c171f8_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.4.0-nightly-20260916-5d1c171f8",
+      "date_released": "2026-09-16",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-16-v3-4-0-nightly-20260916-5d1c171f8-auto-entry.md"
+    },
+    "rngh_3.4.0-nightly-20260917-4c001cb7a_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.4.0-nightly-20260917-4c001cb7a",
+      "date_released": "2026-09-17",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-17-v3-4-0-nightly-20260917-4c001cb7a-auto-entry.md"
+    },
+    "rngh_3.4.0-nightly-20260921-e26231e9d_auto_generated-granular": {
+      "package": "react-native-gesture-handler",
+      "version_to": "3.4.0-nightly-20260921-e26231e9d",
+      "date_released": "2026-09-21",
+      "impact_type": "MAINTENANCE",
+      "severity": "LOW",
+      "file": "entries/react-native-gesture-handler/2026-09-21-v3-4-0-nightly-20260921-e26231e9d-auto-entry.md"
+    },
+    "rn_0_71_0_new_capa_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.71.0",
+      "date_released": "2023-01-12",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [
+        "gap, rowGap, columnGap",
+        "TypeScript template default",
+        "Hermes default"
+      ],
+      "file": "entries/react-native/2023-01-12-v0.71.0-major-epoch-release.md"
+    },
+    "rn_0_71_1_build_pi_patch-1": {
+      "package": "react-native",
+      "version_to": "0.71.1",
+      "date_released": "2023-01-19",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-01-19-v0.71.1-patch-1.md"
+    },
+    "rn_0_71_2_build_pi_patch-2": {
+      "package": "react-native",
+      "version_to": "0.71.2",
+      "date_released": "2023-02-01",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-02-01-v0.71.2-patch-2.md"
+    },
+    "rn_0_71_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.71.3",
+      "date_released": "2023-02-14",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-02-14-v0.71.3-patch-3.md"
+    },
+    "rn_0_71_4_bug_fix_patch-4": {
+      "package": "react-native",
+      "version_to": "0.71.4",
+      "date_released": "2023-03-08",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-03-08-v0.71.4-patch-4.md"
+    },
+    "rn_0_71_5_bug_fix_patch-5": {
+      "package": "react-native",
+      "version_to": "0.71.5",
+      "date_released": "2023-03-29",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-03-29-v0.71.5-patch-5.md"
+    },
+    "rn_0_71_6_build_pi_patch-6": {
+      "package": "react-native",
+      "version_to": "0.71.6",
+      "date_released": "2023-04-03",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-04-03-v0.71.6-patch-6.md"
+    },
+    "rn_0_71_7_bug_fix_patch-7": {
+      "package": "react-native",
+      "version_to": "0.71.7",
+      "date_released": "2023-04-19",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-04-19-v0.71.7-patch-7.md"
+    },
+    "rn_0_71_8_build_pi_patch-8": {
+      "package": "react-native",
+      "version_to": "0.71.8",
+      "date_released": "2023-05-10",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-05-10-v0.71.8-patch-8.md"
+    },
+    "rn_0_71_10_bug_fix_patch-10": {
+      "package": "react-native",
+      "version_to": "0.71.10",
+      "date_released": "2023-06-07",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-06-07-v0.71.10-patch-10.md"
+    },
+    "rn_0_71_9_bug_fix_patch-9": {
+      "package": "react-native",
+      "version_to": "0.71.9",
+      "date_released": "2023-06-07",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-06-07-v0.71.9-patch-9.md"
+    },
+    "rn_0_71_11_build_pi_patch-11": {
+      "package": "react-native",
+      "version_to": "0.71.11",
+      "date_released": "2023-06-14",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-06-14-v0.71.11-patch-11.md"
+    },
+    "rn_0_72_0_new_capa_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.72.0",
+      "date_released": "2023-06-21",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-06-21-v0.72.0-major-epoch-release.md"
+    },
+    "rn_0_72_1_build_pi_patch-1": {
+      "package": "react-native",
+      "version_to": "0.72.1",
+      "date_released": "2023-06-29",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-06-29-v0.72.1-patch-1.md"
+    },
+    "rn_0_71_12_bug_fix_patch-12": {
+      "package": "react-native",
+      "version_to": "0.71.12",
+      "date_released": "2023-07-04",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-07-04-v0.71.12-patch-12.md"
+    },
+    "rn_0_72_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.72.2",
+      "date_released": "2023-07-11",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-07-11-v0.72.2-patch-2.md"
+    },
+    "rn_0_72_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.72.3",
+      "date_released": "2023-07-12",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-07-12-v0.72.3-patch-3.md"
+    },
+    "rn_0_72_4_bug_fix_patch-4": {
+      "package": "react-native",
+      "version_to": "0.72.4",
+      "date_released": "2023-08-14",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-08-14-v0.72.4-patch-4.md"
+    },
+    "rn_0_71_13_bug_fix_patch-13": {
+      "package": "react-native",
+      "version_to": "0.71.13",
+      "date_released": "2023-08-22",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-08-22-v0.71.13-patch-13.md"
+    },
+    "rn_0_72_5_build_pi_patch-5": {
+      "package": "react-native",
+      "version_to": "0.72.5",
+      "date_released": "2023-09-25",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-09-25-v0.72.5-patch-5.md"
+    },
+    "rn_0_71_14_build_pi_patch-14": {
+      "package": "react-native",
+      "version_to": "0.71.14",
+      "date_released": "2023-10-12",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-10-12-v0.71.14-patch-14.md"
+    },
+    "rn_0_72_6_bug_fix_patch-6": {
+      "package": "react-native",
+      "version_to": "0.72.6",
+      "date_released": "2023-10-12",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-10-12-v0.72.6-patch-6.md"
+    },
+    "rn_0_72_7_bug_fix_patch-7": {
+      "package": "react-native",
+      "version_to": "0.72.7",
+      "date_released": "2023-11-14",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-11-14-v0.72.7-patch-7.md"
+    },
+    "rn_0_73_0_new_capa_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.73.0",
+      "date_released": "2023-12-06",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-12-06-v0.73.0-major-epoch-release.md"
+    },
+    "rn_0_73_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.73.1",
+      "date_released": "2023-12-18",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-12-18-v0.73.1-patch-1.md"
+    },
+    "rn_0_72_8_bug_fix_patch-8": {
+      "package": "react-native",
+      "version_to": "0.72.8",
+      "date_released": "2023-12-20",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2023-12-20-v0.72.8-patch-8.md"
+    },
+    "rn_0_71_15_bug_fix_patch-15": {
+      "package": "react-native",
+      "version_to": "0.71.15",
+      "date_released": "2024-01-08",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-01-08-v0.71.15-patch-15.md"
+    },
+    "rn_0_72_9_bug_fix_patch-9": {
+      "package": "react-native",
+      "version_to": "0.72.9",
+      "date_released": "2024-01-08",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-01-08-v0.72.9-patch-9.md"
+    },
+    "rn_0_73_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.73.2",
+      "date_released": "2024-01-08",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-01-08-v0.73.2-patch-2.md"
+    },
+    "rn_0_72_10_bug_fix_patch-10": {
+      "package": "react-native",
+      "version_to": "0.72.10",
+      "date_released": "2024-01-18",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-01-18-v0.72.10-patch-10.md"
+    },
+    "rn_0_73_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.73.3",
+      "date_released": "2024-01-29",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-01-29-v0.73.3-patch-3.md"
+    },
+    "rn_0_71_16_bug_fix_patch-16": {
+      "package": "react-native",
+      "version_to": "0.71.16",
+      "date_released": "2024-01-30",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-01-30-v0.71.16-patch-16.md"
+    },
+    "rn_0_73_4_bug_fix_patch-4": {
+      "package": "react-native",
+      "version_to": "0.73.4",
+      "date_released": "2024-02-06",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-02-06-v0.73.4-patch-4.md"
+    },
+    "rn_0_73_5_bug_fix_patch-5": {
+      "package": "react-native",
+      "version_to": "0.73.5",
+      "date_released": "2024-02-26",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-02-26-v0.73.5-patch-5.md"
+    },
+    "rn_0_71_17_bug_fix_patch-17": {
+      "package": "react-native",
+      "version_to": "0.71.17",
+      "date_released": "2024-02-27",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-02-27-v0.71.17-patch-17.md"
+    },
+    "rn_0_72_11_build_pi_patch-11": {
+      "package": "react-native",
+      "version_to": "0.72.11",
+      "date_released": "2024-02-28",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-02-28-v0.72.11-patch-11.md"
+    },
+    "rn_0_72_12_build_pi_patch-12": {
+      "package": "react-native",
+      "version_to": "0.72.12",
+      "date_released": "2024-03-11",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-03-11-v0.72.12-patch-12.md"
+    },
+    "rn_0_73_6_build_pi_patch-6": {
+      "package": "react-native",
+      "version_to": "0.73.6",
+      "date_released": "2024-03-11",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-03-11-v0.73.6-patch-6.md"
+    },
+    "rn_0_71_18_build_pi_patch-18": {
+      "package": "react-native",
+      "version_to": "0.71.18",
+      "date_released": "2024-04-09",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-04-09-v0.71.18-patch-18.md"
+    },
+    "rn_0_72_13_bug_fix_patch-13": {
+      "package": "react-native",
+      "version_to": "0.72.13",
+      "date_released": "2024-04-18",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-04-18-v0.72.13-patch-13.md"
+    },
+    "rn_0_73_7_bug_fix_patch-7": {
+      "package": "react-native",
+      "version_to": "0.73.7",
+      "date_released": "2024-04-18",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-04-18-v0.73.7-patch-7.md"
+    },
+    "rn_0_74_0_breaking_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.74.0",
+      "date_released": "2024-04-22",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-04-22-v0.74.0-major-epoch-release.md"
+    },
+    "rn_0_71_19_bug_fix_patch-19": {
+      "package": "react-native",
+      "version_to": "0.71.19",
+      "date_released": "2024-04-29",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-04-29-v0.71.19-patch-19.md"
+    },
+    "rn_0_72_14_bug_fix_patch-14": {
+      "package": "react-native",
+      "version_to": "0.72.14",
+      "date_released": "2024-04-30",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-04-30-v0.72.14-patch-14.md"
+    },
+    "rn_0_73_8_bug_fix_patch-8": {
+      "package": "react-native",
+      "version_to": "0.73.8",
+      "date_released": "2024-04-30",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-04-30-v0.73.8-patch-8.md"
+    },
+    "rn_0_74_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.74.1",
+      "date_released": "2024-05-02",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-05-02-v0.74.1-patch-1.md"
+    },
+    "rn_0_74_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.74.2",
+      "date_released": "2024-06-04",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-06-04-v0.74.2-patch-2.md"
+    },
+    "rn_0_72_15_bug_fix_patch-15": {
+      "package": "react-native",
+      "version_to": "0.72.15",
+      "date_released": "2024-06-12",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-06-12-v0.72.15-patch-15.md"
+    },
+    "rn_0_74_3_bug_fix_patch-3": {
+      "package": "react-native",
+      "version_to": "0.74.3",
+      "date_released": "2024-07-01",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-07-01-v0.74.3-patch-3.md"
+    },
+    "rn_0_73_9_bug_fix_patch-9": {
+      "package": "react-native",
+      "version_to": "0.73.9",
+      "date_released": "2024-07-09",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-07-09-v0.73.9-patch-9.md"
+    },
+    "rn_0_74_4_build_pi_patch-4": {
+      "package": "react-native",
+      "version_to": "0.74.4",
+      "date_released": "2024-07-30",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-07-30-v0.74.4-patch-4.md"
+    },
+    "rn_0_74_5_bug_fix_patch-5": {
+      "package": "react-native",
+      "version_to": "0.74.5",
+      "date_released": "2024-08-05",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-08-05-v0.74.5-patch-5.md"
+    },
+    "rn_0_75_0_build_pi_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.75.0",
+      "date_released": "2024-08-14",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-08-14-v0.75.0-major-epoch-release.md"
+    },
+    "rn_0_75_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.75.1",
+      "date_released": "2024-08-15",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-08-15-v0.75.1-patch-1.md"
+    },
+    "rn_0_72_17_bug_fix_patch-17": {
+      "package": "react-native",
+      "version_to": "0.72.17",
+      "date_released": "2024-08-19",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-08-19-v0.72.17-patch-17.md"
+    },
+    "rn_0_75_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.75.2",
+      "date_released": "2024-08-20",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-08-20-v0.75.2-patch-2.md"
+    },
+    "rn_0_75_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.75.3",
+      "date_released": "2024-09-11",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-09-11-v0.75.3-patch-3.md"
+    },
+    "rn_0_74_6_bug_fix_patch-6": {
+      "package": "react-native",
+      "version_to": "0.74.6",
+      "date_released": "2024-10-02",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-10-02-v0.74.6-patch-6.md"
+    },
+    "rn_0_75_4_bug_fix_patch-4": {
+      "package": "react-native",
+      "version_to": "0.75.4",
+      "date_released": "2024-10-02",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-10-02-v0.75.4-patch-4.md"
+    },
+    "rn_0_73_10_build_pi_patch-10": {
+      "package": "react-native",
+      "version_to": "0.73.10",
+      "date_released": "2024-10-08",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-10-08-v0.73.10-patch-10.md"
+    },
+    "rn_0_76_0_breaking_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.76.0",
+      "date_released": "2024-10-23",
+      "impact_type": "BREAKING_API_CHANGE",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [
+        "newArchEnabled\\s*=\\s*false",
+        "from\\s+['\"]react-native\\/Libraries\\/"
+      ],
+      "capabilities_unlocked": [
+        "CSS boxShadow",
+        "CSS filter",
+        "React 19 support",
+        "React Native DevTools"
+      ],
+      "file": "entries/react-native/2024-10-23-v0.76.0-major-epoch-release.md"
+    },
+    "rn_0_76_1_build_pi_patch-1": {
+      "package": "react-native",
+      "version_to": "0.76.1",
+      "date_released": "2024-10-29",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-10-29-v0.76.1-patch-1.md"
+    },
+    "rn_0_73_11_build_pi_patch-11": {
+      "package": "react-native",
+      "version_to": "0.73.11",
+      "date_released": "2024-11-12",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-11-12-v0.73.11-patch-11.md"
+    },
+    "rn_0_76_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.76.2",
+      "date_released": "2024-11-14",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-11-14-v0.76.2-patch-2.md"
+    },
+    "rn_0_76_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.76.3",
+      "date_released": "2024-11-21",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-11-21-v0.76.3-patch-3.md"
+    },
+    "rn_0_76_4_bug_fix_patch-4": {
+      "package": "react-native",
+      "version_to": "0.76.4",
+      "date_released": "2024-12-06",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-12-06-v0.76.4-patch-4.md"
+    },
+    "rn_0_76_5_bug_fix_patch-5": {
+      "package": "react-native",
+      "version_to": "0.76.5",
+      "date_released": "2024-12-09",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2024-12-09-v0.76.5-patch-5.md"
+    },
+    "rn_0_76_6_bug_fix_patch-6": {
+      "package": "react-native",
+      "version_to": "0.76.6",
+      "date_released": "2025-01-09",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-01-09-v0.76.6-patch-6.md"
+    },
+    "rn_0_77_0_build_pi_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.77.0",
+      "date_released": "2025-01-21",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-01-21-v0.77.0-major-epoch-release.md"
+    },
+    "rn_0_74_7_build_pi_patch-7": {
+      "package": "react-native",
+      "version_to": "0.74.7",
+      "date_released": "2025-01-27",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-01-27-v0.74.7-patch-7.md"
+    },
+    "rn_0_76_7_bug_fix_patch-7": {
+      "package": "react-native",
+      "version_to": "0.76.7",
+      "date_released": "2025-02-05",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-02-05-v0.76.7-patch-7.md"
+    },
+    "rn_0_75_5_build_pi_patch-5": {
+      "package": "react-native",
+      "version_to": "0.75.5",
+      "date_released": "2025-02-06",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-02-06-v0.75.5-patch-5.md"
+    },
+    "rn_0_77_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.77.1",
+      "date_released": "2025-02-13",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-02-13-v0.77.1-patch-1.md"
+    },
+    "rn_0_78_0_new_capa_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.78.0",
+      "date_released": "2025-02-19",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-02-19-v0.78.0-major-epoch-release.md"
+    },
+    "rn_0_78_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.78.1",
+      "date_released": "2025-03-19",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-03-19-v0.78.1-patch-1.md"
+    },
+    "rn_0_77_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.77.2",
+      "date_released": "2025-03-25",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-03-25-v0.77.2-patch-2.md"
+    },
+    "rn_0_76_8_bug_fix_patch-8": {
+      "package": "react-native",
+      "version_to": "0.76.8",
+      "date_released": "2025-03-26",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-03-26-v0.76.8-patch-8.md"
+    },
+    "rn_0_78_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.78.2",
+      "date_released": "2025-04-01",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-04-01-v0.78.2-patch-2.md"
+    },
+    "rn_0_76_9_build_pi_patch-9": {
+      "package": "react-native",
+      "version_to": "0.76.9",
+      "date_released": "2025-04-03",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-04-03-v0.76.9-patch-9.md"
+    },
+    "rn_0_79_0_performa_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.79.0",
+      "date_released": "2025-04-08",
+      "impact_type": "PERFORMANCE_CHANGE",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-04-08-v0.79.0-major-epoch-release.md"
+    },
+    "rn_0_79_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.79.1",
+      "date_released": "2025-04-15",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-04-15-v0.79.1-patch-1.md"
+    },
+    "rn_0_79_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.79.2",
+      "date_released": "2025-05-01",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-05-01-v0.79.2-patch-2.md"
+    },
+    "rn_0_79_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.79.3",
+      "date_released": "2025-06-04",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-06-04-v0.79.3-patch-3.md"
+    },
+    "rn_0_80_0_build_pi_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.80.0",
+      "date_released": "2025-06-12",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-06-12-v0.80.0-major-epoch-release.md"
+    },
+    "rn_0_79_4_bug_fix_patch-4": {
+      "package": "react-native",
+      "version_to": "0.79.4",
+      "date_released": "2025-06-17",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-06-17-v0.79.4-patch-4.md"
+    },
+    "rn_0_80_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.80.1",
+      "date_released": "2025-06-30",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-06-30-v0.80.1-patch-1.md"
+    },
+    "rn_0_79_5_bug_fix_patch-5": {
+      "package": "react-native",
+      "version_to": "0.79.5",
+      "date_released": "2025-07-01",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-07-01-v0.79.5-patch-5.md"
+    },
+    "rn_0_78_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.78.3",
+      "date_released": "2025-07-09",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-07-09-v0.78.3-patch-3.md"
+    },
+    "rn_0_77_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.77.3",
+      "date_released": "2025-07-21",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-07-21-v0.77.3-patch-3.md"
+    },
+    "rn_0_80_2_build_pi_patch-2": {
+      "package": "react-native",
+      "version_to": "0.80.2",
+      "date_released": "2025-07-24",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-07-24-v0.80.2-patch-2.md"
+    },
+    "rn_0_81_0_performa_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.81.0",
+      "date_released": "2025-08-12",
+      "impact_type": "PERFORMANCE_CHANGE",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-08-12-v0.81.0-major-epoch-release.md"
+    },
+    "rn_0_79_6_build_pi_patch-6": {
+      "package": "react-native",
+      "version_to": "0.79.6",
+      "date_released": "2025-08-14",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-08-14-v0.79.6-patch-6.md"
+    },
+    "rn_0_81_1_build_pi_patch-1": {
+      "package": "react-native",
+      "version_to": "0.81.1",
+      "date_released": "2025-08-27",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-08-27-v0.81.1-patch-1.md"
+    },
+    "rn_0_81_2_build_pi_patch-2": {
+      "package": "react-native",
+      "version_to": "0.81.2",
+      "date_released": "2025-09-09",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-09-09-v0.81.2-patch-2.md"
+    },
+    "rn_0_81_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.81.3",
+      "date_released": "2025-09-10",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-09-10-v0.81.3-patch-3.md"
+    },
+    "rn_0_81_4_build_pi_patch-4": {
+      "package": "react-native",
+      "version_to": "0.81.4",
+      "date_released": "2025-09-10",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-09-10-v0.81.4-patch-4.md"
+    },
+    "rn_0_82_0_removal_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.82.0",
+      "date_released": "2025-10-08",
+      "impact_type": "REMOVAL",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [
+        "ViewPropTypes",
+        "ColorPropType",
+        "newArchEnabled\\s*=\\s*false"
+      ],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-10-08-v0.82.0-major-epoch-release.md"
+    },
+    "rn_0_82_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.82.1",
+      "date_released": "2025-10-20",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-10-20-v0.82.1-patch-1.md"
+    },
+    "rn_0_79_7_bug_fix_patch-7": {
+      "package": "react-native",
+      "version_to": "0.79.7",
+      "date_released": "2025-10-21",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-10-21-v0.79.7-patch-7.md"
+    },
+    "rn_0_81_5_bug_fix_patch-5": {
+      "package": "react-native",
+      "version_to": "0.81.5",
+      "date_released": "2025-10-21",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-10-21-v0.81.5-patch-5.md"
+    },
+    "rn_0_83_0_removal_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.83.0",
+      "date_released": "2025-12-10",
+      "impact_type": "REMOVAL",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-12-10-v0.83.0-major-epoch-release.md"
+    },
+    "rn_0_83_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.83.1",
+      "date_released": "2025-12-18",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2025-12-18-v0.83.1-patch-1.md"
+    },
+    "rn_0_80_3_bug_fix_patch-3": {
+      "package": "react-native",
+      "version_to": "0.80.3",
+      "date_released": "2026-01-26",
+      "impact_type": "BUG_FIX",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-01-26-v0.80.3-patch-3.md"
+    },
+    "rn_0_81_6_build_pi_patch-6": {
+      "package": "react-native",
+      "version_to": "0.81.6",
+      "date_released": "2026-02-05",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-02-05-v0.81.6-patch-6.md"
+    },
+    "rn_0_83_2_build_pi_patch-2": {
+      "package": "react-native",
+      "version_to": "0.83.2",
+      "date_released": "2026-02-05",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-02-05-v0.83.2-patch-2.md"
+    },
+    "rn_0_84_0_build_pi_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.84.0",
+      "date_released": "2026-02-11",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "CRITICAL",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-02-11-v0.84.0-major-epoch-release.md"
+    },
+    "rn_0_84_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.84.1",
+      "date_released": "2026-02-27",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-02-27-v0.84.1-patch-1.md"
+    },
+    "rn_0_83_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.83.3",
+      "date_released": "2026-03-05",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-03-05-v0.83.3-patch-3.md"
+    },
+    "rn_0_83_4_bug_fix_patch-4": {
+      "package": "react-native",
+      "version_to": "0.83.4",
+      "date_released": "2026-03-06",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-03-06-v0.83.4-patch-4.md"
+    },
+    "rn_0_85_0_performa_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.85.0",
+      "date_released": "2026-04-07",
+      "impact_type": "PERFORMANCE_CHANGE",
+      "severity": "MEDIUM",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-04-07-v0.85.0-major-epoch-release.md"
+    },
+    "rn_0_85_1_bug_fix_patch-1": {
+      "package": "react-native",
+      "version_to": "0.85.1",
+      "date_released": "2026-04-13",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-04-13-v0.85.1-patch-1.md"
+    },
+    "rn_0_83_5_build_pi_patch-5": {
+      "package": "react-native",
+      "version_to": "0.83.5",
+      "date_released": "2026-04-14",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-04-14-v0.83.5-patch-5.md"
+    },
+    "rn_0_83_6_bug_fix_patch-6": {
+      "package": "react-native",
+      "version_to": "0.83.6",
+      "date_released": "2026-04-16",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-04-16-v0.83.6-patch-6.md"
+    },
+    "rn_0_85_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.85.2",
+      "date_released": "2026-04-20",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-04-20-v0.85.2-patch-2.md"
+    },
+    "rn_0_83_7_bug_fix_patch-7": {
+      "package": "react-native",
+      "version_to": "0.83.7",
+      "date_released": "2026-04-24",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-04-24-v0.83.7-patch-7.md"
+    },
+    "rn_0_83_8_bug_fix_patch-8": {
+      "package": "react-native",
+      "version_to": "0.83.8",
+      "date_released": "2026-04-24",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-04-24-v0.83.8-patch-8.md"
+    },
+    "rn_0_83_9_bug_fix_patch-9": {
+      "package": "react-native",
+      "version_to": "0.83.9",
+      "date_released": "2026-04-27",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-04-27-v0.83.9-patch-9.md"
+    },
+    "rn_0_85_3_bug_fix_patch-3": {
+      "package": "react-native",
+      "version_to": "0.85.3",
+      "date_released": "2026-05-05",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-05-05-v0.85.3-patch-3.md"
+    },
+    "rn_0_86_0_new_capa_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.86.0",
+      "date_released": "2026-06-09",
+      "impact_type": "NEW_CAPABILITY",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [
+        "Android 15 edge-to-edge system insets"
+      ],
+      "file": "entries/react-native/2026-06-09-v0.86.0-major-epoch-release.md"
+    },
+    "rn_0_83_10_build_pi_patch-10": {
+      "package": "react-native",
+      "version_to": "0.83.10",
+      "date_released": "2026-06-25",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-06-25-v0.83.10-patch-10.md"
+    },
+    "rn_0_86_2_bug_fix_patch-2": {
+      "package": "react-native",
+      "version_to": "0.86.2",
+      "date_released": "2026-07-27",
+      "impact_type": "BUG_FIX",
+      "severity": "LOW",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-07-27-v0.86.2-patch-2.md"
+    },
+    "rn_0_87_0_type_sys_major-epoch-release": {
+      "package": "react-native",
+      "version_to": "0.87.0",
+      "date_released": "2026-08-11",
+      "impact_type": "TYPE_SYSTEM_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [
+        "from\\s+['\"]react-native\\/Libraries\\/"
+      ],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-08-11-v0.87.0-major-epoch-release.md"
+    },
+    "rn_0_86_3_build_pi_patch-3": {
+      "package": "react-native",
+      "version_to": "0.86.3",
+      "date_released": "2026-08-24",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-08-24-v0.86.3-patch-3.md"
+    },
+    "rn_0_87_1_build_pi_patch-1": {
+      "package": "react-native",
+      "version_to": "0.87.1",
+      "date_released": "2026-08-26",
+      "impact_type": "BUILD_PIPELINE_CHANGE",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-08-26-v0.87.1-patch-1.md"
+    },
+    "rn_0_88_0_rc_2_horizon_preview": {
+      "package": "react-native",
+      "version_to": "0.88.0-rc.2",
+      "date_released": "2026-09-21",
+      "impact_type": "HORIZON_SIGNAL",
+      "severity": "HIGH",
+      "code_smell_signatures": [],
+      "capabilities_unlocked": [],
+      "file": "entries/react-native/2026-09-21-v0.88.0-rc.2-horizon-preview.md"
+    }
+  },
+  "cascades": [
+    {
+      "from": "react-native-reanimated@4.0.0",
+      "to": "react-native-worklets",
+      "relationship": "REQUIRES_PEER"
+    },
+    {
+      "from": "react-native-mmkv@4.0.0",
+      "to": "react-native-nitro-modules",
+      "relationship": "REQUIRES_PEER"
+    },
+    {
+      "from": "nativewind@5.0.0-rc.0",
+      "to": "tailwindcss@4.x",
+      "relationship": "REQUIRES_PEER"
+    },
+    {
+      "from": "nativewind@5.0.0-rc.0",
+      "to": "react-native-css",
+      "relationship": "REQUIRES_PEER"
+    },
+    {
+      "from": "expo-router@57.0.0",
+      "to": "@react-navigation/native",
+      "relationship": "CONFLICTS_WITH"
+    },
+    {
+      "from": "react-native-gesture-handler@3.0.0",
+      "to": "react-native",
+      "relationship": "REQUIRES_NEW_ARCH",
+      "detail": "RNGH 3.0.0 permanently dropped Paper (Old Architecture) support; requires Fabric ShadowNodes and TurboModules"
+    },
+    {
+      "from": "react-native-gesture-handler@3.0.0",
+      "to": "react-native-reanimated@>=3.0.0",
+      "relationship": "REQUIRES_PEER",
+      "detail": "RNGH 3.x exposes setGestureState directly into the Reanimated UI thread worklet runtime"
+    },
+    {
+      "from": "react-native-gesture-handler@3.0.0",
+      "to": "@gorhom/bottom-sheet",
+      "relationship": "CONFLICTS_WITH",
+      "detail": "Signal S2: ReanimatedSwipeable combined with @gorhom/bottom-sheet on Fabric causes Yoga assertion SIGABRT"
+    },
+    {
+      "from": "react-native-gesture-handler@3.0.0",
+      "to": "@react-navigation/drawer",
+      "relationship": "FORCES_UPGRADE",
+      "detail": "Removal of DrawerLayout forces upgrade to @react-navigation/drawer@>=7.0.0 or ReanimatedDrawerLayout"
+    },
+    {
+      "from": "react-native-gesture-handler@2.0.0",
+      "to": "react-native",
+      "relationship": "REQUIRES_ROOT_CONTAINER",
+      "detail": "Mandates <GestureHandlerRootView style={{ flex: 1 }}> wrapping root layout and all <Modal> trees"
+    }
+  ]
+}

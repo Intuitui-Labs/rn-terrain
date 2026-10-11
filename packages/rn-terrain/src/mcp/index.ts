@@ -121,7 +121,7 @@ export function createMcpServer(): Server {
               },
               target_rn: {
                 type: 'string',
-                description: 'Target React Native version (e.g. ^0.88.0, 0.76.2).',
+                description: 'Target React Native version (e.g. ^0.76.0, ^0.77.0).',
               },
               architecture: {
                 type: 'string',
@@ -616,7 +616,7 @@ export function createMcpServer(): Server {
 
       if (name === 'tcdi_doctor_stack') {
         const code = args?.code_snippet as string;
-        const targetRn = (args?.target_rn as string) || '^0.88.0';
+        const targetRn = (args?.target_rn as string) || '^0.76.0';
         const architecture = (args?.architecture as any) || 'new-arch';
         const reanimated = args?.reanimated_version as string | undefined;
 

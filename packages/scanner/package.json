@@ -36,6 +36,7 @@
   },
   "files": [
     "dist",
+    "corpus",
     "README.md",
     "package.json"
   ],

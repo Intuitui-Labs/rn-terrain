@@ -165,4 +165,23 @@ describe('Pre-Flight Agent Compass & Hexagonal Ingestion Pipeline', () => {
     expect(versions[0]?.version).toBe('2.0.0');
     expect(versions[0]?.supports_new_arch).toBe(1);
   });
+
+  it('falls back to physical node_modules affordances for unseeded packages', () => {
+    // 'yaml' is an unseeded package installed physically in core dependencies
+    const manifest = generateAgentCompass('yaml', 'latest', db);
+
+    expect(manifest.package).toBe('yaml');
+    expect(manifest.version).not.toBe('unknown');
+    expect(manifest.allowedModernSymbols.length).toBeGreaterThan(0);
+    expect(manifest.preflightInstruction).toContain('CANONICAL MODERN APIS:');
+  });
+
+  it('returns clean unknown briefing for unseeded and non-installed packages without crashing', () => {
+    const manifest = generateAgentCompass('non-existent-package-xyz', '1.0.0', db);
+
+    expect(manifest.package).toBe('non-existent-package-xyz');
+    expect(manifest.architecture).toBe('UNKNOWN');
+    expect(manifest.bannedSeveredSymbols).toHaveLength(0);
+    expect(manifest.allowedModernSymbols).toHaveLength(0);
+  });
 });

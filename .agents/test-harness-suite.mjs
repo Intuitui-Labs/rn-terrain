@@ -36,7 +36,7 @@ const postToolScriptPath = path.resolve('.agents', 'post-tool.mjs');
 fs.mkdirSync(stateDir, { recursive: true });
 
 console.log('═════════════════════════════════════════════════════════════════');
-console.log('🧪 VERIFYING 15 PRODUCTION-GRADE CONTROL-PLANE INVARIANTS');
+console.log('🧪 VERIFYING 18 PRODUCTION-GRADE CONTROL-PLANE INVARIANTS');
 console.log(`📁 Test Sandbox: ${tempDir}`);
 console.log('═════════════════════════════════════════════════════════════════\n');
 
@@ -329,6 +329,51 @@ const tests = [
       return { pass: res.status === 0 && hasFilteredSignal, exitCode: res.status, stderr: res.stderr };
     },
   },
+  {
+    name: '16. Star/Namespace Import Interception: import * as Reanimated (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt(['react-native-reanimated']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/NamespaceCard.tsx',
+          content: "import * as Reanimated from 'react-native-reanimated';\nconst h = Reanimated.useAnimatedGestureHandler({});",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      const isBlocked = res.status === 2 && res.stderr.includes('useAnimatedGestureHandler');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '17. CommonJS Require Destructuring: const { useAnimatedGestureHandler } = require(...) (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt(['react-native-reanimated']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/CjsCard.tsx',
+          content: "const { useAnimatedGestureHandler } = require('react-native-reanimated');",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      const isBlocked = res.status === 2 && res.stderr.includes('useAnimatedGestureHandler');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '18. Multi-Package Batch Grounding CLI (rn-terrain compass pkg1 pkg2) (Expected: Exit 0 + Multi-Receipt)',
+    run: () => {
+      const cliPath = path.resolve('packages', 'rn-terrain', 'bin', 'rn-terrain.js');
+      const res = spawnSync('node', [cliPath, 'compass', 'react-native-reanimated', '@shopify/react-native-skia', '--json'], {
+        cwd: tempDir,
+        encoding: 'utf8',
+      });
+      const receiptContent = fs.existsSync(receiptPath) ? JSON.parse(fs.readFileSync(receiptPath, 'utf8')) : null;
+      const bothGrounded = receiptContent?.packages?.['react-native-reanimated'] && receiptContent?.packages?.['@shopify/react-native-skia'];
+      return { pass: res.status === 0 && Boolean(bothGrounded), exitCode: res.status, stderr: res.stderr };
+    },
+  },
 ];
 
 let allPassed = true;
@@ -357,7 +402,7 @@ try {
 
 console.log('\n═════════════════════════════════════════════════════════════════');
 if (allPassed) {
-  console.log('🎉 ALL 15 PRODUCTION-GRADE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
+  console.log('🎉 ALL 18 PRODUCTION-GRADE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
   process.exit(0);
 } else {
   console.log('❌ SOME INVARIANT TESTS FAILED');

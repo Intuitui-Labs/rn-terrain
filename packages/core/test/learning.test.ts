@@ -15,32 +15,70 @@ describe('Autonomous Nervous System: Self-Improving Learning Loop', () => {
 
   beforeEach(() => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'rn-terrain-learning-test-'));
+    process.env.TERRAIN_TELEMETRY = '1';
     collector = new IncidentCollector(tempDir, '.terrain/incidents');
   });
 
   afterEach(() => {
+    delete process.env.TERRAIN_TELEMETRY;
     if (fs.existsSync(tempDir)) {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
 
-  describe('Pillar 1: Sensory Incident Collector', () => {
-    it('sanitizes environment and absolute drive paths from snippets', () => {
-      const rawWithWindowsPath = 'import { foo } from "C:\\projects\\my-app\\src\\App.tsx"; useAnimatedGestureHandler();';
+  describe('Pillar 1: Sensory Incident Collector & Privacy Redaction', () => {
+    it('strictly drops incident recording when telemetry is disabled (default)', async () => {
+      delete process.env.TERRAIN_TELEMETRY;
+      const cleanDir = fs.mkdtempSync(path.join(os.tmpdir(), 'rn-terrain-optin-test-'));
+      const quietCollector = new IncidentCollector(cleanDir);
+
+      const result = await quietCollector.recordRejection({
+        packageName: 'react-native-reanimated',
+        targetVersion: '4.7.1',
+        rejectedSnippet: 'useAnimatedGestureHandler()',
+      });
+
+      expect(result).toBeNull();
+      // Verify zero files or directories were created
+      expect(fs.existsSync(path.join(cleanDir, '.terrain'))).toBe(false);
+      fs.rmSync(cleanDir, { recursive: true, force: true });
+    });
+
+    it('sanitizes environment, URLs, secrets, and absolute drive paths from snippets', () => {
+      const rawWithWindowsPath = 'import { foo } from "C:\\projects\\my-app\\src\\App.tsx"; const token = "bearer secret_12345"; fetch("https://api.internal.org/data"); useAnimatedGestureHandler();';
       const sanitized = sanitizeSnippet(rawWithWindowsPath);
-      expect(sanitized).not.toContain('C:\\projects\\my-app\\src\\');
+      expect(sanitized).not.toContain('C:\\projects\\my-app\\src\\App.tsx');
+      expect(sanitized).toContain('<PATH>');
+      expect(sanitized).not.toContain('https://api.internal.org/data');
+      expect(sanitized).toContain('<URL>');
+      expect(sanitized).not.toContain('secret_12345');
+      expect(sanitized).toContain('<CREDENTIAL_REDACTED>');
       expect(sanitized).toContain('useAnimatedGestureHandler()');
     });
 
-    it('records an incident upon gate rejection with initial RECORDED status', async () => {
-      const incident = await collector.recordRejection({
+    it('safeguards .gitignore by ensuring .terrain/ is ignored', async () => {
+      const fakeGitignore = path.join(tempDir, '.gitignore');
+      fs.writeFileSync(fakeGitignore, 'node_modules/\ndist/\n', 'utf8');
+      const testCol = new IncidentCollector(tempDir);
+      await testCol.recordRejection({
+        packageName: 'react-native-reanimated',
+        targetVersion: '4.7.1',
+        rejectedSnippet: 'useAnimatedGestureHandler()',
+      });
+      const updated = fs.readFileSync(fakeGitignore, 'utf8');
+      expect(updated).toContain('.terrain/');
+    });
+
+    it('records an incident upon gate rejection with initial RECORDED status when opted in', async () => {
+      const incident = (await collector.recordRejection({
         packageName: 'react-native-reanimated',
         targetVersion: '4.7.1',
         rejectedSnippet: 'const handler = useAnimatedGestureHandler({ onStart: () => {} });',
         severedSymbolsDetected: ['useAnimatedGestureHandler'],
         canonicalReplacements: ['Gesture.Pan().onUpdate(...) with <GestureDetector>'],
-      });
+      }))!;
 
+      expect(incident).not.toBeNull();
       expect(incident.id).toMatch(/^inc-react_native_reanimated-/);
       expect(incident.status).toBe('RECORDED');
       expect(incident.severedSymbolsDetected).toContain('useAnimatedGestureHandler');
@@ -51,11 +89,11 @@ describe('Autonomous Nervous System: Self-Improving Learning Loop', () => {
     });
 
     it('resolves an incident with verified canonical remediation code', async () => {
-      const incident = await collector.recordRejection({
+      const incident = (await collector.recordRejection({
         packageName: 'react-native-reanimated',
         targetVersion: '4.7.1',
         rejectedSnippet: 'const handler = useAnimatedGestureHandler({});',
-      });
+      }))!;
 
       const resolved = await collector.resolveRemediation(
         incident.id,
@@ -73,13 +111,13 @@ describe('Autonomous Nervous System: Self-Improving Learning Loop', () => {
 
   describe('Pillar 2: Signal Distiller (Autonomous Chronos Synthesis)', () => {
     it('synthesizes a formal Chronos signal from a resolved incident', async () => {
-      const incident = await collector.recordRejection({
+      const incident = (await collector.recordRejection({
         packageName: 'react-native-reanimated',
         targetVersion: '4.7.1',
         rejectedSnippet: 'useAnimatedGestureHandler()',
         severedSymbolsDetected: ['useAnimatedGestureHandler'],
         canonicalReplacements: ['Gesture.Pan()'],
-      });
+      }))!;
 
       await collector.resolveRemediation(incident.id, 'Gesture.Pan()');
       const resolved = (await collector.getIncident(incident.id))!;
@@ -98,13 +136,13 @@ describe('Autonomous Nervous System: Self-Improving Learning Loop', () => {
     });
 
     it('stages candidate signals into drafts directory', async () => {
-      const incident = await collector.recordRejection({
+      const incident = (await collector.recordRejection({
         packageName: 'react-native-gesture-handler',
         targetVersion: '3.3.0',
         rejectedSnippet: '<PanGestureHandler onGestureEvent={handler}>',
         severedSymbolsDetected: ['PanGestureHandler'],
         canonicalReplacements: ['<GestureDetector gesture={pan}>'],
-      });
+      }))!;
 
       await collector.resolveRemediation(incident.id, '<GestureDetector gesture={pan}>');
       const resolved = (await collector.getIncident(incident.id))!;
@@ -122,11 +160,11 @@ describe('Autonomous Nervous System: Self-Improving Learning Loop', () => {
 
   describe('Pillar 3: Model Weights DPO Dataset Exporter', () => {
     it('exports resolved incidents into standard HuggingFace DPO format', async () => {
-      const incident = await collector.recordRejection({
+      const incident = (await collector.recordRejection({
         packageName: 'react-native-reanimated',
         targetVersion: '4.7.1',
         rejectedSnippet: 'const handler = useAnimatedGestureHandler({});',
-      });
+      }))!;
 
       await collector.resolveRemediation(
         incident.id,
@@ -144,11 +182,11 @@ describe('Autonomous Nervous System: Self-Improving Learning Loop', () => {
     });
 
     it('exports resolved incidents into Callstack Apex / ChatML format', async () => {
-      const incident = await collector.recordRejection({
+      const incident = (await collector.recordRejection({
         packageName: 'react-native-mmkv',
         targetVersion: '4.3.2',
         rejectedSnippet: 'await AsyncStorage.getItem("key");',
-      });
+      }))!;
 
       await collector.resolveRemediation(
         incident.id,
@@ -166,18 +204,18 @@ describe('Autonomous Nervous System: Self-Improving Learning Loop', () => {
     });
 
     it('exports multi-incident JSONL to file stream', async () => {
-      const inc1 = await collector.recordRejection({
+      const inc1 = (await collector.recordRejection({
         packageName: 'react-native-reanimated',
         targetVersion: '4.7.1',
         rejectedSnippet: 'useAnimatedGestureHandler()',
-      });
+      }))!;
       await collector.resolveRemediation(inc1.id, 'Gesture.Pan()');
 
-      const inc2 = await collector.recordRejection({
+      const inc2 = (await collector.recordRejection({
         packageName: 'react-native-mmkv',
         targetVersion: '4.3.2',
         rejectedSnippet: 'AsyncStorage.getItem()',
-      });
+      }))!;
       await collector.resolveRemediation(inc2.id, 'storage.getString()');
 
       const incidents = await collector.listIncidents();

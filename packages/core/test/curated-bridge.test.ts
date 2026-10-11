@@ -109,9 +109,10 @@ dependency_entries:
     expect(csContent).toContain('Sacred Mobile Platform Spine');
   });
 
-  it('connects to physical C:\\x vault when available', () => {
-    if (fs.existsSync('C:\\x\\docs\\stack-map\\landscape\\dependency-annotations.yaml')) {
-      const bridge = new CuratedKnowledgeBridge(db, 'C:\\x');
+  it('connects to external knowledge vault when available', () => {
+    const vaultDir = process.env.TERRAIN_VAULT_PATH || 'docs/vault';
+    if (fs.existsSync(path.join(vaultDir, 'docs/stack-map/landscape/dependency-annotations.yaml'))) {
+      const bridge = new CuratedKnowledgeBridge(db, vaultDir);
       const stats = bridge.runFullIngestion(path.join(tempTestDir, 'live-views'));
 
       expect(stats.globalToolsCount).toBeGreaterThan(0);

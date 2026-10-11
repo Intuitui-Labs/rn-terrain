@@ -71,7 +71,37 @@ export class TreeSitterCodeMatcher {
       message: "AsyncStorage was removed from 'react-native' core in RN 0.60+. Import from '@react-native-async-storage/async-storage'."
     });
 
-    // 4. RNGH v2 Modern Capability: Gesture.Pan()
+    // 4. Reanimated v1 legacy operator: interpolateNode
+    this.registerRule({
+      id: 'reanimated-interpolate-node-removed',
+      package: 'react-native-reanimated',
+      severity: 'UNSUPPORTED_REMOVED',
+      pattern: 'interpolateNode($$$ARGS)',
+      replacement: 'interpolate',
+      message: "'interpolateNode' was removed in Reanimated modern runtimes. Use 'interpolate'."
+    });
+
+    // 5. RNGH v1 legacy component: PanGestureHandler
+    this.registerRule({
+      id: 'rngh-pan-gesture-handler-component',
+      package: 'react-native-gesture-handler',
+      severity: 'UNSUPPORTED_REMOVED',
+      pattern: '<PanGestureHandler $$$PROPS>$$$CHILDREN</PanGestureHandler>',
+      replacement: 'GestureDetector',
+      message: "'PanGestureHandler' wrapper component is deprecated in RNGH v2+. Use '<GestureDetector gesture={Gesture.Pan()}>'."
+    });
+
+    // 6. React Native legacy node handle
+    this.registerRule({
+      id: 'rn-find-node-handle-removed',
+      package: 'react-native',
+      severity: 'UNSUPPORTED_REMOVED',
+      pattern: 'findNodeHandle($$$ARGS)',
+      replacement: 'ref',
+      message: "'findNodeHandle' is severed in React Native New Architecture Fabric."
+    });
+
+    // 7. RNGH v2 Modern Capability: Gesture.Pan()
     this.registerRule({
       id: 'rngh-v2-modern-gesture-pan',
       package: 'react-native-gesture-handler',
@@ -79,6 +109,32 @@ export class TreeSitterCodeMatcher {
       pattern: 'Gesture.Pan()',
       message: "Modern Gesture API (Gesture.Pan()) detected."
     });
+  }
+
+  /**
+   * Dynamically loads severed/deprecated symbols from a Terrain catalog.
+   */
+  public loadRulesFromCatalog(catalog: { getSymbols?(pkg: string): any[]; getAllSymbols?(): any[] }): void {
+    const symbols = catalog.getAllSymbols ? catalog.getAllSymbols() : [];
+    for (const sym of symbols) {
+      if (sym.status === 'UNSUPPORTED_REMOVED' || sym.status === 'BROKEN_DEFECTIVE') {
+        const id = `${sym.package_id}-${sym.symbol_identifier}-severed`;
+        if (this.rules.some((r) => r.id === id)) continue;
+        const pattern = sym.symbol_identifier.includes('.')
+          ? `${sym.symbol_identifier}($$$ARGS)`
+          : sym.symbol_identifier.startsWith('<')
+            ? sym.symbol_identifier
+            : `${sym.symbol_identifier}($$$ARGS)`;
+        this.registerRule({
+          id,
+          package: sym.package_id,
+          severity: sym.status,
+          pattern,
+          replacement: sym.replacement_symbol ?? 'modern equivalent',
+          message: `'${sym.symbol_identifier}' is severed in ${sym.package_id}. Replace with '${sym.replacement_symbol ?? 'modern equivalent'}'.`
+        });
+      }
+    }
   }
 
   public scanSource(filePath: string, sourceCode: string): PatternFinding[] {

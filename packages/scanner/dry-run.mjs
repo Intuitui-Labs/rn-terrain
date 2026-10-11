@@ -6,7 +6,7 @@
  * Usage:
  *   node packages/scanner/dry-run.mjs [--fence | --radar | --all] [--pkg <package-name>]
  *
- * Runs against c:/x/apps/gurudevi-mobile by default.
+ * Runs against current working directory by default.
  * Prints the version range, accumulated signal count, and full findings.
  * Does NOT modify any files.
  */
@@ -19,8 +19,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ─── Paths ───────────────────────────────────────────────────────────────────
 
-const APP_CWD     = 'c:/x/apps/gurudevi-mobile';
-const CORPUS_PATH = resolve(__dirname, '../../docs/changelog-intelligence/graph/INDEX.json');
+const APP_CWD     = process.cwd();
+const CORPUS_PATH = existsSync(resolve(__dirname, 'corpus/INDEX.json'))
+  ? resolve(__dirname, 'corpus/INDEX.json')
+  : resolve(__dirname, '../../docs/changelog-intelligence/graph/INDEX.json');
 
 // ─── Args ────────────────────────────────────────────────────────────────────
 
@@ -42,7 +44,7 @@ Options:
   --horizon <strategy> Adoption horizon for capabilities:
                        current-major (default) | from-project-start |
                        last-n-minors:N | explicit:VERSION
-  --cwd <path>         Target app directory (default: c:/x/apps/gurudevi-mobile)
+  --cwd <path>         Target app directory (default: current working directory)
   --dirs <p1,p2,...>   Explicit comma-separated source directories to scan
   --no-git             Disable git history analysis (single-point analysis)
   --no-workspace       Disable monorepo workspace package discovery

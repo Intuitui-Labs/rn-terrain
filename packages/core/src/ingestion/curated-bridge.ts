@@ -2,8 +2,8 @@
  * @file curated-bridge.ts
  * Curated Knowledge Vault Ingestion & Agent-View Synthesis Bridge.
  *
- * Ingests the high-value architectural knowledge from the C:\x vault:
- *   1. dependency-annotations.yaml (100+ annotated dependencies and sacred pins)
+ * Ingests high-value architectural knowledge from curated knowledge repository:
+ *   1. dependency-annotations.yaml (annotated dependencies and platform pins)
  *   2. Technology Radar records (react-native-uniffi-bridge, legendapp-state, etc.)
  *   3. 50-Vendor Ecosystem Catalog (Callstack, Software Mansion, Expo, Shopify)
  *   4. Synthesizes canonical Agent Views: DANGER-ZONES.md and CURRENT-STATE.md.
@@ -37,12 +37,19 @@ export class CuratedKnowledgeBridge {
   }
 
   /**
-   * Resolves a file or directory path within the C:\x repository vault
+   * Resolves a file or directory path within the repository vault
    */
-  public resolveXPath(...subpaths: string[]): string | null {
+  public resolveVaultPath(...subpaths: string[]): string | null {
     const candidate = path.resolve(this.xRoot, ...subpaths);
     if (fs.existsSync(candidate)) return candidate;
     return null;
+  }
+
+  /**
+   * Backward-compatible alias for resolveVaultPath
+   */
+  public resolveXPath(...subpaths: string[]): string | null {
+    return this.resolveVaultPath(...subpaths);
   }
 
   /**
@@ -276,7 +283,7 @@ export class CuratedKnowledgeBridge {
 
 ---
 
-## 4. React Native New Architecture (Target: 0.88.0-rc.3 / Fabric)
+## 4. React Native New Architecture (Target: ^0.76.0+ / Fabric)
 | ❌ Severed / Banned Symbol | Status | ✅ Canonical Modern Replacement | Root Cause |
 | :--- | :--- | :--- | :--- |
 | \`NativeModules.CustomModule\` | **DEPRECATED** | \`TurboModuleRegistry.getEnforcing(...)\` | Legacy asynchronous JSON bridge eliminated. |

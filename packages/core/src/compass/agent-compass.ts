@@ -10,7 +10,10 @@
  *   - Strict Instruction for Context Injection
  */
 
-import { CanonicalDatabase } from '../db/sqlite-client.js';
+import semver from 'semver';
+import type { TerrainCatalogPort } from '../db/catalog-port.js';
+import { createCatalog } from '../db/sqlite-client.js';
+import { NodeModulesAffordanceEngine } from './node-modules-affordance.js';
 
 export interface BannedSymbol {
   identifier: string;
@@ -39,12 +42,12 @@ export interface AgentCompassBriefing {
 export function generateAgentCompass(
   packageName: string,
   targetVersion: string = 'latest',
-  customDb?: CanonicalDatabase
+  customDb?: TerrainCatalogPort
 ): AgentCompassBriefing {
-  const db = customDb ?? new CanonicalDatabase();
+  const db = customDb ?? createCatalog();
 
   const versions = db.getVersions(packageName);
-  const activeVersion = targetVersion === 'latest' ? versions[0]?.version ?? 'latest' : targetVersion;
+  let activeVersion = targetVersion === 'latest' ? versions[0]?.version ?? 'latest' : targetVersion;
   const versionRecord = versions.find((v) => v.version === activeVersion) ?? versions[0];
 
   const symbols = db.getSymbols(packageName, activeVersion);
@@ -64,7 +67,40 @@ export function generateAgentCompass(
     .filter((s) => s.status === 'FUNCTIONAL_STABLE' || s.status === 'NEW_CAPABILITY')
     .map((s) => s.symbol_identifier);
 
-  // If no symbols are recorded yet in DB, supply canonical groundings for known core packages
+  let architecture: 'NEW_ARCHITECTURE_FABRIC_READY' | 'LEGACY_INTEROP' | 'UNKNOWN' = 'UNKNOWN';
+  if (versionRecord) {
+    architecture =
+      versionRecord.supports_new_arch === 1
+        ? 'NEW_ARCHITECTURE_FABRIC_READY'
+        : versionRecord.supports_new_arch === 0
+          ? 'LEGACY_INTEROP'
+          : 'UNKNOWN';
+  } else {
+    // Grounded fallbacks for foundational tier-1 ecosystem packages when local database is unseeded
+    const isModernRN =
+      packageName === 'react-native' &&
+      (activeVersion === 'latest' ||
+        Boolean(semver.valid(semver.clean(activeVersion) ?? '') && semver.gte(semver.clean(activeVersion)!, '0.76.0')));
+
+    if (packageName === 'react-native-reanimated') {
+      architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
+    } else if (
+      packageName === 'react-native-gesture-handler' ||
+      packageName === 'react-native-screens' ||
+      packageName === 'react-native-nitro-modules' ||
+      packageName === 'react-native-worklets' ||
+      packageName === 'react-native-mmkv' ||
+      packageName === '@shopify/react-native-skia' ||
+      packageName === '@shopify/flash-list' ||
+      isModernRN
+    ) {
+      architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
+    } else {
+      architecture = 'UNKNOWN';
+    }
+  }
+
+  // If no symbols are recorded yet in DB, supply canonical groundings or fall back to physical node_modules
   if (bannedSeveredSymbols.length === 0 && allowedModernSymbols.length === 0) {
     if (packageName === 'react-native-gesture-handler') {
       bannedSeveredSymbols.push({
@@ -97,48 +133,55 @@ export function generateAgentCompass(
         'LinearTransition',
         'react-native-worklets'
       );
+    } else {
+      // Dynamic fallback: inspect physical node_modules affordances for any package in user's project
+      try {
+        const engine = new NodeModulesAffordanceEngine();
+        const affordance = engine.generateAffordance(packageName);
+        if (affordance && affordance.installedVersion) {
+          if (activeVersion === 'latest' || activeVersion === 'unknown') {
+            activeVersion = affordance.installedVersion;
+          }
+          for (const h of affordance.exportedHooks) {
+            if (!allowedModernSymbols.includes(h)) allowedModernSymbols.push(h);
+          }
+          for (const c of affordance.exportedComponents) {
+            if (!allowedModernSymbols.includes(c)) allowedModernSymbols.push(c);
+          }
+          for (const f of affordance.exportedFunctions) {
+            if (!allowedModernSymbols.includes(f)) allowedModernSymbols.push(f);
+          }
+          if (architecture === 'UNKNOWN') {
+            architecture = engine.checkNewArchSupport(packageName)
+              ? 'NEW_ARCHITECTURE_FABRIC_READY'
+              : 'LEGACY_INTEROP';
+          }
+        }
+      } catch {
+        // Package is not installed locally in node_modules either; clean unknown briefing returned
+      }
     }
   }
 
-  // Retrieve compatibility combos
-  const matrix = db.getCompatibility(`${packageName}:react-native-reanimated`);
+  // Retrieve compatibility combos across known ecosystem peers
+  const matrix = db.getCompatibilityMatrix
+    ? db.getCompatibilityMatrix(packageName, 'react-native-reanimated')
+    : (db as any).getCompatibility
+      ? (db as any).getCompatibility(`${packageName}:react-native-reanimated`)
+      : [];
+
+  if (packageName !== 'react-native' && db.getCompatibilityMatrix) {
+    matrix.push(...db.getCompatibilityMatrix(packageName, 'react-native'));
+  }
+
   const knownPeerConflicts: PeerConflict[] = matrix
-    .filter((m) => m.status === 'BREAKING_COLLISION' || m.status === 'BROKEN_NATIVE')
-    .map((m) => ({
-      peerPackage: 'react-native-reanimated',
+    .filter((m: any) => m.status === 'BREAKING_COLLISION' || m.status === 'BROKEN_NATIVE')
+    .map((m: any) => ({
+      peerPackage: m.package_b ?? 'react-native-reanimated',
       safeRange: m.version_b_range,
-      conflictNote: m.what_broke ?? 'Native ABI or worklet runtime collision',
+      conflictNote: m.what_broke ?? 'Native ABI or runtime collision',
       severity: m.collision_severity
     }));
-
-  let architecture: 'NEW_ARCHITECTURE_FABRIC_READY' | 'LEGACY_INTEROP' | 'UNKNOWN' = 'UNKNOWN';
-  if (versionRecord) {
-    architecture =
-      versionRecord.supports_new_arch === 1
-        ? 'NEW_ARCHITECTURE_FABRIC_READY'
-        : versionRecord.supports_new_arch === 0
-          ? 'LEGACY_INTEROP'
-          : 'UNKNOWN';
-  } else {
-    // Grounded fallbacks for foundational tier-1 ecosystem packages when local database is unseeded
-    if (packageName === 'react-native-reanimated') {
-      // Reanimated 3+ supports New Architecture; Reanimated 4 drops Paper entirely and mandates Fabric
-      architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
-    } else if (
-      packageName === 'react-native-gesture-handler' ||
-      packageName === 'react-native-screens' ||
-      packageName === 'react-native-nitro-modules' ||
-      packageName === 'react-native-worklets' ||
-      packageName === 'react-native-mmkv' ||
-      packageName === '@shopify/react-native-skia' ||
-      packageName === '@shopify/flash-list' ||
-      (packageName === 'react-native' && (activeVersion === 'latest' || activeVersion >= '0.76.0'))
-    ) {
-      architecture = 'NEW_ARCHITECTURE_FABRIC_READY';
-    } else {
-      architecture = 'UNKNOWN';
-    }
-  }
 
   let preflightInstruction = `[PRE-FLIGHT AGENT GROUNDING for ${packageName}@${activeVersion}]\n`;
   if (bannedSeveredSymbols.length > 0) {
@@ -148,12 +191,12 @@ export function generateAgentCompass(
     }
   }
   if (allowedModernSymbols.length > 0) {
-    preflightInstruction += `CANONICAL MODERN APIS: ${allowedModernSymbols.join(', ')}\n`;
+    preflightInstruction += `CANONICAL MODERN APIS: ${allowedModernSymbols.slice(0, 15).join(', ')}\n`;
   }
   preflightInstruction += `ARCHITECTURE: ${architecture}`;
 
-  if (!customDb) {
-    db.close();
+  if (!customDb && 'close' in db && typeof (db as any).close === 'function') {
+    (db as any).close();
   }
 
   return {

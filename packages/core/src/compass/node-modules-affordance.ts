@@ -10,6 +10,7 @@
  *   - Produces a grounded AgentAffordanceCard preventing hallucinated Major-N APIs.
  */
 
+import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -40,6 +41,17 @@ export class NodeModulesAffordanceEngine {
    * Resolves the real directory of an installed package in node_modules
    */
   public resolvePackageDir(packageName: string): string | null {
+    // 1. Module resolution via createRequire at project root
+    try {
+      const rootPkg = path.resolve(this.projectRoot, 'package.json');
+      if (fs.existsSync(rootPkg)) {
+        const req = createRequire(rootPkg);
+        const resolved = req.resolve(`${packageName}/package.json`);
+        return path.dirname(resolved);
+      }
+    } catch {}
+
+    // 2. Direct node_modules check
     const directPath = path.resolve(this.projectRoot, 'node_modules', packageName);
     if (fs.existsSync(directPath)) {
       try {
@@ -49,7 +61,26 @@ export class NodeModulesAffordanceEngine {
       }
     }
 
-    // Check parent directories for monorepo roots
+    // 3. Search monorepo subpackages (packages/*, apps/*)
+    for (const sub of ['packages', 'apps', 'modules']) {
+      const subDir = path.resolve(this.projectRoot, sub);
+      if (fs.existsSync(subDir) && fs.statSync(subDir).isDirectory()) {
+        try {
+          for (const entry of fs.readdirSync(subDir)) {
+            const subPkg = path.resolve(subDir, entry, 'package.json');
+            if (fs.existsSync(subPkg)) {
+              try {
+                const req = createRequire(subPkg);
+                const resolved = req.resolve(`${packageName}/package.json`);
+                return path.dirname(resolved);
+              } catch {}
+            }
+          }
+        } catch {}
+      }
+    }
+
+    // 4. Check parent directories for monorepo roots
     let current = this.projectRoot;
     for (let i = 0; i < 4; i++) {
       const parentNodeModules = path.resolve(current, 'node_modules', packageName);
@@ -139,12 +170,13 @@ export class NodeModulesAffordanceEngine {
           }
         }
 
-        // Also check export { Foo, Bar }
+        // Also check export { Foo, Bar } or export { Foo as Bar }
         const namedExportRegex = /export\s*\{\s*([^}]+)\s*\}/g;
         while ((match = namedExportRegex.exec(dtsContent)) !== null) {
           const names = match[1]?.split(',') ?? [];
           for (const rawName of names) {
-            const clean = rawName.trim().split(' as ')[0]?.trim();
+            const parts = rawName.trim().split(/\s+as\s+/);
+            const clean = (parts.length > 1 ? parts[1] : parts[0])?.trim();
             if (!clean || clean.startsWith('type ')) continue;
 
             if (clean.startsWith('use') && !exportedHooks.includes(clean)) {
@@ -153,6 +185,41 @@ export class NodeModulesAffordanceEngine {
               exportedComponents.push(clean);
             } else if (/^[a-z]/.test(clean) && !exportedFunctions.includes(clean)) {
               exportedFunctions.push(clean);
+            }
+          }
+        }
+
+        // Parse shallow relative re-exports (export * from './...')
+        const starExportRegex = /export\s+\*\s+from\s+['"]([^'"]+)['"]/g;
+        while ((match = starExportRegex.exec(dtsContent)) !== null) {
+          const rel = match[1];
+          if (!rel || !rel.startsWith('.')) continue;
+          const candidates = [
+            path.resolve(path.dirname(typesPath), `${rel}.d.ts`),
+            path.resolve(path.dirname(typesPath), rel, 'index.d.ts'),
+            path.resolve(path.dirname(typesPath), `${rel}.d.mts`)
+          ];
+          for (const cand of candidates) {
+            if (fs.existsSync(cand)) {
+              try {
+                const subContent = fs.readFileSync(cand, 'utf-8');
+                let subMatch;
+                const subExportRegex = /export\s+(?:declare\s+)?(const|function|class|type|interface)\s+([A-Za-z0-9_$]+)/g;
+                while ((subMatch = subExportRegex.exec(subContent)) !== null) {
+                  const sym = subMatch[2];
+                  if (!sym) continue;
+                  if (sym.startsWith('use') && !exportedHooks.includes(sym)) {
+                    exportedHooks.push(sym);
+                  } else if (/^[A-Z]/.test(sym) && !sym.endsWith('Props') && !sym.endsWith('Type') && !exportedComponents.includes(sym)) {
+                    exportedComponents.push(sym);
+                  } else if (/^[a-z]/.test(sym) && !exportedFunctions.includes(sym)) {
+                    exportedFunctions.push(sym);
+                  }
+                }
+              } catch {
+                // Ignore sub-file read errors
+              }
+              break;
             }
           }
         }
@@ -203,4 +270,26 @@ export class NodeModulesAffordanceEngine {
       preflightInstruction
     };
   }
+
+  /**
+   * Inspects physical package.json to determine if the package is New Architecture (Fabric / TurboModules) ready.
+   */
+  public checkNewArchSupport(packageName: string): boolean {
+    const pkgDir = this.resolvePackageDir(packageName);
+    if (!pkgDir) return false;
+    const pkgJsonPath = path.join(pkgDir, 'package.json');
+    if (!fs.existsSync(pkgJsonPath)) return false;
+
+    try {
+      const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+      if (pkgJson.codegenConfig) return true;
+      if (pkgJson.fabric === true || pkgJson.turbo === true) return true;
+      const allDeps = { ...pkgJson.dependencies, ...pkgJson.peerDependencies };
+      if (allDeps['react-native-nitro-modules'] || allDeps['react-native-worklets']) return true;
+      return false;
+    } catch {
+      return false;
+    }
+  }
 }
+

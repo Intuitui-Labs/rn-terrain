@@ -37,32 +37,99 @@ export interface RecordIncidentInput {
 }
 
 /**
- * Sanitizes code snippets to remove absolute disk paths and environment-specific leaks.
+ * Sanitizes code snippets to remove absolute disk paths, URLs, credentials, and environment-specific leaks.
  */
 export function sanitizeSnippet(snippet: string): string {
   if (!snippet) return '';
   return snippet
-    // Scrub Windows drive absolute paths
-    .replace(/[A-Z]:\\[^"'\s\n\r]+\\/gi, '')
-    // Scrub Unix absolute root paths
-    .replace(/(?:\/[a-zA-Z0-9._-]+){3,}\//g, '')
+    // Scrub Windows drive absolute paths (e.g. C:\projects\...)
+    .replace(/[A-Z]:\\[^"'\s\n\r<>]+/gi, '<PATH>')
+    // Scrub Unix/POSIX absolute paths
+    .replace(/(?:\/(?:Users|home|projects|var|tmp|[a-zA-Z0-9._-]+)){2,}\/[a-zA-Z0-9._-]+/g, '<PATH>')
+    // Scrub URLs and web endpoints
+    .replace(/https?:\/\/[^\s"'`<>]+/gi, '<URL>')
+    // Scrub email addresses
+    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '<EMAIL>')
+    // Scrub inline tokens / credentials
+    .replace(/(?:bearer|token|secret|api_key|password|passwd|auth)\s*[:=]\s*['"][^'"]+['"]/gi, '<CREDENTIAL_REDACTED>')
     // Strip trailing whitespace
     .trim();
 }
 
+/**
+ * Determines whether telemetry and incident collection is explicitly opted in.
+ *
+ * In accordance with privacy-first developer tooling principles:
+ * TELEMETRY IS STRICTLY DISABLED BY DEFAULT.
+ * Zero incident files or snippets are recorded unless:
+ *   1. Environment variable `TERRAIN_TELEMETRY=1` or `TERRAIN_TELEMETRY=true` is set, OR
+ *   2. Project configuration (`.terrainrc` or `package.json#terrain`) has `telemetry: true`.
+ */
+export function isTelemetryOptedIn(projectRoot: string = process.cwd()): boolean {
+  // 1. Environment variable override
+  const envVal = process.env.TERRAIN_TELEMETRY;
+  if (envVal === '1' || envVal === 'true') {
+    return true;
+  }
+  if (envVal === '0' || envVal === 'false') {
+    return false;
+  }
+
+  // 2. Local project configuration check (.terrainrc, terrain.config.json, package.json#terrain)
+  const candidateFiles = ['.terrainrc', '.terrainrc.json', 'terrain.config.json'];
+  for (const file of candidateFiles) {
+    const filePath = path.resolve(projectRoot, file);
+    if (fs.existsSync(filePath)) {
+      try {
+        const raw = fs.readFileSync(filePath, 'utf8');
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.telemetry === 'boolean') {
+          return parsed.telemetry;
+        }
+      } catch {}
+    }
+  }
+
+  // Check package.json#terrain
+  const pkgJsonPath = path.resolve(projectRoot, 'package.json');
+  if (fs.existsSync(pkgJsonPath)) {
+    try {
+      const raw = fs.readFileSync(pkgJsonPath, 'utf8');
+      const pkg = JSON.parse(raw);
+      if (typeof pkg.terrain?.telemetry === 'boolean') {
+        return pkg.terrain.telemetry;
+      }
+    } catch {}
+  }
+
+  // Default: STRICTLY FALSE (opt-in only)
+  return false;
+}
+
 export class IncidentCollector {
   private baseDir: string;
+  private projectRoot: string;
 
   constructor(projectRoot: string = process.cwd(), customDir?: string) {
+    this.projectRoot = projectRoot;
     this.baseDir = customDir
       ? path.resolve(projectRoot, customDir)
       : path.resolve(projectRoot, '.terrain', 'incidents');
-    this.ensureDir();
   }
 
   private ensureDir(): void {
     if (!fs.existsSync(this.baseDir)) {
       fs.mkdirSync(this.baseDir, { recursive: true });
+    }
+    // Safeguard: Ensure .terrain/ is ignored locally
+    const gitignorePath = path.resolve(this.projectRoot, '.gitignore');
+    if (fs.existsSync(gitignorePath)) {
+      try {
+        const content = fs.readFileSync(gitignorePath, 'utf8');
+        if (!content.includes('.terrain')) {
+          fs.appendFileSync(gitignorePath, '\n# RN-Terrain local incidents & state\n.terrain/\n', 'utf8');
+        }
+      } catch {}
     }
   }
 
@@ -80,8 +147,18 @@ export class IncidentCollector {
 
   /**
    * Records a severed API rejection event as an unresolved incident.
+   * Returns null if telemetry is not explicitly opted in.
    */
-  async recordRejection(input: RecordIncidentInput): Promise<IncidentSpecimen> {
+  async recordRejection(
+    input: RecordIncidentInput,
+    options?: { force?: boolean }
+  ): Promise<IncidentSpecimen | null> {
+    const isOptedIn = options?.force || isTelemetryOptedIn(this.projectRoot);
+    if (!isOptedIn) {
+      // Telemetry strictly disabled: zero writes to disk
+      return null;
+    }
+
     this.ensureDir();
     const id = this.generateId(input.packageName, input.rejectedSnippet);
     const incident: IncidentSpecimen = {

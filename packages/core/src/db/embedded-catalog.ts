@@ -7,7 +7,7 @@
  *
  * Pre-bundled with:
  *   - Foundational React Native ecosystem packages (Software Mansion, Callstack, Expo, Shopify)
- *   - Sacred Native Pins & dialect annotations from the C:\x vault
+ *   - Grounded Native Pins & dialect annotations from curated knowledge repository
  *   - Severed APIs & New Architecture symbol lifecycles
  *   - Canonical Dev Tools and Granular Capabilities
  */

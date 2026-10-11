@@ -17,6 +17,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 // Parse arguments
 const args = process.argv.slice(2);
@@ -109,7 +110,16 @@ function synthesizeVirtualDocument(filePath, payloadInput) {
     return diskContent ? `${diskContent}\n${payloadInput.new_string}` : payloadInput.new_string;
   }
   if (payloadInput?.patch) {
-    return diskContent ? `${diskContent}\n${payloadInput.patch}` : payloadInput.patch;
+    const patch = payloadInput.patch;
+    if (typeof patch === 'string' && (patch.includes('\n+') || patch.includes('\n-') || patch.startsWith('---'))) {
+      const addedLines = patch
+        .split('\n')
+        .filter(line => line.startsWith('+') && !line.startsWith('+++'))
+        .map(line => line.substring(1))
+        .join('\n');
+      return diskContent ? `${diskContent}\n${addedLines}` : addedLines;
+    }
+    return diskContent ? `${diskContent}\n${patch}` : patch;
   }
   if (explicitBuffer) {
     return explicitBuffer;
@@ -148,6 +158,28 @@ function fallbackScopedScan(sourceCode) {
 
     for (const spec of specifiers) {
       const rule = FALLBACK_SEVERED_RULES.find(r => r.type === 'import' && r.package === sourcePkg && r.symbol === spec);
+      if (rule) {
+        violations.push({
+          ruleId: rule.id,
+          package: rule.package,
+          symbol: rule.symbol,
+          replacement: rule.replacement,
+          message: rule.message
+        });
+      }
+    }
+  }
+
+  // Check CJS require destructuring: const { X } = require('pkg');
+  const requireDestructRegex = /(?:const|let|var)\s+\{([^}]+)\}\s*=\s*require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+  let reqMatch;
+  while ((reqMatch = requireDestructRegex.exec(strippedCode)) !== null) {
+    const rawSpecifiers = reqMatch[1] || '';
+    const sourcePkg = reqMatch[2];
+    const specifiers = rawSpecifiers.split(',').map(s => s.trim().split(/\s*:\s*/)[0]).filter(Boolean);
+
+    for (const spec of specifiers) {
+      const rule = FALLBACK_SEVERED_RULES.find(r => r.package === sourcePkg && r.symbol === spec);
       if (rule) {
         violations.push({
           ruleId: rule.id,
@@ -300,10 +332,14 @@ async function main() {
       console.error('');
       console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
       console.error('  Before writing or editing React Native code, you MUST consult the Outside');
-      console.error(`  Referent for the specific package: ${ungroundedPackages[0]}`);
+      console.error(`  Referent for all ungrounded packages: [${ungroundedPackages.join(', ')}]`);
       console.error('');
-      console.error('  REMEDIATION:');
-      console.error(`    MCP Tool: tcdi_compass(package_name: "${ungroundedPackages[0]}")`);
+      console.error('  BATCH REMEDIATION (Ground all packages at once):');
+      console.error(`    CLI Command: npx @intuitui-labs/rn-terrain compass ${ungroundedPackages.join(' ')}`);
+      console.error(`    MCP Tools:   Call tcdi_compass for each package:`);
+      for (const p of ungroundedPackages) {
+        console.error(`      • tcdi_compass(package_name: "${p}")`);
+      }
       console.error('─────────────────────────────────────────────────────────────────');
       console.error('');
       process.exit(2);
@@ -316,7 +352,7 @@ async function main() {
   try {
     const scannerPkgPath = path.resolve(projectRoot, 'packages', 'scanner', 'dist', 'index.js');
     if (fs.existsSync(scannerPkgPath)) {
-      const { ScopedAstParser } = await import(scannerPkgPath);
+      const { ScopedAstParser } = await import(pathToFileURL(scannerPkgPath).href);
       const parser = new ScopedAstParser();
       violations = parser.parseAndScan(virtualDocument, { filePath: targetFilePath });
     } else {
@@ -346,6 +382,46 @@ async function main() {
     console.error('  Regenerate your code using the modern replacements shown above.');
     console.error('─────────────────────────────────────────────────────────────────');
     console.error('');
+
+    // Optional Local Incident Telemetry (STRICTLY OPT-IN BY DEFAULT)
+    const isTelemetryOptedIn =
+      process.env.TERRAIN_TELEMETRY === '1' ||
+      process.env.TERRAIN_TELEMETRY === 'true' ||
+      (() => {
+        try {
+          const rcPath = path.resolve(projectRoot, '.terrainrc');
+          if (fs.existsSync(rcPath)) {
+            const rc = JSON.parse(fs.readFileSync(rcPath, 'utf8'));
+            return rc.telemetry === true;
+          }
+        } catch {}
+        return false;
+      })();
+
+    if (isTelemetryOptedIn) {
+      try {
+        const incidentsDir = path.resolve(projectRoot, '.terrain', 'incidents');
+        if (!fs.existsSync(incidentsDir)) {
+          fs.mkdirSync(incidentsDir, { recursive: true });
+        }
+        const firstFinding = violations[0];
+        const incId = `inc-${(firstFinding.package || 'rn').replace(/[^a-z0-9]/gi, '_')}-${Date.now().toString(36)}`;
+        const incidentData = {
+          id: incId,
+          timestamp: new Date().toISOString(),
+          packageName: firstFinding.package || 'unknown',
+          targetVersion: 'latest',
+          rejectedSnippet: virtualDocument.slice(0, 2000),
+          severedSymbolsDetected: violations.map(v => v.symbol),
+          canonicalReplacements: violations.map(v => v.replacement),
+          status: 'RECORDED'
+        };
+        fs.writeFileSync(path.join(incidentsDir, `${incId}.json`), JSON.stringify(incidentData, null, 2), 'utf8');
+        console.error(`  [LOCAL TELEMETRY RECORDED (OPT-IN)]: Incident ${incId} captured for triage.`);
+        console.error('');
+      } catch {}
+    }
+
     process.exit(2);
   }
 
