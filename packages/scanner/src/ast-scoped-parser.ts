@@ -325,13 +325,15 @@ export class ScopedAstParser {
               }
             }
 
-            // Direct member rule check (e.g. BackHandler.removeEventListener)
-            const memberRule = memberRules.find(r => r.memberObject === objName && r.memberProperty === propName);
+            // Direct member rule check (e.g. BackHandler.removeEventListener, Alert.alert)
+            const fullMemberName = `${objName}.${propName}`;
+            const memberRule = memberRules.find(r => (r.memberObject === objName && r.memberProperty === propName) || r.symbol === fullMemberName) ||
+                               callRules.find(r => r.symbol === fullMemberName);
             if (memberRule) {
               violations.push({
                 ruleId: memberRule.id,
                 package: memberRule.package,
-                symbol: `${objName}.${propName}`,
+                symbol: fullMemberName,
                 replacement: memberRule.replacement,
                 message: memberRule.message,
                 line: callee.loc?.start.line ?? path.node.loc?.start.line ?? 1,
