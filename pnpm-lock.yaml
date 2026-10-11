@@ -243,6 +243,9 @@ importers:
       '@intuitui-labs/openeval':
         specifier: workspace:*
         version: link:../openeval-core
+      '@intuitui-labs/rn-terrain':
+        specifier: workspace:*
+        version: link:../rn-terrain
       '@intuitui-labs/rn-terrain-core':
         specifier: workspace:*
         version: link:../core
@@ -308,6 +311,9 @@ importers:
       '@intuitui-labs/openeval':
         specifier: workspace:*
         version: link:../openeval-core
+      '@intuitui-labs/rn-terrain':
+        specifier: workspace:*
+        version: link:../rn-terrain
       '@intuitui-labs/rn-terrain-core':
         specifier: workspace:*
         version: link:../core
@@ -339,6 +345,64 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 5.0.3(@types/node@24.19.1)(@vitest/coverage-v8@5.0.3)(vite@8.3.0(@types/node@24.19.1)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+
+  packages/rn-terrain:
+    dependencies:
+      '@ast-grep/napi':
+        specifier: ^0.45.3
+        version: 0.45.3
+      '@babel/parser':
+        specifier: ^7.29.9
+        version: 7.29.9
+      '@babel/traverse':
+        specifier: ^7.29.10
+        version: 7.29.10
+      '@babel/types':
+        specifier: ^7.29.8
+        version: 7.29.8
+      '@intuitui-labs/openeval':
+        specifier: workspace:*
+        version: link:../openeval-core
+      '@intuitui-labs/rn-terrain-core':
+        specifier: workspace:*
+        version: link:../core
+      '@intuitui-labs/rn-terrain-scanner':
+        specifier: workspace:*
+        version: link:../scanner
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.32.1
+        version: 1.32.1(zod@4.6.5)
+      cac:
+        specifier: ^7.0.1
+        version: 7.0.1
+      chalk:
+        specifier: ^6.0.1
+        version: 6.0.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
+      semver:
+        specifier: ^7.8.5
+        version: 7.8.5
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.5
+    devDependencies:
+      '@types/babel__traverse':
+        specifier: ^7.28.0
+        version: 7.28.0
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.19.1
+      '@types/semver':
+        specifier: ^7.8.0
+        version: 7.8.0
+      tsx:
+        specifier: 'catalog:'
+        version: 4.23.15
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
 
   packages/scanner:
     dependencies:
@@ -2022,7 +2086,7 @@ snapshots:
 
   '@babel/generator@7.29.8':
     dependencies:
-      '@babel/parser': 7.29.8
+      '@babel/parser': 7.29.9
       '@babel/types': 7.29.8
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
@@ -2045,7 +2109,7 @@ snapshots:
   '@babel/template@7.29.7':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/parser': 7.29.8
+      '@babel/parser': 7.29.9
       '@babel/types': 7.29.8
 
   '@babel/traverse@7.29.10':

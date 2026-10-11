@@ -1,6 +1,6 @@
 {
   "name": "@intuitui-labs/rn-terrain-mcp",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Model Context Protocol (MCP) server delivering React Native vitality intelligence, compatibility verdicts, and ecosystem health to AI coding agents.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -49,6 +49,7 @@
   "author": "Intuitui Labs",
   "license": "MIT",
   "dependencies": {
+    "@intuitui-labs/rn-terrain": "workspace:*",
     "@intuitui-labs/openeval": "workspace:*",
     "@intuitui-labs/rn-terrain-core": "workspace:*",
     "@intuitui-labs/rn-terrain-scanner": "workspace:*",

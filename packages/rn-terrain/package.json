@@ -1,0 +1,106 @@
+{
+  "name": "@intuitui-labs/rn-terrain",
+  "version": "0.4.0",
+  "description": "The unified intelligence, architectural safety, vitality, and diagnostic layer for the React Native ecosystem.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "rn-terrain": "./bin/rn-terrain.js",
+    "rn-eval": "./bin/rn-terrain.js",
+    "rn-terrain-mcp": "./bin/rn-terrain-mcp.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./doctor": {
+      "types": "./dist/doctor/index.d.ts",
+      "import": "./dist/doctor/index.js",
+      "default": "./dist/doctor/index.js"
+    },
+    "./scanner": {
+      "types": "./dist/scanner/index.d.ts",
+      "import": "./dist/scanner/index.js",
+      "default": "./dist/scanner/index.js"
+    },
+    "./openeval": {
+      "types": "./dist/openeval/index.d.ts",
+      "import": "./dist/openeval/index.js",
+      "default": "./dist/openeval/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp/index.d.ts",
+      "import": "./dist/mcp/index.js",
+      "default": "./dist/mcp/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js",
+      "default": "./dist/cli.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --build --noEmit",
+    "clean": "node -e \"fs.rmSync('.turbo',{recursive:true,force:true}); fs.rmSync('dist',{recursive:true,force:true})\"",
+    "prepublishOnly": "pnpm run check-types && pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/intuitui-labs/rn-terrain.git",
+    "directory": "packages/rn-terrain"
+  },
+  "keywords": [
+    "react-native",
+    "mcp",
+    "model-context-protocol",
+    "doctor",
+    "vitality",
+    "ai-agents",
+    "ast",
+    "scanner",
+    "new-architecture",
+    "fabric",
+    "turbomodules",
+    "expo",
+    "rn-terrain"
+  ],
+  "author": "Intuitui Labs",
+  "license": "MIT",
+  "dependencies": {
+    "@ast-grep/napi": "^0.45.3",
+    "@babel/parser": "^7.29.9",
+    "@babel/traverse": "^7.29.10",
+    "@babel/types": "^7.29.8",
+    "@intuitui-labs/openeval": "workspace:*",
+    "@intuitui-labs/rn-terrain-core": "workspace:*",
+    "@intuitui-labs/rn-terrain-scanner": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "cac": "^7.0.1",
+    "chalk": "^6.0.1",
+    "consola": "^3.4.2",
+    "semver": "^7.8.5",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.28.0",
+    "@types/node": "catalog:",
+    "@types/semver": "^7.8.0",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
+}

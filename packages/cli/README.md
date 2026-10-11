@@ -4,8 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 > **The definitive CLI toolchain for React Native architectural health, New Architecture compatibility, pre-flight AI agent grounding, and native dependency doctoring.**
-
-`rn-terrain-cli` (also executable as `rn-eval` or `rn-terrain`) inspects, diagnoses, and elevates your React Native application against temporal breaking boundaries, New Architecture (Fabric / TurboModules) invariants, and native C++/JNI ABI drift.
+>
+> 💡 **Notice**: `@intuitui-labs/rn-terrain-cli` is now maintained as a backwards-compatible forwarding facade. All new features and unified binaries are published in the consolidated flagship package **[`@intuitui-labs/rn-terrain`](https://www.npmjs.com/package/@intuitui-labs/rn-terrain)** (`npx @intuitui-labs/rn-terrain`).
 
 ---
 
