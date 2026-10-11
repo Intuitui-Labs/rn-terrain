@@ -22,7 +22,7 @@ const RN_PKG_REGEX = /\b(react-native|react-native-reanimated|react-native-gestu
 const SEVERED_RULES = [
   {
     id: 'reanimated-v2-gesture-handler',
-    regex: /\buseAnimatedGestureHandler\s*\(/,
+    regex: /\buseAnimatedGestureHandler\b/,
     package: 'react-native-reanimated',
     symbol: 'useAnimatedGestureHandler',
     replacement: 'Gesture.Pan().onUpdate(...) from react-native-gesture-handler with <GestureDetector>',
@@ -30,7 +30,7 @@ const SEVERED_RULES = [
   },
   {
     id: 'rngh-v1-use-pan-gesture',
-    regex: /\busePanGesture\s*\(/,
+    regex: /\busePanGesture\b/,
     package: 'react-native-gesture-handler',
     symbol: 'usePanGesture',
     replacement: 'Gesture.Pan() with GestureDetector',
@@ -64,10 +64,12 @@ async function main() {
       stdio: ['pipe', 'pipe', 'ignore']
     });
 
-    const lines = statusOutput.split('\n').map(l => l.trim()).filter(Boolean);
-    for (const line of lines) {
-      // Porcelain format: XY <path> or XY <old> -> <new>
-      const parts = line.slice(3).split(' -> ');
+    const lines = statusOutput.split('\n').filter(Boolean);
+    for (const rawLine of lines) {
+      if (rawLine.length < 4) continue;
+      // Porcelain format: XY <path> or XY <old> -> <new> (columns 0 and 1 are status, column 2 is space)
+      const filePathPart = rawLine.substring(3).trim();
+      const parts = filePathPart.split(' -> ');
       const filePath = parts[parts.length - 1].trim();
       if (filePath) {
         modifiedFiles.push(path.resolve(projectRoot, filePath));

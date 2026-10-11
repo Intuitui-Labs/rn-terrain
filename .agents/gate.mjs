@@ -42,7 +42,7 @@ for (let i = 0; i < args.length; i++) {
 const DEFAULT_SEVERED_RULES = [
   {
     id: 'reanimated-v2-gesture-handler',
-    regex: /\buseAnimatedGestureHandler\s*\(/,
+    regex: /\buseAnimatedGestureHandler\b/,
     package: 'react-native-reanimated',
     symbol: 'useAnimatedGestureHandler',
     replacement: 'Gesture.Pan().onUpdate(...) from react-native-gesture-handler with <GestureDetector>',
@@ -50,7 +50,7 @@ const DEFAULT_SEVERED_RULES = [
   },
   {
     id: 'rngh-v1-use-pan-gesture',
-    regex: /\busePanGesture\s*\(/,
+    regex: /\busePanGesture\b/,
     package: 'react-native-gesture-handler',
     symbol: 'usePanGesture',
     replacement: 'Gesture.Pan() with GestureDetector',

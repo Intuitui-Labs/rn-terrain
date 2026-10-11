@@ -192,7 +192,7 @@ const tests = [
         encoding: 'utf8',
       });
       const isBlocked = res.status === 2 && res.stderr.includes('STOP GATE: TASK COMPLETION REJECTED');
-      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+      return { pass: isBlocked, exitCode: res.status, stderr: `${res.stderr} (stdout: ${res.stdout})` };
     },
   },
   {
