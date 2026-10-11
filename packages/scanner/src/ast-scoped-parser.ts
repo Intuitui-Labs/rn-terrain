@@ -31,6 +31,7 @@ export interface AstViolation {
   line: number;
   column: number;
   template?: string;
+  severity?: 'hard' | 'soft';
 }
 
 export interface ParseOptions {
@@ -50,17 +51,25 @@ export interface ParseOptions {
  */
 function matchesIgnoreDirective(lineText: string, ruleId: string, symbol: string): boolean {
   if (!lineText) return false;
-  const match = lineText.match(/(?:\/\/|\/\*)\s*@rn-terrain-ignore(?:-next-line)?(?:\s*:?\s*(.*?))?(?:\*\/)?$/i);
+  // Match @rn-terrain-ignore or @rn-terrain-ignore-next-line
+  // followed optionally by : or space
+  const match = lineText.match(/(?:\/\/|\/\*)\s*@rn-terrain-ignore(?:-next-line)?(?::\s*(.*?)|\s+(.*?))?(?:\*\/)?$/i);
   if (!match) return false;
 
-  const directiveArg = (match[1] || '').trim();
-  // If no arguments or a plain reason string (e.g. ": legacy code", "(ticket-123)"), ignore all violations on target line
-  if (!directiveArg || directiveArg.startsWith(':') || directiveArg.startsWith('-') || directiveArg.startsWith('(')) {
+  // If match[1] is matched, it started with a colon `:` e.g. `@rn-terrain-ignore: legacy code`
+  if (match[1] !== undefined) {
     return true;
   }
 
-  // If specific tokens are specified (e.g. "reanimated-v2-gesture-handler" or "useAnimatedGestureHandler")
-  const tokens = directiveArg.split(/[\s,:]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
+  const directiveArg = (match[2] || '').trim();
+  // If no arguments or a plain reason string (e.g. "(ticket-123)"), ignore all violations on target line
+  if (!directiveArg || directiveArg.startsWith('-') || directiveArg.startsWith('(')) {
+    return true;
+  }
+
+  // If there is a colon separating rule from reason, e.g. "reanimated-v2-gesture-handler: legacy code"
+  const beforeColon = (directiveArg.split(':')[0] || '').trim();
+  const tokens = beforeColon.split(/[\s,]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
   const targetTokens = [
     ruleId.toLowerCase(),
     symbol.toLowerCase(),
@@ -196,7 +205,8 @@ export class ScopedAstParser {
                 message: rule.message,
                 line: specifier.loc?.start.line ?? path.node.loc?.start.line ?? 1,
                 column: specifier.loc?.start.column ?? path.node.loc?.start.column ?? 0,
-                template: rule.template
+                template: rule.template,
+                severity: rule.severity ?? 'hard'
               });
             }
           }
@@ -232,7 +242,8 @@ export class ScopedAstParser {
                       message: rule.message,
                       line: prop.loc?.start.line ?? path.node.loc?.start.line ?? 1,
                       column: prop.loc?.start.column ?? path.node.loc?.start.column ?? 0,
-                      template: rule.template
+                      template: rule.template,
+                      severity: rule.severity ?? 'hard'
                     });
                   }
                 }
@@ -280,7 +291,8 @@ export class ScopedAstParser {
                 message: rule.message,
                 line: callee.loc?.start.line ?? path.node.loc?.start.line ?? 1,
                 column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0,
-                template: rule.template
+                template: rule.template,
+                severity: rule.severity ?? 'hard'
               });
             }
           }
@@ -307,7 +319,8 @@ export class ScopedAstParser {
                   message: rule.message,
                   line: callee.loc?.start.line ?? path.node.loc?.start.line ?? 1,
                   column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0,
-                  template: rule.template
+                  template: rule.template,
+                  severity: rule.severity ?? 'hard'
                 });
               }
             }
@@ -323,7 +336,8 @@ export class ScopedAstParser {
                 message: memberRule.message,
                 line: callee.loc?.start.line ?? path.node.loc?.start.line ?? 1,
                 column: callee.loc?.start.column ?? path.node.loc?.start.column ?? 0,
-                template: memberRule.template
+                template: memberRule.template,
+                severity: memberRule.severity ?? 'hard'
               });
             }
           }
@@ -355,7 +369,8 @@ export class ScopedAstParser {
                 message: rule.message,
                 line: path.node.loc?.start.line ?? 1,
                 column: path.node.loc?.start.column ?? 0,
-                template: rule.template
+                template: rule.template,
+                severity: rule.severity ?? 'hard'
               });
             }
           }

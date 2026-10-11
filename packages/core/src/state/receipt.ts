@@ -8,6 +8,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 
 export interface PackageReceipt {
   version: string;
@@ -28,7 +29,24 @@ export interface ReceiptInspectionResult {
 }
 
 /**
- * Persists an atomic grounding receipt to `.agents/state/receipt.json`.
+ * Calculates a deterministic worktree receipt key based on projectRoot and git HEAD.
+ */
+export function getWorktreeReceiptKey(projectRoot: string = process.cwd()): string {
+  try {
+    const gitHeadPath = path.join(projectRoot, '.git', 'HEAD');
+    if (fs.existsSync(gitHeadPath)) {
+      const gitHead = fs.readFileSync(gitHeadPath, 'utf8').trim();
+      return crypto.createHash('sha256').update(`${projectRoot}:${gitHead}`).digest('hex').substring(0, 16);
+    }
+    return crypto.createHash('sha256').update(projectRoot).digest('hex').substring(0, 16);
+  } catch {
+    return crypto.createHash('sha256').update(projectRoot).digest('hex').substring(0, 16);
+  }
+}
+
+/**
+ * Persists an atomic grounding receipt to `.agents/state/receipts/<worktree-key>.json`
+ * and synchronizes with `.agents/state/receipt.json`.
  */
 export function writeGroundingReceipt(
   packageName: string,
@@ -37,20 +55,28 @@ export function writeGroundingReceipt(
   projectRoot: string = process.cwd()
 ): GroundingReceipt {
   const stateDir = path.resolve(projectRoot, '.agents', 'state');
-  if (!fs.existsSync(stateDir)) {
-    fs.mkdirSync(stateDir, { recursive: true });
+  const receiptsDir = path.join(stateDir, 'receipts');
+  if (!fs.existsSync(receiptsDir)) {
+    fs.mkdirSync(receiptsDir, { recursive: true });
   }
 
-  const receiptPath = path.join(stateDir, 'receipt.json');
+  const worktreeKey = getWorktreeReceiptKey(projectRoot);
+  const worktreeReceiptPath = path.join(receiptsDir, `${worktreeKey}.json`);
+  const rootReceiptPath = path.join(stateDir, 'receipt.json');
+
   let receipt: GroundingReceipt = {
     lastGrounding: '',
     lastAction: action,
     packages: {},
   };
 
-  if (fs.existsSync(receiptPath)) {
+  const targetPath = fs.existsSync(worktreeReceiptPath)
+    ? worktreeReceiptPath
+    : (fs.existsSync(rootReceiptPath) ? rootReceiptPath : null);
+
+  if (targetPath) {
     try {
-      const raw = fs.readFileSync(receiptPath, 'utf8');
+      const raw = fs.readFileSync(targetPath, 'utf8');
       receipt = JSON.parse(raw);
     } catch {
       // In case of corrupt file, reset structure
@@ -67,18 +93,33 @@ export function writeGroundingReceipt(
     timestamp: now,
   };
 
-  fs.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2), 'utf8');
+  const serialized = JSON.stringify(receipt, null, 2);
+  try {
+    fs.writeFileSync(worktreeReceiptPath, serialized, 'utf8');
+  } catch {}
+  try {
+    fs.writeFileSync(rootReceiptPath, serialized, 'utf8');
+  } catch {}
+
   return receipt;
 }
 
 /**
  * Inspects whether a valid, non-expired receipt exists in the target project.
+ * Checks worktree receipt first, then falls back to root receipt.
  */
 export function inspectGroundingReceipt(
   projectRoot: string = process.cwd(),
   ttlMs: number = 3600000 // 60 minutes default TTL
 ): ReceiptInspectionResult {
-  const receiptPath = path.resolve(projectRoot, '.agents', 'state', 'receipt.json');
+  const stateDir = path.resolve(projectRoot, '.agents', 'state');
+  const worktreeKey = getWorktreeReceiptKey(projectRoot);
+  const worktreeReceiptPath = path.join(stateDir, 'receipts', `${worktreeKey}.json`);
+  const rootReceiptPath = path.join(stateDir, 'receipt.json');
+
+  const receiptPath = fs.existsSync(worktreeReceiptPath)
+    ? worktreeReceiptPath
+    : rootReceiptPath;
 
   if (!fs.existsSync(receiptPath)) {
     return {

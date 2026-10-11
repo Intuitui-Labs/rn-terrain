@@ -18,7 +18,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 // Parse arguments
 const args = process.argv.slice(2);
@@ -44,6 +44,23 @@ for (let i = 0; i < args.length; i++) {
 // Built-in fallback rule catalog
 const FALLBACK_SEVERED_RULES = [
   {
+    id: 'rn-core-alert-advisory',
+    package: 'react-native',
+    symbol: 'Alert.alert',
+    type: 'call',
+    severity: 'soft',
+    replacement: 'Custom Modal or modern dialog component',
+    message: "'Alert.alert' has platform visual inconsistencies. Custom modal recommended."
+  },
+  {
+    id: 'reanimated-v2-gesture-handler-import',
+    package: 'react-native-reanimated',
+    symbol: 'useAnimatedGestureHandler',
+    type: 'import',
+    replacement: "Gesture.Pan().onUpdate(...) from 'react-native-gesture-handler' with <GestureDetector>",
+    message: "'useAnimatedGestureHandler' was removed/deprecated in Reanimated v3/v4 worklets. Use modern 'Gesture.Pan()' instead."
+  },
+  {
     id: 'reanimated-v2-gesture-handler',
     package: 'react-native-reanimated',
     symbol: 'useAnimatedGestureHandler',
@@ -65,6 +82,14 @@ const panGesture = Gesture.Pan()
 </GestureDetector>`
   },
   {
+    id: 'reanimated-v1-interpolate-node-import',
+    package: 'react-native-reanimated',
+    symbol: 'interpolateNode',
+    type: 'import',
+    replacement: "'interpolate()' from 'react-native-reanimated'",
+    message: "'interpolateNode' is a legacy Reanimated v1 API removed in modern versions. Use 'interpolate()' instead."
+  },
+  {
     id: 'reanimated-v1-interpolate-node',
     package: 'react-native-reanimated',
     symbol: 'interpolateNode',
@@ -74,6 +99,14 @@ const panGesture = Gesture.Pan()
     template: `import { interpolate, Extrapolation } from 'react-native-reanimated';
 
 const output = interpolate(progress.value, [0, 1], [0, 100], Extrapolation.CLAMP);`
+  },
+  {
+    id: 'rngh-v1-use-pan-gesture-import',
+    package: 'react-native-gesture-handler',
+    symbol: 'usePanGesture',
+    type: 'import',
+    replacement: "'Gesture.Pan()' with <GestureDetector>",
+    message: "'usePanGesture' was removed in RNGH 2.0. Use 'Gesture.Pan()' with <GestureDetector>."
   },
   {
     id: 'rngh-v1-use-pan-gesture',
@@ -137,15 +170,20 @@ useEffect(() => {
 
 function matchesIgnoreDirective(lineText, ruleId, symbol) {
   if (!lineText) return false;
-  const match = lineText.match(/(?:\/\/|\/\*)\s*@rn-terrain-ignore(?:-next-line)?(?:\s*:?\s*(.*?))?(?:\*\/)?$/i);
+  const match = lineText.match(/(?:\/\/|\/\*)\s*@rn-terrain-ignore(?:-next-line)?(?::\s*(.*?)|\s+(.*?))?(?:\*\/)?$/i);
   if (!match) return false;
 
-  const directiveArg = (match[1] || '').trim();
-  if (!directiveArg || directiveArg.startsWith(':') || directiveArg.startsWith('-') || directiveArg.startsWith('(')) {
+  if (match[1] !== undefined) {
     return true;
   }
 
-  const tokens = directiveArg.split(/[\s,:]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
+  const directiveArg = (match[2] || '').trim();
+  if (!directiveArg || directiveArg.startsWith('-') || directiveArg.startsWith('(')) {
+    return true;
+  }
+
+  const beforeColon = directiveArg.split(':')[0].trim();
+  const tokens = beforeColon.split(/[\s,]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
   const targetTokens = [
     (ruleId || '').toLowerCase(),
     (symbol || '').toLowerCase(),
@@ -250,6 +288,7 @@ function fallbackScopedScan(sourceCode) {
           replacement: rule.replacement,
           message: rule.message,
           template: rule.template,
+          severity: rule.severity || 'hard',
           line: getLineNumber(impMatch.index)
         });
       }
@@ -274,6 +313,7 @@ function fallbackScopedScan(sourceCode) {
           replacement: rule.replacement,
           message: rule.message,
           template: rule.template,
+          severity: rule.severity || 'hard',
           line: getLineNumber(reqMatch.index)
         });
       }
@@ -293,6 +333,7 @@ function fallbackScopedScan(sourceCode) {
         replacement: rule.replacement,
         message: rule.message,
         template: rule.template,
+        severity: rule.severity || 'hard',
         line: getLineNumber(callMatch.index)
       });
     }
@@ -302,34 +343,67 @@ function fallbackScopedScan(sourceCode) {
   return violations.filter(v => !isViolationIgnored(sourceLines, v));
 }
 
+function readStdinPayload(timeoutMs = 120) {
+  return new Promise((resolve) => {
+    if (process.stdin.isTTY) return resolve(null);
+    let chunks = [];
+    let completed = false;
+
+    const timer = setTimeout(() => {
+      if (!completed) {
+        completed = true;
+        process.stdin.pause();
+        process.stdin.removeAllListeners('data');
+        process.stdin.removeAllListeners('end');
+        process.stdin.removeAllListeners('error');
+        resolve(chunks.length > 0 ? Buffer.concat(chunks).toString('utf8').trim() : null);
+      }
+    }, timeoutMs);
+
+    process.stdin.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
+
+    process.stdin.on('end', () => {
+      if (!completed) {
+        completed = true;
+        clearTimeout(timer);
+        resolve(chunks.length > 0 ? Buffer.concat(chunks).toString('utf8').trim() : null);
+      }
+    });
+
+    process.stdin.on('error', () => {
+      if (!completed) {
+        completed = true;
+        clearTimeout(timer);
+        resolve(null);
+      }
+    });
+
+    process.stdin.resume();
+  });
+}
+
 async function main() {
   let payloadInput = null;
 
-  // Read piped stdin (JSON payload from Claude Code, Codex, OpenCode)
-  if (!process.stdin.isTTY) {
+  // Read piped stdin (JSON payload from Claude Code, Codex, OpenCode) with timeout protection
+  const rawInput = await readStdinPayload(120);
+  if (rawInput) {
     try {
-      const chunks = [];
-      for await (const chunk of process.stdin) {
-        chunks.push(chunk);
+      const payload = JSON.parse(rawInput);
+      payloadInput = payload.input || payload.args || payload;
+      if (!targetFilePath) {
+        targetFilePath = payloadInput?.file_path ||
+                         payloadInput?.filePath ||
+                         payloadInput?.path ||
+                         '';
       }
-      const rawInput = Buffer.concat(chunks).toString('utf8').trim();
-      if (rawInput) {
-        try {
-          const payload = JSON.parse(rawInput);
-          payloadInput = payload.input || payload.args || payload;
-          if (!targetFilePath) {
-            targetFilePath = payloadInput?.file_path ||
-                             payloadInput?.filePath ||
-                             payloadInput?.path ||
-                             '';
-          }
-        } catch {
-          if (!targetFilePath) {
-            targetFilePath = rawInput;
-          }
-        }
+    } catch {
+      if (!targetFilePath) {
+        targetFilePath = rawInput;
       }
-    } catch {}
+    }
   }
 
   if (!targetFilePath) {
@@ -348,6 +422,11 @@ async function main() {
   // 2. Synthesize virtual post-edit document (Remedy 2: Differential Horizon Synthesizer)
   const virtualDocument = synthesizeVirtualDocument(targetFilePath, payloadInput);
 
+  if (/(?:\/\/|\/\*)\s*@rn-terrain-ignore-file\b/i.test(virtualDocument)) {
+    console.error('ℹ️ [RN-TERRAIN GATE]: File-level ignore directive (@rn-terrain-ignore-file) detected. Write permitted.');
+    process.exit(0);
+  }
+
   const RN_PKG_REGEX = /\b(react-native|react-native-reanimated|react-native-gesture-handler|react-native-worklets|@shopify\/react-native-skia|\bexpo\b)\b/;
   const isRnContent = RN_PKG_REGEX.test(virtualDocument);
   const isRnPath = normalizedPath.includes('mobile/') ||
@@ -363,7 +442,19 @@ async function main() {
 
   // 3. Package-Bound Merkle Receipt Validation (Remedy 5)
   const projectRoot = process.cwd();
-  const receiptPath = path.resolve(projectRoot, '.agents', 'state', 'receipt.json');
+  let receiptPath = path.resolve(projectRoot, '.agents', 'state', 'receipt.json');
+  try {
+    let gitHead = '';
+    const gitHeadPath = path.join(projectRoot, '.git', 'HEAD');
+    if (fs.existsSync(gitHeadPath)) {
+      gitHead = fs.readFileSync(gitHeadPath, 'utf8').trim();
+    }
+    const hash = crypto.createHash('sha256').update(`${projectRoot}:${gitHead}`).digest('hex').substring(0, 16);
+    const worktreeReceipt = path.resolve(projectRoot, '.agents', 'state', 'receipts', `${hash}.json`);
+    if (fs.existsSync(worktreeReceipt)) {
+      receiptPath = worktreeReceipt;
+    }
+  } catch {}
   const importedPackages = extractImportedPackages(virtualDocument);
 
   let receiptData = null;
@@ -475,7 +566,11 @@ async function main() {
   let violations = [];
 
   try {
-    const scannerPkgPath = path.resolve(projectRoot, 'packages', 'scanner', 'dist', 'index.js');
+    let scannerPkgPath = path.resolve(projectRoot, 'packages', 'scanner', 'dist', 'index.js');
+    if (!fs.existsSync(scannerPkgPath)) {
+      const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+      scannerPkgPath = path.resolve(scriptDir, '..', 'packages', 'scanner', 'dist', 'index.js');
+    }
     if (fs.existsSync(scannerPkgPath)) {
       const { ScopedAstParser } = await import(pathToFileURL(scannerPkgPath).href);
       const parser = new ScopedAstParser();
@@ -487,7 +582,23 @@ async function main() {
     violations = fallbackScopedScan(virtualDocument);
   }
 
-  if (violations.length > 0) {
+  const hardViolations = violations.filter(v => v.severity !== 'soft');
+  const softViolations = violations.filter(v => v.severity === 'soft');
+
+  if (softViolations.length > 0) {
+    console.error('');
+    console.error('ℹ [RN-TERRAIN ADVISORY DEPRECATION: ACTION ALLOWED WITH WARNING]');
+    console.error('─────────────────────────────────────────────────────────────────');
+    for (const v of softViolations) {
+      console.error(`  • Deprecated Symbol: ${v.symbol} (${v.package})`);
+      console.error(`    Suggested Fix:     ${v.replacement}`);
+      console.error(`    Detail:            ${v.message}`);
+    }
+    console.error('─────────────────────────────────────────────────────────────────');
+    console.error('');
+  }
+
+  if (hardViolations.length > 0) {
     console.error('');
     console.error('🛑 [RN-TERRAIN PRE-WRITE BUFFER AST GATE: ACTION BLOCKED]');
     console.error('─────────────────────────────────────────────────────────────────');
@@ -495,16 +606,25 @@ async function main() {
     console.error('  Status:         SEVERED / OBSOLETE API DETECTED IN SYNTHESIZED BUFFER');
     console.error('');
     console.error('  VIOLATIONS FOUND:');
-    for (const v of violations) {
+    for (const v of hardViolations) {
       console.error(`    • Symbol:      ${v.symbol}`);
       console.error(`      Package:     ${v.package}`);
       console.error(`      Replacement: ${v.replacement}`);
       console.error(`      Detail:      ${v.message}`);
+      if (v.template) {
+        console.error('');
+        console.error('  📋 CANONICAL DROP-IN REPLACEMENT TEMPLATE (COPY DIRECTLY):');
+        console.error('  ─────────────────────────────────────────────────────────────────');
+        for (const line of v.template.split('\n')) {
+          console.error(`  ${line}`);
+        }
+        console.error('  ─────────────────────────────────────────────────────────────────');
+      }
       console.error('');
     }
     console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
     console.error('  Your proposed code contains obsolete/severed APIs that will cause runtime crashes.');
-    console.error('  Regenerate your code using the modern replacements shown above.');
+    console.error('  Regenerate your code using the exact canonical template shown above.');
     console.error('─────────────────────────────────────────────────────────────────');
     console.error('');
 

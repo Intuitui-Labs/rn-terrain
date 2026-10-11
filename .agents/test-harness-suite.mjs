@@ -36,7 +36,7 @@ const postToolScriptPath = path.resolve('.agents', 'post-tool.mjs');
 fs.mkdirSync(stateDir, { recursive: true });
 
 console.log('═════════════════════════════════════════════════════════════════');
-console.log('🧪 VERIFYING 18 PRODUCTION-GRADE CONTROL-PLANE INVARIANTS');
+console.log('🧪 VERIFYING 21 PRODUCTION-GRADE CONTROL-PLANE INVARIANTS');
 console.log(`📁 Test Sandbox: ${tempDir}`);
 console.log('═════════════════════════════════════════════════════════════════\n');
 
@@ -374,6 +374,78 @@ const tests = [
       return { pass: res.status === 0 && Boolean(bothGrounded), exitCode: res.status, stderr: res.stderr };
     },
   },
+  {
+    name: '19. Repo-Scoped RN Directory Sync (rn-terrain sync:directory) (Expected: Exit 0 + Directory Cache)',
+    run: () => {
+      const subRepo = path.join(tempDir, 'sub-repo-app');
+      fs.mkdirSync(subRepo, { recursive: true });
+      fs.writeFileSync(path.join(subRepo, 'package.json'), JSON.stringify({
+        name: 'test-app',
+        dependencies: {
+          'react-native-reanimated': '^3.16.0',
+          'react-native-screens': '^4.4.0'
+        }
+      }, null, 2), 'utf8');
+
+      const cliPath = path.resolve('packages', 'rn-terrain', 'bin', 'rn-terrain.js');
+      const res = spawnSync('node', [cliPath, 'sync:directory', '--cwd', subRepo, '--json'], {
+        cwd: tempDir,
+        encoding: 'utf8',
+      });
+      const cachePath = path.join(subRepo, '.agents', 'state', 'directory-cache.json');
+      const hasCache = fs.existsSync(cachePath);
+      const cacheData = hasCache ? JSON.parse(fs.readFileSync(cachePath, 'utf8')) : null;
+      const hasReanimated = Boolean(cacheData?.packages?.['react-native-reanimated']);
+      return { pass: res.status === 0 && hasReanimated, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '20. Two-Tier Severity Gate: Soft Advisory Deprecation (Expected: Exit 0 Allowed + Stderr Advisory)',
+    run: () => {
+      cutReceipt(['react-native']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/AlertView.tsx',
+          content: "import { Alert } from 'react-native';\nexport const showAlert = () => Alert.alert('Notice');",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      const isAllowedWithAdvisory = res.status === 0 && res.stderr.includes('ADVISORY DEPRECATION');
+      return { pass: isAllowedWithAdvisory, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '21. Afferent Veto Gate: Zombie / Unmaintained Library (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt(['react-native-zombie-widget']);
+      const cachePath = path.join(tempDir, '.agents', 'state', 'directory-cache.json');
+      fs.writeFileSync(cachePath, JSON.stringify({
+        projectRoot: tempDir,
+        lastSync: new Date().toISOString(),
+        packages: {
+          'react-native-zombie-widget': {
+            packageName: 'react-native-zombie-widget',
+            version: '1.0.0',
+            supportsNewArchitecture: false,
+            isExpoCompatible: false,
+            unmaintained: true
+          }
+        }
+      }, null, 2), 'utf8');
+
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/ZombieCard.tsx',
+          content: "import { Widget } from 'react-native-zombie-widget';",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      const isBlocked = res.status === 2 && res.stderr.includes('ZOMBIE PACKAGE VETO');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
 ];
 
 let allPassed = true;
@@ -402,7 +474,7 @@ try {
 
 console.log('\n═════════════════════════════════════════════════════════════════');
 if (allPassed) {
-  console.log('🎉 ALL 18 PRODUCTION-GRADE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
+  console.log('🎉 ALL 21 PRODUCTION-GRADE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
   process.exit(0);
 } else {
   console.log('❌ SOME INVARIANT TESTS FAILED');

@@ -20,7 +20,26 @@ export interface SeveredRule {
 }
 
 export const CANONICAL_SEVERED_RULES: SeveredRule[] = [
+  // ── 0. Soft Advisory Rules (Java-Style Two-Tier Severity) ─────────────────────
+  {
+    id: 'rn-core-alert-advisory',
+    package: 'react-native',
+    symbol: 'Alert.alert',
+    type: 'call',
+    severity: 'soft',
+    replacement: 'Custom Modal or modern dialog component',
+    message: "'Alert.alert' has platform visual inconsistencies. Custom modal recommended."
+  },
   // ── 1. Reanimated Severed APIs ───────────────────────────────────────────────
+  {
+    id: 'reanimated-v2-gesture-handler-import',
+    package: 'react-native-reanimated',
+    symbol: 'useAnimatedGestureHandler',
+    type: 'import',
+    replacement: "Gesture.Pan().onUpdate(...) from 'react-native-gesture-handler' with <GestureDetector>",
+    message: "'useAnimatedGestureHandler' was removed/deprecated in Reanimated v3/v4 worklets. Use modern 'Gesture.Pan()' instead.",
+    minBreakingVersion: '3.0.0'
+  },
   {
     id: 'reanimated-v2-gesture-handler',
     package: 'react-native-reanimated',
@@ -47,6 +66,15 @@ const panGesture = Gesture.Pan()
 <GestureDetector gesture={panGesture}>
   <Animated.View style={animatedStyle} />
 </GestureDetector>`
+  },
+  {
+    id: 'reanimated-v1-interpolate-node-import',
+    package: 'react-native-reanimated',
+    symbol: 'interpolateNode',
+    type: 'import',
+    replacement: "'interpolate()' from 'react-native-reanimated'",
+    message: "'interpolateNode' is a legacy Reanimated v1 API removed in modern versions. Use 'interpolate()' instead.",
+    minBreakingVersion: '2.0.0'
   },
   {
     id: 'reanimated-v1-interpolate-node',
@@ -95,6 +123,15 @@ const progress = useSharedValue(0);`
   },
 
   // ── 2. Gesture Handler Severed APIs ─────────────────────────────────────────
+  {
+    id: 'rngh-v1-use-pan-gesture-import',
+    package: 'react-native-gesture-handler',
+    symbol: 'usePanGesture',
+    type: 'import',
+    replacement: "'Gesture.Pan()' with <GestureDetector>",
+    message: "'usePanGesture' was removed in RNGH 2.0. Use 'Gesture.Pan()' with <GestureDetector>.",
+    minBreakingVersion: '2.0.0'
+  },
   {
     id: 'rngh-v1-use-pan-gesture',
     package: 'react-native-gesture-handler',
