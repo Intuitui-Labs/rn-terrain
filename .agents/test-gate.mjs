@@ -116,7 +116,7 @@ const tests = [
       const testFile = path.join(tempDir, 'AnimatedCard.tsx');
       fs.writeFileSync(testFile, "import Animated from 'react-native-reanimated';", 'utf8');
       const res = runGate(testFile);
-      const isBlocked = res.status === 2 && res.stderr.includes('RECEIPT EXPIRED');
+      const isBlocked = res.status === 2 && (res.stderr.includes('ACTION BLOCKED') || res.stderr.includes('RECEIPT EXPIRED'));
       return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
     },
   },

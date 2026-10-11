@@ -36,7 +36,7 @@ const postToolScriptPath = path.resolve('.agents', 'post-tool.mjs');
 fs.mkdirSync(stateDir, { recursive: true });
 
 console.log('═════════════════════════════════════════════════════════════════');
-console.log('🧪 VERIFYING 21 PRODUCTION-GRADE CONTROL-PLANE INVARIANTS');
+console.log('🧪 VERIFYING 24 PRODUCTION-GRADE CONTROL-PLANE INVARIANTS');
 console.log(`📁 Test Sandbox: ${tempDir}`);
 console.log('═════════════════════════════════════════════════════════════════\n');
 
@@ -446,6 +446,58 @@ const tests = [
       return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
     },
   },
+  {
+    name: '22. Clonal Selection Immune Memory: Veto creates persistent antibody (Expected: Antibody in immune-memory.json)',
+    run: () => {
+      cutReceipt(['react-native-reanimated']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/CardAIS.tsx',
+          content: "import { useAnimatedGestureHandler } from 'react-native-reanimated';",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      const immuneMemoryPath = path.join(tempDir, '.agents', 'state', 'immune-memory.json');
+      const hasMemory = fs.existsSync(immuneMemoryPath);
+      let hasAntibody = false;
+      if (hasMemory) {
+        try {
+          const mem = JSON.parse(fs.readFileSync(immuneMemoryPath, 'utf8'));
+          hasAntibody = Object.values(mem.antibodies || {}).some(ab => ab.callee === 'useAnimatedGestureHandler');
+        } catch {}
+      }
+      return { pass: res.status === 2 && hasAntibody, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '23. Post-Run Hermes Micro-Sentry: Rejects strictness/reserved-word violations (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt(['react-native']);
+      const payload = {
+        tool: 'Write',
+        input: {
+          file_path: 'src/components/HermesCrash.tsx',
+          content: "import React from 'react';\nconst interface = 'illegal-in-strict-mode';",
+        },
+      };
+      const res = runGateWithStdin(payload);
+      const isBlocked = res.status === 2 && res.stderr.includes('HERMES ENGINE COMPATIBILITY / STRICTNESS FAILURE');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '24. Empirical Statistical t-Test Engine (rn-terrain eval:ttest) (Expected: Exit 0 + Scientific Markdown Report)',
+    run: () => {
+      const cliPath = path.resolve('packages', 'rn-terrain', 'bin', 'rn-terrain.js');
+      const res = spawnSync('node', [cliPath, 'eval:ttest', '--tasks', '10'], {
+        cwd: tempDir,
+        encoding: 'utf8',
+      });
+      const hasTTestReport = res.stdout.includes('Statistical Hypothesis t-Test Report') && res.stdout.includes('Reject H0');
+      return { pass: res.status === 0 && hasTTestReport, exitCode: res.status, stderr: res.stderr };
+    },
+  },
 ];
 
 let allPassed = true;
@@ -474,7 +526,7 @@ try {
 
 console.log('\n═════════════════════════════════════════════════════════════════');
 if (allPassed) {
-  console.log('🎉 ALL 21 PRODUCTION-GRADE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
+  console.log('🎉 ALL 24 PRODUCTION-GRADE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
   process.exit(0);
 } else {
   console.log('❌ SOME INVARIANT TESTS FAILED');

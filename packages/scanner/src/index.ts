@@ -18,6 +18,8 @@ export * from './dependency-doctor.js';
 export * from './expo-doctor-bridge.js';
 export * from './config-loader.js';
 export * from './native-surface.js';
+export * from './immune-system.js';
+export * from './hermes-sentry.js';
 
 export type {
   ScanOptions,

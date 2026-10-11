@@ -45,6 +45,7 @@ import {
   updateRadarRecord,
 } from './radar.js';
 import { printBenchmarkReport } from './benchmark/harness-benchmark.js';
+import { runStatisticalBenchmark } from './benchmark/statistical-ttest.js';
 
 export const cli = cac('rn-terrain');
 
@@ -525,6 +526,19 @@ cli
   });
 
 cli
+  .command('eval:ttest', 'Execute formal statistical hypothesis t-test benchmark (Welch & Paired t-tests)')
+  .option('--tasks <count>', 'Number of benchmark tasks to run (default: 30)', { default: 30 })
+  .action((options) => {
+    try {
+      const taskCount = parseInt(options.tasks, 10) || 30;
+      const res = runStatisticalBenchmark(taskCount);
+      console.log(res.markdownReport);
+    } catch (e: any) {
+      consola.error('Failed to run statistical benchmark:', e.message);
+    }
+  });
+
+cli
   .command('sync <package>', 'Run Hexagonal Ingestion Pipeline across RN Directory, GitHub, npm, and Bundlephobia')
   .action(async (packageName) => {
     try {
@@ -728,14 +742,33 @@ cli
       const resolved = path.resolve(targetPath);
       const filesToScan: string[] = [];
 
+      const IGNORED_DIRS = new Set([
+        'node_modules',
+        '.git',
+        'dist',
+        'build',
+        'Pods',
+        '.expo',
+        '.cache',
+        'coverage',
+        '.next',
+        'DerivedData',
+        '.gradle',
+        '.turbo',
+        'vendor',
+      ]);
+
       function collectFiles(dirOrFile: string) {
         if (!fs.existsSync(dirOrFile)) return;
         const stat = fs.statSync(dirOrFile);
         if (stat.isFile() && /\.(tsx|jsx|ts|js)$/.test(dirOrFile)) {
           filesToScan.push(dirOrFile);
-        } else if (stat.isDirectory() && !dirOrFile.includes('node_modules') && !dirOrFile.includes('.git') && !dirOrFile.includes('dist')) {
-          for (const child of fs.readdirSync(dirOrFile)) {
-            collectFiles(path.join(dirOrFile, child));
+        } else if (stat.isDirectory()) {
+          const baseName = path.basename(dirOrFile);
+          if (!IGNORED_DIRS.has(baseName)) {
+            for (const child of fs.readdirSync(dirOrFile)) {
+              collectFiles(path.join(dirOrFile, child));
+            }
           }
         }
       }

@@ -564,6 +564,8 @@ async function main() {
 
   // 4. Scoped AST Invariant Verification with Comment & Mock Immunity (Remedy 1)
   let violations = [];
+  let ImmuneSystem = null;
+  let HermesSentry = null;
 
   try {
     let scannerPkgPath = path.resolve(projectRoot, 'packages', 'scanner', 'dist', 'index.js');
@@ -572,8 +574,10 @@ async function main() {
       scannerPkgPath = path.resolve(scriptDir, '..', 'packages', 'scanner', 'dist', 'index.js');
     }
     if (fs.existsSync(scannerPkgPath)) {
-      const { ScopedAstParser } = await import(pathToFileURL(scannerPkgPath).href);
-      const parser = new ScopedAstParser();
+      const scannerMod = await import(pathToFileURL(scannerPkgPath).href);
+      const parser = new scannerMod.ScopedAstParser();
+      ImmuneSystem = scannerMod.ImmuneSystem;
+      HermesSentry = scannerMod.HermesSentry;
       violations = parser.parseAndScan(virtualDocument, { filePath: targetFilePath });
     } else {
       violations = fallbackScopedScan(virtualDocument);
@@ -628,6 +632,24 @@ async function main() {
     console.error('─────────────────────────────────────────────────────────────────');
     console.error('');
 
+    // Clonal Selection: Synthesize antibodies in immune memory ledger
+    if (ImmuneSystem) {
+      try {
+        const ais = new ImmuneSystem(path.resolve(projectRoot, '.agents', 'state', 'immune-memory.json'));
+        for (const v of hardViolations) {
+          const parts = (v.symbol || '').split('.');
+          ais.registerAntibody({
+            callee: parts.length > 1 ? parts[parts.length - 1] : parts[0] || v.symbol,
+            object: parts.length > 1 ? parts[0] : undefined,
+            sourcePackage: v.package,
+            replacement: v.replacement,
+            message: v.message,
+            severity: 'hard'
+          });
+        }
+      } catch {}
+    }
+
     // Optional Local Incident Telemetry (STRICTLY OPT-IN BY DEFAULT)
     const isTelemetryOptedIn =
       process.env.TERRAIN_TELEMETRY === '1' ||
@@ -668,6 +690,30 @@ async function main() {
     }
 
     process.exit(2);
+  }
+
+  // 5. Post-Run Hermes Micro-Bytecode & Strictness Sentry
+  if (HermesSentry && virtualDocument.trim().length > 0) {
+    try {
+      const hermesRes = HermesSentry.verify(virtualDocument, targetFilePath);
+      if (!hermesRes.valid) {
+        console.error('');
+        console.error('🛑 [RN-TERRAIN POST-RUN HERMES SENTRY: ACTION BLOCKED]');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error(`  Target Surface: ${normalizedPath}`);
+        console.error('  Status:         HERMES ENGINE COMPATIBILITY / STRICTNESS FAILURE');
+        for (const diag of hermesRes.diagnostics) {
+          console.error(`  • [${diag.rule || 'hermes-syntax'}] ${diag.message} (line ${diag.line || 1}:${diag.column || 0})`);
+        }
+        console.error('');
+        console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
+        console.error('  Hermes JavaScript engine prohibits this construct (strict mode syntax / reserved keyword).');
+        console.error('  Fix the syntax error before proceeding.');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error('');
+        process.exit(2);
+      }
+    } catch {}
   }
 
   // All invariants satisfied -> ALLOW
