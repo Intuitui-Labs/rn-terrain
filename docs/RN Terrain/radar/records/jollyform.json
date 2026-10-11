@@ -1,0 +1,38 @@
+{
+  "id": "jollyform",
+  "subject": "jollyform",
+  "subject_type": "package",
+  "verdict": "HOLD",
+  "confidence": "high",
+  "category": "form-engine",
+  "use_case": "Mobile dynamic form layout, schema orchestration, and validation engine",
+  "problem": "Standalone form engine viability vs full-chain requirements",
+  "current_stack": [
+    "react-hook-form",
+    "zod"
+  ],
+  "compatibility": {
+    "expo": "compatible",
+    "react_native": "compatible",
+    "new_architecture": "compatible",
+    "web": "compatible"
+  },
+  "risks": [
+    "Market squeeze: developers write thin custom form hooks or adopt full-stack SaaS form builders.",
+    "Unbundled form engine lacks persistence, submission queues, and analytics."
+  ],
+  "alternatives": [
+    "react-hook-form + zod (custom)",
+    "Google Forms / Typeform (SaaS)"
+  ],
+  "evidence": [
+    {
+      "kind": "architecture-decision",
+      "value": "Market judgement: discounted as a standalone product. Retained strictly as an internal engine."
+    }
+  ],
+  "decision": "Retired as a standalone commercial product. Retained as an internal core engine for the app. People require the whole chain (from visual design through storage and analytics) or build custom; standalone package distribution is discontinued.",
+  "revisit_when": "Only if complete end-to-end form backend and cloud submission storage are packaged together.",
+  "created_at": "2026-10-11T09:14:00.000Z",
+  "updated_at": "2026-10-11T09:14:00.000Z"
+}

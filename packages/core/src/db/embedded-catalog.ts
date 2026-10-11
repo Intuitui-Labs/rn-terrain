@@ -306,6 +306,18 @@ export class EmbeddedCatalogAdapter implements TerrainCatalogPort {
         decision: 'Recommended foundation for next-generation native modules.',
         updated_at: now,
       },
+      {
+        id: 'jollyform',
+        subject: 'jollyform',
+        subject_type: 'package',
+        verdict: 'HOLD',
+        confidence: 'high',
+        category: 'FORM_ENGINE',
+        use_case: 'Mobile dynamic form layout, schema orchestration, and validation engine',
+        decision:
+          'Retired as a standalone product. Retained as an internal engine. Standalone market adoption requires the entire pipeline (visual designer -> persistence -> submission queue -> analytics), which is captured by full-stack SaaS or in-house integrations.',
+        updated_at: now,
+      },
     ];
 
     for (const rad of initialRadar) {
