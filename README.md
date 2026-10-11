@@ -171,6 +171,8 @@ pnpm run build
 ---
 
 ## 📚 Documentation
+- [Agent Grounding Gate & Outside Referent Architecture (`docs/architecture/agent-grounding-gate-and-referent-architecture.md`)](./docs/architecture/agent-grounding-gate-and-referent-architecture.md)
+- [Zero-Friction Deterministic Innovations (`docs/concepts/zero-friction-deterministic-innovations.md`)](./docs/concepts/zero-friction-deterministic-innovations.md)
 - [Terrain Configuration & Local Shape (`docs/concepts/terrain-configuration-and-local-shape.md`)](./docs/concepts/terrain-configuration-and-local-shape.md)
 - [Publishing Runbook (`docs/publishing.md`)](./docs/publishing.md)
 - [Testing Architecture & G0/G1 Claims (`docs/testing.md`)](./docs/testing.md)
