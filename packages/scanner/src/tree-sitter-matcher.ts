@@ -25,6 +25,7 @@ export interface PatternFinding {
   line: number;
   column: number;
   matchedText: string;
+  symbol?: string;
   replacement?: string;
   message: string;
 }

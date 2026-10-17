@@ -190,6 +190,102 @@ CREATE TABLE IF NOT EXISTS technology_radar (
   metadata_json TEXT,                        -- JSON object with compatibility, risks, alternatives
   updated_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
 );
+
+-- 12. Package Changes (Chronos Sourced Timeline)
+CREATE TABLE IF NOT EXISTS package_changes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  package_uuid TEXT NOT NULL,
+  npm_name TEXT NOT NULL,
+  from_version TEXT NOT NULL,
+  to_version TEXT NOT NULL,
+  release_date TEXT,
+  change_kind TEXT NOT NULL,
+  summary TEXT NOT NULL,
+  affects_naveen TEXT NOT NULL,
+  source_url TEXT,
+  verified_at TEXT NOT NULL,
+  capability_id TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_changes_npm ON package_changes(npm_name, from_version, to_version);
+
+-- 13. Training Gravity Radar (LLM Bias Catalog)
+CREATE TABLE IF NOT EXISTS training_attractors (
+  id TEXT PRIMARY KEY,
+  npm_name TEXT NOT NULL,
+  attractor_kind TEXT NOT NULL,
+  narrative TEXT NOT NULL,
+  rebuttal TEXT NOT NULL,
+  evidence_url TEXT NOT NULL,
+  checked_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_attractors_npm ON training_attractors(npm_name);
+
+-- 14. Stack Baselines (CURRENT vs HISTORY)
+CREATE TABLE IF NOT EXISTS stack_baselines (
+  code TEXT PRIMARY KEY,
+  expo_sdk TEXT NOT NULL,
+  rn_version TEXT NOT NULL,
+  react_version TEXT NOT NULL,
+  as_of TEXT NOT NULL
+);
+
+-- 15. Sacred Pins & Human Intent Overrides
+CREATE TABLE IF NOT EXISTS package_overrides (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  package_name TEXT NOT NULL UNIQUE,
+  pinned_version TEXT NOT NULL,
+  is_sacred INTEGER NOT NULL DEFAULT 1,
+  intent TEXT,
+  intent_source TEXT NOT NULL DEFAULT 'curated'
+);
+
+-- 16. Fixed Later Bug Registry
+CREATE TABLE IF NOT EXISTS fixed_later (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  package TEXT NOT NULL,
+  signal_id TEXT,
+  title TEXT NOT NULL,
+  status TEXT NOT NULL,
+  born_version TEXT,
+  fixed_version TEXT,
+  source_url TEXT,
+  evidence TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_fixed_later_pkg ON fixed_later(package);
+
+-- 17. Append-Only Gate Audit Trail
+CREATE TABLE IF NOT EXISTS gate_payloads (
+  id TEXT PRIMARY KEY,
+  caller TEXT NOT NULL,
+  action_kind TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  reasons_json TEXT NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+);
+
+-- 18. Escrow Negotiation Protocol (Proposals)
+CREATE TABLE IF NOT EXISTS bump_offers (
+  id TEXT PRIMARY KEY,
+  package_name TEXT NOT NULL,
+  from_version TEXT NOT NULL,
+  to_version TEXT NOT NULL,
+  proposed_by TEXT NOT NULL,
+  state TEXT NOT NULL DEFAULT 'escrow',
+  gate_id TEXT,
+  created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+);
+
+-- 19. Monorepo Code Import Telemetry (Sovereign Toolchain Ingestion)
+CREATE TABLE IF NOT EXISTS code_imports (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  file_path TEXT NOT NULL,
+  line_number INTEGER NOT NULL,
+  specifier TEXT NOT NULL,
+  imported_symbol TEXT,
+  scanned_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+);
+CREATE INDEX IF NOT EXISTS idx_code_imports_spec ON code_imports(specifier);
+CREATE INDEX IF NOT EXISTS idx_code_imports_file ON code_imports(file_path);
 `;
 
 
@@ -337,4 +433,88 @@ export interface TechnologyRadarRecord {
   metadata_json?: string | null;
   updated_at?: number;
 }
+
+export interface PackageChangeRecord {
+  id?: number;
+  package_uuid: string;
+  npm_name: string;
+  from_version: string;
+  to_version: string;
+  release_date?: string | null;
+  change_kind: 'breaking' | 'peer' | 'deprecation' | 'fix' | 'feature' | 'new-arch' | string;
+  summary: string;
+  affects_naveen: string;
+  source_url?: string | null;
+  verified_at: string;
+  capability_id?: string | null;
+}
+
+export interface TrainingAttractorRecord {
+  id: string;
+  npm_name: string;
+  attractor_kind: string;
+  narrative: string;
+  rebuttal: string;
+  evidence_url: string;
+  checked_at: string;
+}
+
+export interface StackBaselineRecord {
+  code: 'CURRENT' | 'HISTORY' | string;
+  expo_sdk: string;
+  rn_version: string;
+  react_version: string;
+  as_of: string;
+}
+
+export interface PackageOverrideRecord {
+  id?: number;
+  package_name: string;
+  pinned_version: string;
+  is_sacred: number;
+  intent?: string | null;
+  intent_source: string;
+}
+
+export interface FixedLaterRecord {
+  id?: number;
+  package: string;
+  signal_id?: string | null;
+  title: string;
+  status: string;
+  born_version?: string | null;
+  fixed_version?: string | null;
+  source_url?: string | null;
+  evidence?: string | null;
+}
+
+export interface GatePayloadRecord {
+  id: string;
+  caller: string;
+  action_kind: string;
+  decision: 'refuse' | 'ask' | 'allow';
+  reasons_json: string;
+  created_at?: number;
+}
+
+export interface BumpOfferRecord {
+  id: string;
+  package_name: string;
+  from_version: string;
+  to_version: string;
+  proposed_by: string;
+  state: 'escrow' | 'approved' | 'rejected';
+  gate_id?: string | null;
+  created_at?: number;
+}
+
+export interface CodeImportRecord {
+  id?: number;
+  file_path: string;
+  line_number: number;
+  specifier: string;
+  imported_symbol?: string | null;
+  scanned_at?: number;
+}
+
 

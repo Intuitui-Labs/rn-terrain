@@ -132,6 +132,66 @@ const tests = [
       return { pass: isPassed, exitCode: res.status, stderr: res.stderr };
     },
   },
+  {
+    name: '8. Parametric Hallucination Honeypot: AsyncStorage.multiGetBatch (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt('@react-native-async-storage/async-storage', 0);
+      const testFile = path.join(tempDir, 'StorageService.ts');
+      fs.writeFileSync(
+        testFile,
+        "import AsyncStorage from '@react-native-async-storage/async-storage';\nexport const get = () => AsyncStorage.multiGetBatch(['key']);",
+        'utf8'
+      );
+      const res = runGate(testFile);
+      const isBlocked = res.status === 2 && res.stderr.includes('PARAMETRIC HALLUCINATION TRAPDOOR');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '9. Headless Yoga Layout Prover: Unconstrained ScrollView 0px collapse (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt('react-native', 0);
+      const testFile = path.join(tempDir, 'FeedScreen.tsx');
+      fs.writeFileSync(
+        testFile,
+        "import React from 'react';\nimport { ScrollView, Text } from 'react-native';\nexport const Feed = () => <ScrollView><Text>Item</Text></ScrollView>;",
+        'utf8'
+      );
+      const res = runGate(testFile);
+      const isBlocked = res.status === 2 && res.stderr.includes('YOGA VIRTUAL LAYOUT PROVER');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '10. Nitro C++ Auditor: NativeModules.MMKV confabulation (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt('react-native', 0);
+      const testFile = path.join(tempDir, 'MMKVStore.ts');
+      fs.writeFileSync(
+        testFile,
+        "import { NativeModules } from 'react-native';\nconst { MMKV } = NativeModules;\nexport const getVal = () => MMKV.getString('k');",
+        'utf8'
+      );
+      const res = runGate(testFile);
+      const isBlocked = res.status === 2 && res.stderr.includes('NITRO C++ NATIVE ARCHITECTURE VETO');
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
+  {
+    name: '11. Headless Hermes Sentry: Strictness/syntax violation (Expected: Exit 2 Blocked)',
+    run: () => {
+      cutReceipt('react-native', 0);
+      const testFile = path.join(tempDir, 'HermesBug.ts');
+      fs.writeFileSync(
+        testFile,
+        "import React from 'react';\nimport { View } from 'react-native';\nexport function bad() {\n  var obj = { a: 1, a: 2 };\n}",
+        'utf8'
+      );
+      const res = runGate(testFile);
+      const isBlocked = res.status === 2 && (res.stderr.includes('HERMES') || res.stderr.includes('ACTION BLOCKED'));
+      return { pass: isBlocked, exitCode: res.status, stderr: res.stderr };
+    },
+  },
 ];
 
 let allPassed = true;
@@ -160,7 +220,7 @@ try {
 
 console.log('\n═════════════════════════════════════════════════════════════════');
 if (allPassed) {
-  console.log('🎉 ALL 7 GATE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
+  console.log('🎉 ALL 11 GATE INVARIANT TESTS PASSED WITH 100% SUCCESS!');
   process.exit(0);
 } else {
   console.log('❌ SOME GATE INVARIANT TESTS FAILED');

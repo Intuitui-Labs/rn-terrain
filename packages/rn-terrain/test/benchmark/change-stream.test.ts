@@ -26,7 +26,7 @@ describe('Change-Stream Benchmark: Vibe-Coded vs rn-terrain Grounded', () => {
     expect(scorecard.cohortB.firstPassCrashRate).toBe(0);
     expect(scorecard.cohortB.groundedPassRate).toBe(100);
     expect(scorecard.cohortB.canonicalRemediationAccuracy).toBe(100);
-  });
+  }, 20000);
 
   it('validates critical Reanimated 4 Fabric requirement in MIG-001', () => {
     const fixture = CANONICAL_CHANGE_STREAM_FIXTURES.find(

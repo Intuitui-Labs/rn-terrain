@@ -16,6 +16,9 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../.env'), quiet: true });
 
 export function isSupabaseConfigured(): boolean {
+  if (process.env.OFFLINE === 'true' || process.env.RN_TERRAIN_OFFLINE === 'true') {
+    return false;
+  }
   return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
 }
 

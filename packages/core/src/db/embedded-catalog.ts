@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { NodeModulesAffordanceEngine } from '../compass/node-modules-affordance.js';
+import { JsdocReplacementExtractor } from '../compass/jsdoc-replacement-extractor.js';
 /**
  * @file embedded-catalog.ts
  * In-Memory Embedded Catalog Adapter for RN-Terrain.
@@ -555,4 +559,125 @@ export class EmbeddedCatalogAdapter implements TerrainCatalogPort {
   public getDecisionActions(entityId: string): DecisionActionRecord[] {
     return this.decisions.get(entityId) || [];
   }
+
+  // ─── Dynamic Auto-Indexing (Real Mud Grounding) ──────────────────────────
+
+  /**
+   * Auto-indexes installed packages from a real project root.
+   * Extracts installed packages, versions, and live @deprecated symbols
+   * directly from physical node_modules and .d.ts files with zero manual curation.
+   */
+  public autoIndexFromProject(projectRoot: string): {
+    indexedPackages: number;
+    extractedSymbols: number;
+    packages: string[];
+  } {
+    const affordance = new NodeModulesAffordanceEngine(projectRoot);
+    const jsdocExtractor = new JsdocReplacementExtractor();
+    const now = Math.floor(Date.now() / 1000);
+
+    const rootPkgPath = path.resolve(projectRoot, 'package.json');
+    if (!fs.existsSync(rootPkgPath)) {
+      return { indexedPackages: 0, extractedSymbols: 0, packages: [] };
+    }
+
+    let pkgJson: Record<string, any> = {};
+    try {
+      pkgJson = JSON.parse(fs.readFileSync(rootPkgPath, 'utf8'));
+    } catch {
+      return { indexedPackages: 0, extractedSymbols: 0, packages: [] };
+    }
+
+    const allDeps = {
+      ...(pkgJson.dependencies || {}),
+      ...(pkgJson.devDependencies || {}),
+      ...(pkgJson.peerDependencies || {}),
+    };
+
+    const indexedPackageNames: string[] = [];
+    let totalSymbolsCount = 0;
+
+    for (const [depName, declaredRange] of Object.entries(allDeps)) {
+      const pkgDir = affordance.resolvePackageDir(depName);
+      if (!pkgDir || !fs.existsSync(pkgDir)) continue;
+
+      const installedPkgJsonPath = path.join(pkgDir, 'package.json');
+      let installedPkgJson: Record<string, any> = {};
+      if (fs.existsSync(installedPkgJsonPath)) {
+        try {
+          installedPkgJson = JSON.parse(fs.readFileSync(installedPkgJsonPath, 'utf8'));
+        } catch {
+          installedPkgJson = {};
+        }
+      }
+
+      const version = installedPkgJson.version || (typeof declaredRange === 'string' ? declaredRange.replace(/^[\^~]/, '') : '1.0.0');
+
+      // Determine vendor & category
+      let vendor = 'community';
+      if (depName.startsWith('@expo/') || depName === 'expo') vendor = 'expo';
+      else if (depName.includes('software-mansion') || depName.includes('reanimated') || depName.includes('gesture-handler') || depName.includes('screens')) vendor = 'software-mansion';
+      else if (depName.includes('shopify') || depName.includes('skia') || depName.includes('flash-list')) vendor = 'shopify';
+      else if (depName === 'react-native' || depName.startsWith('@react-native/')) vendor = 'meta';
+
+      let category = 'utility';
+      if (depName.includes('gesture')) category = 'gesture-system';
+      else if (depName.includes('animat')) category = 'animation';
+      else if (depName.includes('navigat') || depName.includes('screen') || depName.includes('router')) category = 'navigation';
+      else if (depName.includes('storage') || depName.includes('sqlite') || depName.includes('mmkv')) category = 'storage';
+      else if (depName.includes('graphics') || depName.includes('skia') || depName.includes('svg')) category = '2d-graphics';
+
+      this.upsertPackage({
+        id: depName,
+        vendor,
+        category,
+        tier: vendor === 'meta' || vendor === 'expo' ? 'CORE' : 'COMMUNITY',
+        repository_url: typeof installedPkgJson.repository === 'string' ? installedPkgJson.repository : (installedPkgJson.repository?.url || null),
+        documentation_url: installedPkgJson.homepage || null,
+        created_at: now,
+      });
+
+      this.upsertPackageVersion({
+        package_id: depName,
+        version,
+        valid_from_epoch: now,
+        valid_to_epoch: null,
+        react_native_min: null,
+        react_native_max: null,
+        supports_new_arch: 1,
+        tarball_url: null,
+      });
+
+      // Extract live @deprecated symbols from installed .d.ts
+      try {
+        const rules = jsdocExtractor.extractRulesFromInstalledPackage(depName, projectRoot, pkgDir);
+        for (const rule of rules) {
+          this.upsertApiSymbol({
+            package_id: depName,
+            version,
+            symbol_identifier: rule.symbol,
+            symbol_type: rule.type.toUpperCase() as any,
+            status: 'DEPRECATED',
+            replacement_symbol: rule.replacement,
+            replacement_package: rule.package,
+            codemod_available: 0,
+            codemod_rule_id: rule.id,
+            documentation_anchor: rule.sourceFile || null,
+            valid_from_epoch: now,
+            valid_to_epoch: null,
+          });
+          totalSymbolsCount++;
+        }
+      } catch {}
+
+      indexedPackageNames.push(depName);
+    }
+
+    return {
+      indexedPackages: indexedPackageNames.length,
+      extractedSymbols: totalSymbolsCount,
+      packages: indexedPackageNames,
+    };
+  }
+
 }

@@ -117,4 +117,35 @@ describe('TcdiStackDoctor - Temporal Pattern Diagnostic Engine', () => {
     expect(report.healthScore).toBe(100);
     expect(report.status).toBe('SOLID');
   });
+
+  it('prevents false positives when a symbol is imported from a non-culprit package (provenance isolation)', () => {
+    const doctor = new TcdiStackDoctor();
+    doctor.loadSeveredRules([
+      {
+        id: 'expo-router-useStore-severed',
+        package: 'expo-router',
+        symbol: 'useStore',
+        type: 'call',
+        replacement: 'Use Zustand or React Context directly',
+        message: "'useStore' was severed in expo-router",
+        severity: 'hard',
+      },
+    ]);
+
+    // File imports useStore from @repo/core and also imports expo-router
+    const code = `
+      import { useStore } from '@repo/core/logic';
+      import { useRouter, useLocalSearchParams } from 'expo-router';
+
+      export function Screen() {
+        const router = useRouter();
+        const user = useStore((s) => s.user);
+        return null;
+      }
+    `;
+
+    const report = doctor.diagnoseSnippet(code, 'src/Screen.tsx');
+    expect(report.totalFindings).toBe(0);
+    expect(report.errorsCount).toBe(0);
+  });
 });

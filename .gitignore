@@ -21,10 +21,13 @@ coverage/
 
 # Databases & large dumps
 *.db
+*.db*
 *.db-journal
 *.db-wal
 *.sqlite
 *.sqlite3
+*.bak
+*.bak*
 data/packages/DASHBOARD.html
 
 # Archives & extraction artifacts

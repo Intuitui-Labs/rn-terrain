@@ -25,6 +25,13 @@ export interface PackageFilter {
 }
 
 export interface TerrainCatalogPort {
+  // Dynamic Auto-Indexing from Physical Project
+  autoIndexFromProject?(projectRoot: string): {
+    indexedPackages: number;
+    extractedSymbols: number;
+    packages: string[];
+  };
+
   // Packages
   upsertPackage(pkg: PackageRecord): void;
   getPackage(id: string): PackageRecord | null | undefined;

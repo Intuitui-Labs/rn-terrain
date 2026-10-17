@@ -573,7 +573,13 @@ export function calculateVersionLag(current: string, latest: string) {
 }
 
 // Scan dependencies in package.json
-export async function scanProject(packageJsonPath: string): Promise<ProjectAudit> {
+export async function scanProject(
+  packageJsonPath: string,
+  options: { offline?: boolean } = {},
+): Promise<ProjectAudit> {
+  if (options.offline) {
+    process.env.RN_TERRAIN_OFFLINE = 'true';
+  }
   const resolvedPkgPath = path.resolve(packageJsonPath);
   let pkgJson: any = {};
   try {
@@ -590,7 +596,7 @@ export async function scanProject(packageJsonPath: string): Promise<ProjectAudit
   if (!activeCache) {
     try {
       const syncer = new RepoDirectorySyncer();
-      await syncer.syncRepo(projectRoot);
+      await syncer.syncRepo(projectRoot, { offline: options.offline });
       activeCache = findDirectoryCache(projectRoot);
     } catch {}
   }

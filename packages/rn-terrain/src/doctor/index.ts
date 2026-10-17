@@ -38,6 +38,12 @@ export {
   type TcdiDoctorFinding,
   type TcdiDoctorReport,
   type TargetStackConfig,
+  RnTerrainLinter,
+  type RnTerrainLintFinding,
+  type RnTerrainLintReport,
+  IntegrativeSeamsEngine,
+  PhysicalNativeInspector,
+  NativeSurfaceProfiler,
 } from '@intuitui-labs/rn-terrain-scanner';
 
 export {

@@ -10,7 +10,7 @@ tags: [landscape, packages, topology, intuitui-labs]
 
 # Intuitui Labs Master Ecosystem Landscape & Package Topology
 
-This document establishes the official taxonomy, repository locations, npm package scopes, and documentation standards across the **Intuitui Labs & Neev Foundation** ecosystem.
+This document establishes the official taxonomy, repository locations, npm package scopes, and documentation standards across the **Intuitui Labs** ecosystem.
 
 ---
 

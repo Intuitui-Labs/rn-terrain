@@ -28,38 +28,54 @@ export interface SacredPinRule {
   severity: 'error' | 'warn' | 'info';
 }
 
-export const SACRED_NATIVE_PINS: SacredPinRule[] = [
-  {
-    packageName: 'react-native-reanimated',
-    recommendedRange: '>=3.16.0 <4.0.0',
-    reason: 'Reanimated 4.x introduces new worklet runtime incompatible with older Fabric/TurboModule setups.',
-    severity: 'error',
-  },
-  {
-    packageName: 'react-native-gesture-handler',
-    recommendedRange: '>=2.20.0 <3.0.0',
-    reason: 'RNGH 2.x is required for modern Gesture.Pan() API on New Architecture.',
-    severity: 'error',
-  },
-  {
-    packageName: 'react-native-screens',
-    recommendedRange: '>=3.34.0 <5.0.0',
-    reason: 'Screens 4+ stabilizes Fabric native view recycling and header rendering.',
-    severity: 'warn',
-  },
-  {
-    packageName: '@shopify/react-native-skia',
-    recommendedRange: '>=1.5.0 <3.0.0',
-    reason: 'Skia native C++ binaries require exact ABI compatibility with target React Native version.',
-    severity: 'error',
-  },
-  {
-    packageName: 'react-native-mmkv',
-    recommendedRange: '>=3.0.0 <4.0.0',
-    reason: 'MMKV v3 migrates from legacy JSI bindings to modern Nitro Modules / TurboModules.',
-    severity: 'warn',
-  },
-];
+export function getSacredNativePins(targetRnVersion?: string | null): SacredPinRule[] {
+  const clean = targetRnVersion ? targetRnVersion.replace(/^[~^>=<]+/, '') : null;
+  const coerced = clean ? semver.coerce(clean)?.version : null;
+  const isModernRn = coerced
+    ? semver.satisfies(coerced, '>=0.88.0', { includePrerelease: true })
+    : clean
+      ? semver.satisfies(clean, '>=0.88.0-0', { includePrerelease: true })
+      : false;
+
+  return [
+    {
+      packageName: 'react-native-reanimated',
+      recommendedRange: isModernRn ? '>=3.16.0 <5.0.0' : '>=3.16.0 <4.0.0',
+      reason: isModernRn
+        ? 'Reanimated 4.x is supported on RN 0.88+; older versions risk Fabric native view crashes.'
+        : 'Reanimated 4.x introduces new worklet runtime incompatible with older Fabric/TurboModule setups.',
+      severity: 'error',
+    },
+    {
+      packageName: 'react-native-gesture-handler',
+      recommendedRange: isModernRn ? '>=2.20.0 <4.0.0' : '>=2.20.0 <3.0.0',
+      reason: isModernRn
+        ? 'RNGH 3.x is supported on RN 0.88+ with New Architecture.'
+        : 'RNGH 2.x is required for modern Gesture.Pan() API on New Architecture.',
+      severity: 'error',
+    },
+    {
+      packageName: 'react-native-screens',
+      recommendedRange: '>=3.34.0 <5.0.0',
+      reason: 'Screens 4+ stabilizes Fabric native view recycling and header rendering.',
+      severity: 'warn',
+    },
+    {
+      packageName: '@shopify/react-native-skia',
+      recommendedRange: isModernRn ? '>=1.5.0 <4.0.0' : '>=1.5.0 <3.0.0',
+      reason: 'Skia native C++ binaries require exact ABI compatibility with target React Native version.',
+      severity: 'error',
+    },
+    {
+      packageName: 'react-native-mmkv',
+      recommendedRange: isModernRn ? '>=3.0.0 <5.0.0' : '>=3.0.0 <4.0.0',
+      reason: 'MMKV v3+ migrates from legacy JSI bindings to modern Nitro Modules / TurboModules.',
+      severity: 'warn',
+    },
+  ];
+}
+
+export const SACRED_NATIVE_PINS: SacredPinRule[] = getSacredNativePins(null);
 
 export interface DependencyIssue {
   packageName: string;
@@ -95,8 +111,10 @@ export interface DependencyDoctorOptions {
 
 export class TcdiDependencyDoctor {
   private config: TerrainProjectConfig;
+  private explicitPreset?: TerrainProjectConfig['preset'];
 
   constructor(options?: DependencyDoctorOptions) {
+    this.explicitPreset = options?.preset;
     if (options?.config) {
       this.config = options.config;
     } else {
@@ -115,8 +133,8 @@ export class TcdiDependencyDoctor {
 
     const projectDir = path.dirname(packageJsonPath);
     // Reload local config if running inside a specific project directory
-    const activeConfig = this.config.preset
-      ? this.config
+    const activeConfig = this.explicitPreset
+      ? { ...this.config, preset: this.explicitPreset }
       : loadTerrainConfig(projectDir);
 
     const raw = fs.readFileSync(packageJsonPath, 'utf8');
@@ -129,6 +147,13 @@ export class TcdiDependencyDoctor {
       ...(pkg.dependencies || {}),
       ...(pkg.devDependencies || {}),
     };
+
+    const isExpo = Boolean(allDeps['expo']);
+    const effectivePreset =
+      this.explicitPreset ||
+      (activeConfig.preset && activeConfig.preset !== 'standard'
+        ? activeConfig.preset
+        : (isExpo ? 'expo' : (activeConfig.preset || 'standard')));
 
     const issues: DependencyIssue[] = [];
     const ignoreSet = new Set(activeConfig.ignore || []);
@@ -236,9 +261,11 @@ export class TcdiDependencyDoctor {
     // ──────────────────────────────────────────────────────────────────────────
     // 4. Default Baseline Sacred Pins (unless overridden or in Expo preset)
     // ──────────────────────────────────────────────────────────────────────────
+    const activePins = getSacredNativePins(hostRnClean);
+
     const sacredSeverity = activeConfig.rules?.sacredPins ?? 'warn';
-    if (sacredSeverity !== 'off' && activeConfig.preset !== 'expo') {
-      for (const rule of SACRED_NATIVE_PINS) {
+    if (sacredSeverity !== 'off' && effectivePreset !== 'expo') {
+      for (const rule of activePins) {
         // Check either the canonical name or any alias mapped to it
         const matchedDepKey = Object.keys(allDeps).find(
           (d) => d === rule.packageName || activeConfig.aliases?.[d] === rule.packageName
@@ -276,9 +303,9 @@ export class TcdiDependencyDoctor {
       errorsCount,
       warningsCount,
       nativeModulesDetected: nativeModulesCount,
-      activePreset: activeConfig.preset || 'standard',
+      activePreset: effectivePreset,
       issues,
-      sacredPinsChecked: SACRED_NATIVE_PINS.length + Object.keys(activeConfig.localPins || {}).length,
+      sacredPinsChecked: activePins.length + Object.keys(activeConfig.localPins || {}).length,
     };
   }
 }

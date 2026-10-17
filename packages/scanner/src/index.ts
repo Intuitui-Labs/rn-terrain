@@ -20,6 +20,17 @@ export * from './config-loader.js';
 export * from './native-surface.js';
 export * from './immune-system.js';
 export * from './hermes-sentry.js';
+export * from './codemod-engine.js';
+export * from './hermes-bytecode-verifier.js';
+export * from './yoga-layout-prover.js';
+export * from './honeypot-engine.js';
+export * from './nitro-auditor.js';
+export * from './native-surface-profiler.js';
+export * from './physical-native-inspector.js';
+export * from './integrative-seams-engine.js';
+export * from './rn-terrain-linter.js';
+export * from './topological-substrate-profiler.js';
+export * from './ecosystem-stack-classifier.js';
 
 export type {
   ScanOptions,

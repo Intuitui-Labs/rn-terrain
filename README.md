@@ -51,8 +51,12 @@ npx @intuitui-labs/rn-terrain doctor:deps .
 # 🧭 Pre-flight Agent Compass: Ground modern APIs before coding (e.g. Reanimated v4 vs v2)
 npx @intuitui-labs/rn-terrain compass react-native-reanimated
 
-# 🦀 Rust Tooling Doctor: Audit sovereign shiny tools (rg, fd, bat, oxlint, biome)
+# ⚡ Sovereign Rust Stack Doctor: Sub-1.5s New Architecture audit powered by fd + ripgrep
+npx @intuitui-labs/rn-terrain doctor:stack .
+
+# 🦀 Rust Tooling Doctor & Recipes: Audit and install sovereign shiny tools (rg, fd, bat, delta)
 npx @intuitui-labs/rn-terrain doctor
+npx @intuitui-labs/rn-terrain doctor:recipes
 
 # 🩺 React Doctor Companion: Component-level hook, a11y, and web render checks
 npx @intuitui-labs/rn-terrain doctor:react
@@ -66,9 +70,10 @@ npx @intuitui-labs/rn-terrain capability:resolve gesture.pan_recognition
 # 📊 6-Dimension OpenEval: Deconstructible score with verifiable rationale
 npx @intuitui-labs/rn-terrain openeval react-native-reanimated
 
-# ⚡ Scan project dependencies and React Native 1.0 readiness
+# ⚡ Scan project dependencies and React Native 1.0 readiness (Multi-Tiered Sovereign Hydration)
 npx @intuitui-labs/rn-terrain scan
 npx @intuitui-labs/rn-terrain v1-check
+npx @intuitui-labs/rn-terrain sync:directory
 ```
 
 ### 2. For AI Coding Agents (Claude Desktop, Cursor, Antigravity)
@@ -171,6 +176,7 @@ pnpm run build
 ---
 
 ## 📚 Documentation
+- [Universal Agent & CI Integration Matrix (`docs/architecture/UNIVERSAL_AGENT_AND_CI_INTEGRATION_MATRIX.md`)](./docs/architecture/UNIVERSAL_AGENT_AND_CI_INTEGRATION_MATRIX.md)
 - [Agent Grounding Gate & Outside Referent Architecture (`docs/architecture/agent-grounding-gate-and-referent-architecture.md`)](./docs/architecture/agent-grounding-gate-and-referent-architecture.md)
 - [Zero-Friction Deterministic Innovations (`docs/concepts/zero-friction-deterministic-innovations.md`)](./docs/concepts/zero-friction-deterministic-innovations.md)
 - [Terrain Configuration & Local Shape (`docs/concepts/terrain-configuration-and-local-shape.md`)](./docs/concepts/terrain-configuration-and-local-shape.md)
@@ -182,4 +188,4 @@ pnpm run build
 ---
 
 ## 📄 License
-MIT © Intuitui Labs & Neev Foundation.
+MIT © Intuitui Labs.

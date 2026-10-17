@@ -28,14 +28,23 @@ import {
   RustToolingDoctor,
   NodeModulesAffordanceEngine,
   CuratedKnowledgeBridge,
-  writeGroundingReceipt
+  writeGroundingReceipt,
+  RepoDirectorySyncer,
+  AntibodyGossipBus,
+  BitemporalGate,
+  SovereignToolchain,
 } from '@intuitui-labs/rn-terrain-core';
 import {
   AgentGuardrail,
   TcdiStackDoctor,
   TcdiDependencyDoctor,
-  ExpoDoctorBridge
+  ExpoDoctorBridge,
+  HermesBytecodeVerifier,
+  YogaLayoutProver,
+  HoneypotEngine,
+  NitroAuditor,
 } from '@intuitui-labs/rn-terrain-scanner';
+import { TerminalRenderer, renderComponentToTerminal } from '../preview/terminal-renderer.js';
 import { evaluatePackage, type WeightProfileName } from '@intuitui-labs/openeval';
 
 export function createMcpServer(): Server {
@@ -55,6 +64,8 @@ export function createMcpServer(): Server {
 
   const guardrail = new AgentGuardrail();
   const policyGate = new PolicyGate();
+  const bitemporalGate = new BitemporalGate();
+  const sovereignToolchain = new SovereignToolchain();
 
   // ─── Tools List ─────────────────────────────────────────────────────────────
 
@@ -406,6 +417,344 @@ export function createMcpServer(): Server {
                 description: 'Category filter.',
               },
             },
+          },
+        },
+        {
+          name: 'tcdi_scan_project',
+          description:
+            'Scan project dependencies for New Architecture / Fabric compatibility, unmaintained status, and vitality scores.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              cwd: {
+                type: 'string',
+                description: 'Target repository root or path to package.json (default: current working directory).',
+              },
+              offline: {
+                type: 'boolean',
+                description: 'Operate strictly offline without remote network queries.',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_v1_check',
+          description:
+            'Audit project dependencies specifically for React Native 1.0 readiness and Fabric/TurboModule compatibility.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              cwd: {
+                type: 'string',
+                description: 'Target repository root or path to package.json (default: current working directory).',
+              },
+              offline: {
+                type: 'boolean',
+                description: 'Operate strictly offline without remote network queries.',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_sync_directory',
+          description:
+            'Synchronize React Native Directory metadata strictly scoped to dependencies declared in this repository.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              project_root: {
+                type: 'string',
+                description: 'Target repository root (default: current working directory).',
+              },
+              offline: {
+                type: 'boolean',
+                description: 'Operate strictly offline using local discovery and embedded catalog.',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_doctor_recipes',
+          description:
+            'Get copy-paste installation recipes tailored to target OS for foundational sovereign Rust developer tooling (rg, fd, sd, bat, eza, delta, oxlint, biome).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              os: {
+                type: 'string',
+                enum: ['windows', 'macos', 'cargo'],
+                description: 'Target operating system (default: host OS).',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_swarm_status',
+          description:
+            'P2P Worktree Antibody Gossip Bus: Query active swarm synchronization status, SQLite WAL database, and active agent worktrees.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
+        {
+          name: 'tcdi_swarm_antibodies',
+          description:
+            'Query real-time cryptographic antibody shards published across parallel agent worktrees to prevent known vetoed regressions.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              package_name: {
+                type: 'string',
+                description: 'Optional package name to filter antibodies (e.g. react-native-reanimated).',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_preview_component',
+          description:
+            'Terminal Visual Preview Engine: Render a high-fidelity visual preview of a React Native JSX component directly in the terminal (with iPhone/Pixel device frame, status bar, and ANSI halfblocks).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              code_snippet: {
+                type: 'string',
+                description: 'React Native JSX/TSX code snippet to render.',
+              },
+              component_path: {
+                type: 'string',
+                description: 'Optional file path to a component file on disk.',
+              },
+              device: {
+                type: 'string',
+                enum: ['iphone-16-pro', 'pixel-9-pro', 'compact'],
+                description: 'Target mobile device frame (default: iphone-16-pro).',
+              },
+              width: {
+                type: 'number',
+                description: 'Width in terminal columns (default: 44).',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_yoga_layout_prover',
+          description:
+            'Headless Yoga C++ Virtual Layout Prover: Verify JSX layout invariants before writing to disk (detects 0px height ScrollView collapses, touch targets < 44pt, and off-screen clipped coordinates).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              code_snippet: {
+                type: 'string',
+                description: 'JSX code to evaluate for physical layout bounds.',
+              },
+              file_path: {
+                type: 'string',
+                description: 'Optional file path for contextual analysis.',
+              },
+            },
+            required: ['code_snippet'],
+          },
+        },
+        {
+          name: 'tcdi_hermes_verify',
+          description:
+            'Headless Hermes Bytecode Compiler Proof Gate: Run sub-10ms in-memory hermesc compilation to catch syntax errors, strict mode violations, and worklet closure escape bugs before disk write.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              code_snippet: {
+                type: 'string',
+                description: 'JavaScript or TypeScript code snippet to compile and verify.',
+              },
+              file_path: {
+                type: 'string',
+                description: 'Optional file path.',
+              },
+            },
+            required: ['code_snippet'],
+          },
+        },
+        {
+          name: 'tcdi_honeypot_audit',
+          description:
+            'Parametric Hallucination Honeypot Engine: Scan code for imaginary/confabulated APIs (e.g. AsyncStorage.multiGetBatch, Gesture.MultiTouchPan, Reanimated.createSpringConfig) with 100% deflection confidence.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              code_snippet: {
+                type: 'string',
+                description: 'Source code to scan for hallucinated trapdoors.',
+              },
+              generate_dts: {
+                type: 'boolean',
+                description: 'If true, also outputs ambient TypeScript definitions (.terrain/honeypots.d.ts).',
+              },
+            },
+            required: ['code_snippet'],
+          },
+        },
+        {
+          name: 'tcdi_nitro_audit',
+          description:
+            'Nitro Modules & C++ Native Architecture Auditor: Audit Nitro HybridObjects, Nitrogen specs (*.nitro.ts), CMakeLists.txt C++20 compliance, Android NDK 26+ prefab, and JSI thread affinity.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              code_snippet: {
+                type: 'string',
+                description: 'Optional code snippet to check for Nitro anti-patterns (e.g. accessing HybridObjects via NativeModules).',
+              },
+              project_dir: {
+                type: 'string',
+                description: 'Optional project root directory to audit (default: cwd).',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_check_package',
+          description:
+            'Bitemporal Package Gate: Validate package operations (install, bump, override) against sacred pins, invented versions, peer co-moves, and training attractors.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              package_name: {
+                type: 'string',
+                description: 'Target package name (e.g. react-native-reanimated, @nozbe/watermelondb, clsx).',
+              },
+              action: {
+                type: 'string',
+                enum: ['install', 'bump', 'override', 'check'],
+                description: 'Action to perform (default: bump).',
+              },
+              requested_version: {
+                type: 'string',
+                description: 'Requested target version (e.g. latest, nightly, 4.9.3, 4.7.1).',
+              },
+              installed_version: {
+                type: 'string',
+                description: 'Currently installed version in workspace.',
+              },
+              dry_run: {
+                type: 'boolean',
+                description: 'Evaluate gate without recording audit trail.',
+              },
+            },
+            required: ['package_name'],
+          },
+        },
+        {
+          name: 'tcdi_pre_write',
+          description:
+            'In-Process Pre-Write Interceptor (<3ms): Check proposed code snippets, diffs, or import specifiers against severed APIs, sacred pins, and training attractors before writing to disk.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              code_snippet: {
+                type: 'string',
+                description: 'Proposed TypeScript or JSX code snippet to analyze.',
+              },
+              imports: {
+                type: 'array',
+                description: 'Optional explicit list of import specifiers and symbols.',
+                items: {
+                  type: 'object',
+                  properties: {
+                    specifier: { type: 'string' },
+                    symbol: { type: 'string' },
+                  },
+                  required: ['specifier'],
+                },
+              },
+              file_path: {
+                type: 'string',
+                description: 'Optional file path for contextual verification.',
+              },
+              dry_run: {
+                type: 'boolean',
+                description: 'Evaluate without recording gate audit payload.',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_offer_bump',
+          description:
+            'Escrow Bump Offer Protocol: Generate candidate version bumps into escrow state with gate evaluation and dry-run safety.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              package_name: {
+                type: 'string',
+                description: 'Package to bump.',
+              },
+              requested_version: {
+                type: 'string',
+                description: 'Target version.',
+              },
+              from_version: {
+                type: 'string',
+                description: 'Current version.',
+              },
+              dry_run: {
+                type: 'boolean',
+                description: 'If true, evaluates without persisting bump offer to SQLite.',
+              },
+              offered_by: {
+                type: 'string',
+                description: 'Identifier of the proposing agent or user.',
+              },
+            },
+            required: ['package_name', 'requested_version'],
+          },
+        },
+        {
+          name: 'tcdi_gravity_list',
+          description:
+            'Training Gravity Radar: Query LLM training attractors and fame bias records with active rebuttal arguments.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              package_name: {
+                type: 'string',
+                description: 'Optional package filter (e.g. @nozbe/watermelondb, react-native-reanimated).',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_ingest_workspace',
+          description:
+            'Sovereign Workspace Ingestion: Traverse monorepo files and stream code imports into canonical SQLite using fd (<10ms) and rg (<25ms).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              root_dir: {
+                type: 'string',
+                description: 'Root directory to scan (default: current working directory).',
+              },
+            },
+          },
+        },
+        {
+          name: 'tcdi_context',
+          description:
+            'Dense Grounding Context Pack (<800 tokens): Generate compact, high-density context briefing for coding agents with exact modern APIs and fatal traps.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              package_name: {
+                type: 'string',
+                description: 'Package name to ground.',
+              },
+              version: {
+                type: 'string',
+                description: 'Target version (default: latest).',
+              },
+            },
+            required: ['package_name'],
           },
         },
       ],
@@ -895,6 +1244,296 @@ export function createMcpServer(): Server {
         const topology = await getEcosystemTopology(category);
         return {
           content: [{ type: 'text', text: JSON.stringify(topology, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_scan_project') {
+        const cwd = (args?.cwd as string) || (args?.package_json_path as string) || process.cwd();
+        const pkgJson = path.basename(cwd) === 'package.json' ? path.resolve(cwd) : path.resolve(cwd, 'package.json');
+        if (!fs.existsSync(pkgJson)) {
+          return {
+            content: [{ type: 'text', text: `package.json not found at ${pkgJson}` }],
+            isError: true,
+          };
+        }
+        const offline = Boolean(args?.offline);
+        const audit = await scanProject(pkgJson, { offline });
+        return {
+          content: [{ type: 'text', text: JSON.stringify(audit, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_v1_check') {
+        const cwd = (args?.cwd as string) || (args?.package_json_path as string) || process.cwd();
+        const pkgJson = path.basename(cwd) === 'package.json' ? path.resolve(cwd) : path.resolve(cwd, 'package.json');
+        if (!fs.existsSync(pkgJson)) {
+          return {
+            content: [{ type: 'text', text: `package.json not found at ${pkgJson}` }],
+            isError: true,
+          };
+        }
+        const offline = Boolean(args?.offline);
+        const audit = await scanProject(pkgJson, { offline });
+        const report = {
+          target: pkgJson,
+          totalPackages: audit.packages.length,
+          v1ReadyCount: audit.v1_ready_count,
+          atRiskCount: audit.v1_at_risk_count,
+          packages: audit.packages.map((p) => ({
+            package_name: p.package_name,
+            status: p.v1_readiness.status,
+            score: p.v1_readiness.score,
+            new_architecture: p.compatibility.new_architecture,
+            migration_notes: p.v1_readiness.migration_notes,
+          })),
+        };
+        return {
+          content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_sync_directory') {
+        const projectRoot = (args?.project_root as string) || process.cwd();
+        const offline = Boolean(args?.offline);
+        const syncer = new RepoDirectorySyncer();
+        const records = await syncer.syncRepo(projectRoot, { offline });
+        return {
+          content: [{ type: 'text', text: JSON.stringify(records, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_doctor_recipes') {
+        const targetOs = ((args?.os as string) || (process.platform === 'win32' ? 'windows' : process.platform === 'darwin' ? 'macos' : 'cargo')).toLowerCase();
+        const doctor = new RustToolingDoctor();
+        const report = doctor.runDiagnostic();
+        const recipes = report.tools.map((t) => ({
+          tool: t.name,
+          installed: t.installed,
+          version: t.version,
+          purpose: t.purpose,
+          recipe:
+            targetOs === 'windows'
+              ? t.installRecipes.windows
+              : targetOs === 'macos'
+                ? t.installRecipes.macos
+                : (t.installRecipes.cargo || t.installRecipes.pnpm || `cargo install ${t.id}`),
+        }));
+        return {
+          content: [{ type: 'text', text: JSON.stringify({ targetOs, recipes }, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_swarm_status') {
+        const bus = new AntibodyGossipBus();
+        const status = bus.getStatus();
+        return {
+          content: [{ type: 'text', text: JSON.stringify(status, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_swarm_antibodies') {
+        const packageName = args?.package_name as string | undefined;
+        const bus = new AntibodyGossipBus();
+        const antibodies = bus.queryAntibodies(packageName ? { package: packageName } : undefined);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(antibodies, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_preview_component') {
+        const codeSnippet = args?.code_snippet as string | undefined;
+        const componentPath = args?.component_path as string | undefined;
+        const device = (args?.device as any) || 'iphone-16-pro';
+        const width = typeof args?.width === 'number' ? args?.width : 44;
+
+        const renderer = new TerminalRenderer({ device, width });
+        let output = '';
+        if (componentPath) {
+          const fullPath = path.resolve(process.cwd(), componentPath);
+          if (!fs.existsSync(fullPath)) {
+            throw new Error(`File not found: ${fullPath}`);
+          }
+          output = renderer.renderFile(fullPath);
+        } else if (codeSnippet) {
+          output = renderer.renderComponent(codeSnippet);
+        } else {
+          throw new Error('Either code_snippet or component_path must be provided.');
+        }
+
+        return {
+          content: [{ type: 'text', text: output }],
+        };
+      }
+
+      if (name === 'tcdi_yoga_layout_prover') {
+        const code = args?.code_snippet as string;
+        const filePath = (args?.file_path as string) || 'Component.tsx';
+        const prover = new YogaLayoutProver();
+        const report = prover.diagnoseLayout(code, filePath);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_hermes_verify') {
+        const code = args?.code_snippet as string;
+        const filePath = (args?.file_path as string) || 'virtual-agent-diff.tsx';
+        const verifier = new HermesBytecodeVerifier();
+        const report = verifier.verifyCode(code, filePath);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(report, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_honeypot_audit') {
+        const code = args?.code_snippet as string;
+        const generateDts = Boolean(args?.generate_dts);
+        const engine = new HoneypotEngine();
+        const report = engine.detectHoneypots(code);
+        let dts: string | undefined;
+        if (generateDts) {
+          dts = engine.generateHoneypotDts();
+        }
+        return {
+          content: [{ type: 'text', text: JSON.stringify({ ...report, dts }, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_nitro_audit') {
+        const codeSnippet = args?.code_snippet as string | undefined;
+        const projectDir = (args?.project_dir as string) || process.cwd();
+        const auditor = new NitroAuditor(projectDir);
+        const report = auditor.audit();
+        let codeFindings: any[] = [];
+        if (codeSnippet) {
+          codeFindings = auditor.verifyCodeSnippet(
+            codeSnippet,
+            report.hybridObjects.map((h) => h.name)
+          );
+        }
+        return {
+          content: [{ type: 'text', text: JSON.stringify({ ...report, codeFindings }, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_check_package') {
+        const packageName = args?.package_name as string;
+        const action = ((args?.action as string) || 'bump') as any;
+        const requestedVersion = args?.requested_version as string | undefined;
+        const installedVersion = args?.installed_version as string | undefined;
+        const dryRun = Boolean(args?.dry_run);
+
+        const res = bitemporalGate.checkPackage({
+          asked: packageName,
+          action,
+          requestedVersion,
+          installedVersion,
+          dryRun,
+        });
+
+        return {
+          content: [{ type: 'text', text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_pre_write') {
+        const codeSnippet = args?.code_snippet as string | undefined;
+        const imports = args?.imports as any[] | undefined;
+        const filePath = args?.file_path as string | undefined;
+        const dryRun = Boolean(args?.dry_run);
+
+        const res = bitemporalGate.preWrite({
+          codeSnippet,
+          imports,
+          filePath,
+          dryRun,
+        });
+
+        return {
+          content: [{ type: 'text', text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_offer_bump') {
+        const packageName = args?.package_name as string;
+        const requestedVersion = args?.requested_version as string;
+        const fromVersion = args?.from_version as string | undefined;
+        const dryRun = args?.dry_run !== undefined ? Boolean(args?.dry_run) : false;
+        const offeredBy = (args?.offered_by as string) || 'agent';
+
+        const res = bitemporalGate.createOffer({
+          asked: packageName,
+          requestedVersion,
+          fromVersion,
+          dryRun,
+          offeredBy,
+        });
+
+        return {
+          content: [{ type: 'text', text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_gravity_list') {
+        const packageName = args?.package_name as string | undefined;
+        const res = bitemporalGate.listGravity(packageName);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_ingest_workspace') {
+        const rootDir = (args?.root_dir as string) || process.cwd();
+        const res = await sovereignToolchain.ingestCodebaseImports(rootDir);
+        return {
+          content: [{ type: 'text', text: JSON.stringify(res, null, 2) }],
+        };
+      }
+
+      if (name === 'tcdi_context') {
+        const packageName = args?.package_name as string;
+        const version = (args?.version as string) || 'latest';
+        const compass = generateAgentCompass(packageName, version);
+        const db = createCatalog();
+        const pin = (db as any).isSacredPin ? (db as any).isSacredPin(packageName) : { isSacred: false };
+        const attractors = (db as any).getTrainingAttractors ? (db as any).getTrainingAttractors(packageName) : [];
+
+        let pack = `# [RN-TERRAIN CONTEXT PACK: ${packageName}@${compass.version}]\n`;
+        pack += `## Architecture: ${compass.architecture}\n`;
+        pack += `## Sacred Pin: ${pin.isSacred ? `YES (Pin: ${pin.pinnedVersion}; Intent: ${pin.intent ?? 'sacred ABI lock'})` : 'NO'}\n\n`;
+
+        pack += `### Grounded Modern APIs (Canonical Whitelist)\n`;
+        if (compass.allowedModernSymbols.length > 0) {
+          pack += compass.allowedModernSymbols.map((s: string) => `• \`${s}\``).join('\n') + '\n\n';
+        } else {
+          pack += `Standard package APIs verified.\n\n`;
+        }
+
+        if (compass.bannedSeveredSymbols.length > 0) {
+          pack += `### Severed / Forbidden APIs (CRASH ON USAGE)\n`;
+          for (const b of compass.bannedSeveredSymbols) {
+            pack += `• FORBIDDEN: \`${b.identifier}\` -> USE: \`${b.replacement ?? 'modern alternative'}\`\n`;
+          }
+          pack += '\n';
+        }
+
+        if (compass.knownPeerConflicts.length > 0) {
+          pack += `### Known Peer Collisions & Co-Move Locks\n`;
+          for (const c of compass.knownPeerConflicts) {
+            pack += `• Peer: ${c.peerPackage} (Safe range: ${c.safeRange}) - ${c.conflictNote}\n`;
+          }
+          pack += '\n';
+        }
+
+        if (attractors.length > 0) {
+          pack += `### Active Training Attractor Warnings (Fame Bias Guard)\n`;
+          for (const a of attractors) {
+            pack += `• [${a.attractor_kind}] ${a.narrative}\n  Rebuttal: ${a.rebuttal ?? 'Verify current architecture'}\n`;
+          }
+        }
+
+        return {
+          content: [{ type: 'text', text: pack.trim() }],
         };
       }
 

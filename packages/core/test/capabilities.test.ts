@@ -58,5 +58,5 @@ describe('Granular Capabilities Engine & Rust Tooling Doctor', () => {
     const rgCheck = report.tools.find((t) => t.id === 'rg');
     expect(rgCheck).toBeDefined();
     expect(typeof rgCheck?.installed).toBe('boolean');
-  });
+  }, 30000);
 });

@@ -26,7 +26,15 @@ import {
   type DevToolRecord,
   type GranularCapabilityRecord,
   type PackageCapabilityRecord,
-  type TechnologyRadarRecord
+  type TechnologyRadarRecord,
+  type PackageChangeRecord,
+  type TrainingAttractorRecord,
+  type StackBaselineRecord,
+  type PackageOverrideRecord,
+  type FixedLaterRecord,
+  type GatePayloadRecord,
+  type BumpOfferRecord,
+  type CodeImportRecord
 } from './canonical-schema.js';
 
 let BetterSqlite3Constructor: typeof DatabaseType | null = null;
@@ -544,6 +552,139 @@ export class CanonicalDatabase implements TerrainCatalogPort {
   public getPackageCapabilities(packageId: string): PackageCapabilityRecord[] {
     const stmt = this.db.prepare('SELECT * FROM package_capabilities WHERE package_id = ?');
     return stmt.all(packageId) as PackageCapabilityRecord[];
+  }
+
+  // ─── Bitemporal Kernel Query Methods ──────────────────────────────────────────
+
+  public getPackageChanges(packageName?: string): PackageChangeRecord[] {
+    if (packageName) {
+      const stmt = this.db.prepare('SELECT * FROM package_changes WHERE npm_name = ? ORDER BY id DESC');
+      return stmt.all(packageName) as PackageChangeRecord[];
+    }
+    const stmt = this.db.prepare('SELECT * FROM package_changes ORDER BY id DESC');
+    return stmt.all() as PackageChangeRecord[];
+  }
+
+  public getTrainingAttractors(packageName?: string): TrainingAttractorRecord[] {
+    if (packageName) {
+      const stmt = this.db.prepare('SELECT * FROM training_attractors WHERE npm_name = ?');
+      return stmt.all(packageName) as TrainingAttractorRecord[];
+    }
+    const stmt = this.db.prepare('SELECT * FROM training_attractors');
+    return stmt.all() as TrainingAttractorRecord[];
+  }
+
+  public getStackBaseline(code: string = 'CURRENT'): StackBaselineRecord | null {
+    const stmt = this.db.prepare('SELECT * FROM stack_baselines WHERE code = ?');
+    return (stmt.get(code) as StackBaselineRecord | undefined) || null;
+  }
+
+  public getPackageOverrides(): PackageOverrideRecord[] {
+    const stmt = this.db.prepare('SELECT * FROM package_overrides ORDER BY is_sacred DESC, package_name ASC');
+    return stmt.all() as PackageOverrideRecord[];
+  }
+
+  public isSacredPin(packageName: string): { isSacred: boolean; pinnedVersion?: string; intent?: string | null } {
+    const stmt = this.db.prepare('SELECT * FROM package_overrides WHERE package_name = ? AND is_sacred = 1');
+    const row = stmt.get(packageName) as PackageOverrideRecord | undefined;
+    if (row) {
+      return { isSacred: true, pinnedVersion: row.pinned_version, intent: row.intent };
+    }
+    return { isSacred: false };
+  }
+
+  public getFixedLater(packageName?: string): FixedLaterRecord[] {
+    if (packageName) {
+      const stmt = this.db.prepare('SELECT * FROM fixed_later WHERE package = ?');
+      return stmt.all(packageName) as FixedLaterRecord[];
+    }
+    const stmt = this.db.prepare('SELECT * FROM fixed_later');
+    return stmt.all() as FixedLaterRecord[];
+  }
+
+  public logGatePayload(payload: GatePayloadRecord): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO gate_payloads (id, caller, action_kind, decision, reasons_json, created_at)
+      VALUES (@id, @caller, @action_kind, @decision, @reasons_json, strftime('%s', 'now'))
+    `);
+    stmt.run({
+      id: payload.id,
+      caller: payload.caller,
+      action_kind: payload.action_kind,
+      decision: payload.decision,
+      reasons_json: payload.reasons_json
+    });
+  }
+
+  public createBumpOffer(offer: BumpOfferRecord): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO bump_offers (id, package_name, from_version, to_version, proposed_by, state, gate_id, created_at)
+      VALUES (@id, @package_name, @from_version, @to_version, @proposed_by, @state, @gate_id, strftime('%s', 'now'))
+    `);
+    stmt.run({
+      id: offer.id,
+      package_name: offer.package_name,
+      from_version: offer.from_version,
+      to_version: offer.to_version,
+      proposed_by: offer.proposed_by,
+      state: offer.state,
+      gate_id: offer.gate_id ?? null,
+    });
+  }
+
+  public getBumpOffers(packageName?: string): BumpOfferRecord[] {
+    if (packageName) {
+      const stmt = this.db.prepare('SELECT * FROM bump_offers WHERE package_name = ? ORDER BY created_at DESC');
+      return stmt.all(packageName) as BumpOfferRecord[];
+    }
+    const stmt = this.db.prepare('SELECT * FROM bump_offers ORDER BY created_at DESC');
+    return stmt.all() as BumpOfferRecord[];
+  }
+
+  // ─── Codebase Import Telemetry (Sovereign Toolchain) ────────────────────────
+
+  public saveCodeImport(record: CodeImportRecord): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO code_imports (file_path, line_number, specifier, imported_symbol, scanned_at)
+      VALUES (@file_path, @line_number, @specifier, @imported_symbol, strftime('%s', 'now'))
+    `);
+    stmt.run({
+      file_path: record.file_path,
+      line_number: record.line_number,
+      specifier: record.specifier,
+      imported_symbol: record.imported_symbol ?? null,
+    });
+  }
+
+  public batchSaveCodeImports(records: CodeImportRecord[]): void {
+    const insert = this.db.prepare(`
+      INSERT INTO code_imports (file_path, line_number, specifier, imported_symbol, scanned_at)
+      VALUES (@file_path, @line_number, @specifier, @imported_symbol, strftime('%s', 'now'))
+    `);
+    const insertMany = this.db.transaction((items: CodeImportRecord[]) => {
+      for (const item of items) {
+        insert.run({
+          file_path: item.file_path,
+          line_number: item.line_number,
+          specifier: item.specifier,
+          imported_symbol: item.imported_symbol ?? null,
+        });
+      }
+    });
+    insertMany(records);
+  }
+
+  public getCodeImports(specifier?: string): CodeImportRecord[] {
+    if (specifier) {
+      const stmt = this.db.prepare('SELECT * FROM code_imports WHERE specifier = ? ORDER BY id ASC');
+      return stmt.all(specifier) as CodeImportRecord[];
+    }
+    const stmt = this.db.prepare('SELECT * FROM code_imports ORDER BY id ASC');
+    return stmt.all() as CodeImportRecord[];
+  }
+
+  public clearCodeImports(): void {
+    this.db.prepare('DELETE FROM code_imports').run();
   }
 }
 

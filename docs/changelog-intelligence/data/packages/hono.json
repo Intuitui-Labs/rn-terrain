@@ -1,0 +1,62 @@
+{
+  "": "../../schemas/package-features.schema.json",
+  "package": "hono",
+  "vendor": "honojs",
+  "category": "SERVER_FRAMEWORK",
+  "canonical_docs": "https://hono.dev",
+  "features": {
+    "hono_v4_web_standards": {
+      "display": "Hono v4 WinterCG / Web Standards Native Handlers",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "4.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "100% standard Request/Response with zero runtime lock-in across Node, Bun, and Workers"
+      },
+      "impact_severity": "OPPORTUNITY"
+    },
+    "hono_node_server_v2_streaming": {
+      "display": "@hono/node-server v2 Native Streaming & Chunked Responses",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.0.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Native high-performance chunked streams with minimal memory overhead"
+      },
+      "impact_severity": "HIGH"
+    },
+    "hono_legacy_cookie_helper": {
+      "display": "Legacy Hono v3 cookie helper imports",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "3.0.0",
+        "deprecated": "4.0.0",
+        "removed": null
+      },
+      "rules": {
+        "banned_import": "getCookie, setCookie from hono/cookie",
+        "replacement": "import { getCookie, setCookie } from hono/cookie with v4 signed options"
+      },
+      "impact_severity": "MEDIUM"
+    },
+    "supabase_server_to_hono": {
+      "display": "Supabase @supabase/server toHono Context Injection",
+      "transition_milestones": {
+        "experimental": null,
+        "added": "2.118.0",
+        "deprecated": null,
+        "removed": null
+      },
+      "rules": {
+        "benefit": "Type-safe request-scoped RLS client with withRequiredClaims() and withSupabaseClient()"
+      },
+      "impact_severity": "OPPORTUNITY"
+    }
+  }
+}

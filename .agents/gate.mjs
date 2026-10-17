@@ -208,6 +208,30 @@ function isViolationIgnored(sourceLines, v) {
   return false;
 }
 
+async function publishAntibodyGossip(projectRoot, antibodies) {
+  if (!antibodies || antibodies.length === 0) return;
+  try {
+    let corePkgPath = path.resolve(projectRoot, 'packages', 'core', 'dist', 'index.js');
+    if (!fs.existsSync(corePkgPath)) {
+      const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+      corePkgPath = path.resolve(scriptDir, '..', 'packages', 'core', 'dist', 'index.js');
+    }
+    if (fs.existsSync(corePkgPath)) {
+      const coreMod = await import(pathToFileURL(corePkgPath).href);
+      if (coreMod.AntibodyGossipBus) {
+        const bus = new coreMod.AntibodyGossipBus();
+        for (const a of antibodies) {
+          bus.publishAntibody({
+            severedSymbol: a.severedSymbol,
+            culpritPackage: a.culpritPackage,
+            canonicalRemediation: a.canonicalRemediation,
+          });
+        }
+      }
+    }
+  } catch {}
+}
+
 function synthesizeVirtualDocument(filePath, payloadInput) {
   let diskContent = '';
   if (filePath && fs.existsSync(filePath)) {
@@ -562,10 +586,11 @@ async function main() {
     process.exit(2);
   }
 
-  // 4. Scoped AST Invariant Verification with Comment & Mock Immunity (Remedy 1)
+  // 4. Multi-Layer Invariant Verification Substrate
   let violations = [];
   let ImmuneSystem = null;
   let HermesSentry = null;
+  let scannerMod = null;
 
   try {
     let scannerPkgPath = path.resolve(projectRoot, 'packages', 'scanner', 'dist', 'index.js');
@@ -574,7 +599,7 @@ async function main() {
       scannerPkgPath = path.resolve(scriptDir, '..', 'packages', 'scanner', 'dist', 'index.js');
     }
     if (fs.existsSync(scannerPkgPath)) {
-      const scannerMod = await import(pathToFileURL(scannerPkgPath).href);
+      scannerMod = await import(pathToFileURL(scannerPkgPath).href);
       const parser = new scannerMod.ScopedAstParser();
       ImmuneSystem = scannerMod.ImmuneSystem;
       HermesSentry = scannerMod.HermesSentry;
@@ -584,6 +609,92 @@ async function main() {
     }
   } catch {
     violations = fallbackScopedScan(virtualDocument);
+  }
+
+  // 4a. Parametric Hallucination Honeypot Engine Trapdoors
+  if (scannerMod && scannerMod.HoneypotEngine) {
+    try {
+      const honeypotEngine = new scannerMod.HoneypotEngine();
+      const hpReport = honeypotEngine.detectHoneypots(virtualDocument, targetFilePath);
+      if (hpReport.hasTrapdoorTriggered) {
+        console.error('');
+        console.error('🛑 [RN-TERRAIN PARAMETRIC HALLUCINATION TRAPDOOR: ACTION BLOCKED]');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error(`  Target Surface: ${normalizedPath}`);
+        console.error('  Status:         IMAGINARY / CONFABULATED API DETECTED');
+        console.error('');
+        for (const v of hpReport.violations) {
+          console.error(`  • Hallucinated Symbol: ${v.symbol} (${v.package})`);
+          console.error(`    Detail:              ${v.message}`);
+          console.error(`    Canonical Fix:       ${v.canonicalRemediation}`);
+        }
+        console.error('');
+        console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
+        console.error('  This symbol does NOT exist in physical reality. Ground your context with:');
+        console.error(`  rn-terrain compass ${hpReport.violations[0]?.package || 'react-native'}`);
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error('');
+        await publishAntibodyGossip(
+          projectRoot,
+          hpReport.violations.map(v => ({
+            severedSymbol: v.symbol,
+            culpritPackage: v.package,
+            canonicalRemediation: v.canonicalRemediation
+          }))
+        );
+        process.exit(2);
+      }
+    } catch {}
+  }
+
+  // 4b. Nitro C++ Native Architecture Auditor
+  if (scannerMod && scannerMod.NitroAuditor) {
+    try {
+      const nitroAuditor = new scannerMod.NitroAuditor(projectRoot);
+      const nitroFindings = nitroAuditor.verifyCodeSnippet(virtualDocument);
+      const hardNitro = nitroFindings.filter(f => f.severity === 'error');
+      const softNitro = nitroFindings.filter(f => f.severity === 'warning');
+
+      if (softNitro.length > 0) {
+        console.error('');
+        console.error('ℹ [RN-TERRAIN NITRO WORKLET ADVISORY: ACTION ALLOWED WITH WARNING]');
+        console.error('─────────────────────────────────────────────────────────────────');
+        for (const sn of softNitro) {
+          console.error(`  • ${sn.message}`);
+          console.error(`    Remediation: ${sn.remediation}`);
+        }
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error('');
+      }
+
+      if (hardNitro.length > 0) {
+        console.error('');
+        console.error('🛑 [RN-TERRAIN NITRO C++ NATIVE ARCHITECTURE VETO: ACTION BLOCKED]');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error(`  Target Surface: ${normalizedPath}`);
+        console.error('  Status:         NITRO HYBRIDOBJECT ACCESSED VIA OBSOLETE BRIDGE / TURBOMODULE SPEC');
+        console.error('');
+        for (const hn of hardNitro) {
+          console.error(`  • Violation:   ${hn.message}`);
+          console.error(`    Remediation: ${hn.remediation}`);
+        }
+        console.error('');
+        console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
+        console.error('  This module is a C++ JSI Nitro HybridObject.');
+        console.error('  Import NitroModules from \'react-native-nitro-modules\' and call createHybridObject.');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error('');
+        await publishAntibodyGossip(
+          projectRoot,
+          hardNitro.map(v => ({
+            severedSymbol: 'NitroHybridObject',
+            culpritPackage: 'react-native-nitro-modules',
+            canonicalRemediation: v.remediation
+          }))
+        );
+        process.exit(2);
+      }
+    } catch {}
   }
 
   const hardViolations = violations.filter(v => v.severity !== 'soft');
@@ -689,11 +800,94 @@ async function main() {
       } catch {}
     }
 
+    await publishAntibodyGossip(
+      projectRoot,
+      hardViolations.map(v => ({
+        severedSymbol: v.symbol,
+        culpritPackage: v.package,
+        canonicalRemediation: v.replacement,
+      }))
+    );
+
     process.exit(2);
   }
 
-  // 5. Post-Run Hermes Micro-Bytecode & Strictness Sentry
-  if (HermesSentry && virtualDocument.trim().length > 0) {
+  // 5. Headless Yoga Virtual Layout Prover
+  if (scannerMod && scannerMod.YogaLayoutProver && virtualDocument.trim().length > 0) {
+    try {
+      const yogaProver = new scannerMod.YogaLayoutProver();
+      const layoutReport = yogaProver.diagnoseLayout(virtualDocument, targetFilePath);
+      const layoutErrors = layoutReport.violations.filter(v => v.severity === 'error');
+      const layoutWarnings = layoutReport.violations.filter(v => v.severity === 'warning');
+
+      if (layoutWarnings.length > 0) {
+        console.error('');
+        console.error('ℹ [RN-TERRAIN LAYOUT ADVISORY: ACTION ALLOWED WITH WARNING]');
+        console.error('─────────────────────────────────────────────────────────────────');
+        for (const lw of layoutWarnings) {
+          console.error(`  • <${lw.component}>: ${lw.message}`);
+          console.error(`    Suggested Fix: ${lw.remediation}`);
+        }
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error('');
+      }
+
+      if (layoutErrors.length > 0) {
+        console.error('');
+        console.error('🛑 [RN-TERRAIN YOGA VIRTUAL LAYOUT PROVER: ACTION BLOCKED]');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error(`  Target Surface: ${normalizedPath}`);
+        console.error('  Status:         FATAL MOBILE LAYOUT COLLAPSE DETECTED');
+        console.error('');
+        for (const le of layoutErrors) {
+          console.error(`  • Component:   <${le.component}> (line ${le.line || 1})`);
+          console.error(`    Detail:      ${le.message}`);
+          console.error(`    Remediation: ${le.remediation}`);
+        }
+        console.error('');
+        console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
+        console.error('  Your JSX renders a ScrollView or container that will collapse to 0px height.');
+        console.error('  Apply flex: 1 or contentContainerStyle bounds before writing to disk.');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error('');
+        await publishAntibodyGossip(
+          projectRoot,
+          layoutErrors.map(v => ({
+            severedSymbol: v.component,
+            culpritPackage: 'react-native',
+            canonicalRemediation: v.remediation
+          }))
+        );
+        process.exit(2);
+      }
+    } catch {}
+  }
+
+  // 6. Post-Run Hermes Micro-Bytecode & Strictness Sentry
+  if (scannerMod && scannerMod.HermesBytecodeVerifier && virtualDocument.trim().length > 0) {
+    try {
+      const hermesVerifier = new scannerMod.HermesBytecodeVerifier();
+      const hermesRes = hermesVerifier.verifyCode(virtualDocument, targetFilePath);
+      if (!hermesRes.valid && hermesRes.error) {
+        console.error('');
+        console.error('🛑 [RN-TERRAIN POST-RUN HERMES BYTECODE SENTRY: ACTION BLOCKED]');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error(`  Target Surface: ${normalizedPath}`);
+        console.error('  Status:         HERMES ENGINE COMPATIBILITY / STRICTNESS FAILURE');
+        console.error(`  • Error:        ${hermesRes.error}`);
+        if (hermesRes.tasteNudge) {
+          console.error(`    Tip:          ${hermesRes.tasteNudge}`);
+        }
+        console.error('');
+        console.error('  CRITICAL INSTRUCTION FOR AI AGENT:');
+        console.error('  Hermes JavaScript engine prohibits this construct (strict mode syntax / reserved keyword / worklet closure escape).');
+        console.error('  Fix the syntax error before proceeding.');
+        console.error('─────────────────────────────────────────────────────────────────');
+        console.error('');
+        process.exit(2);
+      }
+    } catch {}
+  } else if (HermesSentry && virtualDocument.trim().length > 0) {
     try {
       const hermesRes = HermesSentry.verify(virtualDocument, targetFilePath);
       if (!hermesRes.valid) {

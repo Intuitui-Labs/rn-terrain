@@ -97,7 +97,7 @@ export function detectNativeSurface(
       isNative = true;
     }
 
-    if (pkgJson.nativePackage === true || pkgJson['react-native'] !== undefined) {
+    if (pkgJson.nativePackage === true || pkgJson.nitro || pkgJson.expo?.autolinking) {
       isNative = true;
     }
 

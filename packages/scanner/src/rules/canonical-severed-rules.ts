@@ -206,6 +206,43 @@ interface ComponentProps extends ViewProps {
 }`
   },
   {
+    id: 'rn-find-node-handle-severed',
+    package: 'react-native',
+    symbol: 'findNodeHandle',
+    type: 'call',
+    replacement: "'useAnimatedRef' from 'react-native-reanimated' or native component ref",
+    message: "'findNodeHandle' is severed and removed in React Native New Architecture (Fabric). Use direct refs or 'useAnimatedRef'.",
+    minBreakingVersion: '0.76.0',
+    template: `import { useAnimatedRef, measure } from 'react-native-reanimated';
+
+const aRef = useAnimatedRef();
+// Inside worklet or handler:
+// const measurement = measure(aRef);`
+  },
+  {
+    id: 'rn-find-node-handle-import',
+    package: 'react-native',
+    symbol: 'findNodeHandle',
+    type: 'import',
+    replacement: "'useAnimatedRef' from 'react-native-reanimated' or native component ref",
+    message: "'findNodeHandle' is severed and removed in React Native New Architecture (Fabric). Use direct refs.",
+    minBreakingVersion: '0.76.0'
+  },
+  {
+    id: 'rn-uimanager-measure-severed',
+    package: 'react-native',
+    symbol: 'measureInWindow',
+    type: 'member',
+    memberObject: 'UIManager',
+    memberProperty: 'measureInWindow',
+    replacement: "Call '.measureInWindow()' directly on the component ref",
+    message: "'UIManager.measureInWindow' is synchronous legacy bridge method removed in Fabric. Call '.measureInWindow()' on the ref.",
+    minBreakingVersion: '0.76.0',
+    template: `ref.current?.measureInWindow((x, y, width, height) => {
+  // coordinates
+});`
+  },
+  {
     id: 'rn-core-back-handler-remove-listener',
     package: 'react-native',
     symbol: 'removeEventListener',

@@ -20,7 +20,8 @@
     "watch": "tsc -watch -p ./"
   },
   "dependencies": {
-    "@intuitui-labs/rn-terrain-core": "workspace:*"
+    "@intuitui-labs/rn-terrain-core": "workspace:*",
+    "@intuitui-labs/rn-terrain-scanner": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

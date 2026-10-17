@@ -31,6 +31,8 @@
     "vitest": "catalog:"
   },
   "dependencies": {
+    "@babel/parser": "^8.0.7",
+    "@babel/traverse": "^8.0.7",
     "@modelcontextprotocol/sdk": "^1.32.1",
     "better-sqlite3": "^13.0.3"
   }

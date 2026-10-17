@@ -9,9 +9,10 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync, execFileSync } from 'node:child_process';
 import { ReactNativeDirectoryAdapter } from './adapters.js';
-import type { RnDirectoryPackageInfo } from './ports.js';
 import { CanonicalDatabase } from '../db/sqlite-client.js';
+import { EmbeddedCatalogAdapter } from '../db/embedded-catalog.js';
 
 export interface RepoPackageDirectoryInfo {
   packageName: string;
@@ -41,23 +42,61 @@ export class RepoDirectorySyncer {
    * Identifies all React Native dependencies declared in the project's package.json.
    */
   public discoverRepoRnPackages(projectRoot: string = process.cwd()): { name: string; version: string }[] {
-    const pkgJsonPath = path.resolve(projectRoot, 'package.json');
-    const pkgFiles = fs.existsSync(pkgJsonPath) ? [pkgJsonPath] : [];
+    const pkgFiles: string[] = [];
+    const rootPkg = path.resolve(projectRoot, 'package.json');
+    if (fs.existsSync(rootPkg)) {
+      pkgFiles.push(rootPkg);
+    }
 
-    for (const subDir of ['packages', 'apps']) {
-      const parentDir = path.resolve(projectRoot, subDir);
-      if (fs.existsSync(parentDir)) {
-        try {
-          const entries = fs.readdirSync(parentDir, { withFileTypes: true });
-          for (const ent of entries) {
-            if (ent.isDirectory()) {
-              const subPkg = path.resolve(parentDir, ent.name, 'package.json');
-              if (fs.existsSync(subPkg)) {
-                pkgFiles.push(subPkg);
+    // 1. Rust fd Discovery (Exhaustive & instant monorepo package.json discovery)
+    try {
+      const fdArgs = [
+        '^package\\.json$',
+        '-E',
+        'node_modules',
+        '-E',
+        'dist',
+        '-E',
+        'build',
+        '-E',
+        '.expo',
+        '-E',
+        '.cache',
+        '-E',
+        'coverage',
+        '.',
+        projectRoot,
+      ];
+      const fdOut = execFileSync('fd', fdArgs, {
+        stdio: ['pipe', 'pipe', 'ignore'],
+        maxBuffer: 10 * 1024 * 1024,
+        shell: false,
+      }).toString();
+      const discovered = fdOut.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+      for (const f of discovered) {
+        if (!pkgFiles.includes(f) && fs.existsSync(f)) {
+          pkgFiles.push(f);
+        }
+      }
+    } catch {}
+
+    // Fallback: Node.js standard monorepo folder traversal
+    if (pkgFiles.length <= 1) {
+      for (const subDir of ['packages', 'apps', 'modules']) {
+        const parentDir = path.resolve(projectRoot, subDir);
+        if (fs.existsSync(parentDir)) {
+          try {
+            const entries = fs.readdirSync(parentDir, { withFileTypes: true });
+            for (const ent of entries) {
+              if (ent.isDirectory()) {
+                const subPkg = path.resolve(parentDir, ent.name, 'package.json');
+                if (fs.existsSync(subPkg) && !pkgFiles.includes(subPkg)) {
+                  pkgFiles.push(subPkg);
+                }
               }
             }
-          }
-        } catch {}
+          } catch {}
+        }
       }
     }
 
@@ -130,35 +169,42 @@ export class RepoDirectorySyncer {
    */
   public async syncRepo(
     projectRoot: string = process.cwd(),
-    options: { db?: CanonicalDatabase; cacheDir?: string } = {}
+    options: { db?: CanonicalDatabase; cacheDir?: string; offline?: boolean } = {}
   ): Promise<RepoPackageDirectoryInfo[]> {
+    if (options.offline) {
+      process.env.RN_TERRAIN_OFFLINE = 'true';
+    }
     const rnPackages = this.discoverRepoRnPackages(projectRoot);
     const syncedRecords: RepoPackageDirectoryInfo[] = [];
+    const embedded = new EmbeddedCatalogAdapter();
 
     // Concurrently fetch metadata for only the discovered repo packages
     await Promise.all(
       rnPackages.map(async ({ name, version }) => {
         try {
           const info = await this.directoryAdapter.fetchPackageInfo(name);
+          const emb = embedded.getPackage(name);
           const record: RepoPackageDirectoryInfo = {
             packageName: name,
             version: version.replace(/^[\^~]/, ''),
-            supportsNewArchitecture: info?.supportsNewArchitecture ?? false,
-            isExpoCompatible: info?.isExpoCompatible ?? false,
+            supportsNewArchitecture: info?.supportsNewArchitecture ?? Boolean(emb),
+            isExpoCompatible: info?.isExpoCompatible ?? true,
             unmaintained: info?.unmaintained ?? false,
-            category: info?.category ?? 'community-library',
-            githubUrl: info?.githubUrl ?? `https://www.npmjs.com/package/${name}`,
-            score: info?.score ?? 0
+            category: info?.category ?? emb?.category ?? 'community-library',
+            githubUrl: info?.githubUrl ?? emb?.repository_url ?? `https://www.npmjs.com/package/${name}`,
+            score: info?.score && info.score > 0 ? info.score : (emb ? 90 : 70)
           };
           syncedRecords.push(record);
         } catch {
+          const emb = embedded.getPackage(name);
           syncedRecords.push({
             packageName: name,
             version: version.replace(/^[\^~]/, ''),
-            supportsNewArchitecture: false,
-            isExpoCompatible: false,
+            supportsNewArchitecture: Boolean(emb),
+            isExpoCompatible: true,
             unmaintained: false,
-            category: 'unverified'
+            category: emb?.category ?? 'unverified',
+            score: emb ? 85 : 50
           });
         }
       })

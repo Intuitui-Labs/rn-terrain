@@ -78,6 +78,11 @@ export class ReactNativeDirectoryAdapter implements IRnDirectoryPort {
   ];
 
   async fetchDirectoryCatalog(): Promise<RnDirectoryPackageInfo[]> {
+    // 0. Offline bypass
+    if (process.env.OFFLINE === 'true' || process.env.RN_TERRAIN_OFFLINE === 'true') {
+      return this.fallbackCatalog;
+    }
+
     // 1. Check local sovereign cache (TTL: 24h = 86400s)
     const cached = this.cache.get<RnDirectoryPackageInfo[]>(this.cacheKey);
     if (cached && Array.isArray(cached) && cached.length > 0) {
@@ -86,9 +91,10 @@ export class ReactNativeDirectoryAdapter implements IRnDirectoryPort {
 
     // 2. Fetch live from React Native Directory API
     try {
+      const timeoutMs = process.env.CI === 'true' ? 500 : 2000;
       const res = await fetch(this.apiUrl, {
         headers: { 'User-Agent': 'rn-terrain-hexagonal-ingestion' },
-        signal: AbortSignal.timeout(6000)
+        signal: AbortSignal.timeout(timeoutMs)
       });
 
       if (res.ok) {
